@@ -64,18 +64,25 @@ class TaskRepository(Protocol):
 class Tracer(Protocol):
     def record_tool_call(self, task_id: str, call: ToolCall) -> None: ...
     def record_node_timing(self, task_id: str, timing: NodeTiming) -> None: ...
+    def record_llm_call(self, task_id: str, call: LLMCall) -> None: ...
 ```
 
-实现：M1 `InMemoryTracer`，M4 推送 Redis Stream。
+实现：M1 `InMemoryTracer`，M2 扩展 LLM Trace，M4 推送 Redis Stream。
 
 ### 2.4 LLMClient Protocol（M2 落地）
 
 ```python
 class LLMClient(Protocol):
-    def invoke(self, messages: list[LLMMessage]) -> LLMResponse: ...
+    def invoke_structured(
+        self, *,
+        system_prompt: str,
+        user_prompt: str,
+        response_model: type[T],
+        trace_context: LLMTraceContext,
+    ) -> T: ...
 ```
 
-实现：M2 `MockLLMClient` + `OpenAICompatibleClient`。
+实现：M2 `MockLLMClient` + `OpenAICompatibleLLMClient`。
 
 ## 3. ToolContext 设计
 
@@ -102,7 +109,7 @@ class ToolContext(TypedDict):
 | 阶段 | 新增字段 |
 |------|---------|
 | M1 | 输入字段、validate_input 输出、explore_repository 输出、retrieve_code 输出、build_basic_report 输出、tool_calls、node_timings、errors、status、current_node |
-| M2 | `issue_class`、`extracted_keywords`、`error_signature`、`plan_steps`、`plan_rationale`、`root_causes`、`analysis_summary` |
+| M2 | `issue_analysis`、`investigation_plan`、`root_cause_analysis`、`diagnostic_report`、`llm_calls`、`warnings` |
 | M3 | 检索评分、代码块、检索元数据 |
 
 每次新增字段必须有实际节点使用，不创建纯占位字段。
@@ -193,13 +200,110 @@ Java 21、Spring Boot 3、Spring MVC、MyBatis-Plus、MySQL、Redis、Redis Stre
 
 ### Python Agent 服务（M0+）
 
-Python 3.11+、FastAPI、Pydantic、Pydantic-Settings、Uvicorn、LangGraph（M1+）、LangChain（M2+）、FAISS（M3+）、BM25（M3+）、Tree-sitter（后续）、GitPython（后续）、Docker SDK（阶段 3+）
+Python 3.11+、FastAPI、Pydantic、Pydantic-Settings、Uvicorn、LangGraph（M1+）、HTTPX（M2 Live）、BM25（M3+）、FAISS / Tree-sitter / GitPython（后续）、Docker SDK（阶段 3+）
 
 ### 部署（阶段 4+）
 
 Docker Compose、Nginx、MySQL、Redis、MinIO
 
-## 10. M0 阶段技术栈（精简）
+## 10. M1.1 阶段基线固化（已完成）
+
+M1.1 不新增任何 Agent 能力，仅处理质量、CI 和可复现性：
+
+| 项 | 实现 |
+|----|------|
+| 统一请求校验错误 | `RequestValidationError` handler 返回 `{error: "request_validation_error", message, details[{field, reason}]}` |
+| 示例 Bug 验证脚本 | `scripts/verify_sample_bug.py` 跨平台执行 `mvn test`，断言目标失败签名，返回 0/1/2 |
+| GitHub Actions | `.github/workflows/ci.yml`：`python-quality`（Python 3.11 + uv）+ `sample-bug-verification`（Java 21 + Maven） |
+| Warning 过滤 | StarletteDeprecationWarning 用 message 正则限定，而非整个类别 |
+| LangGraph type ignore | 4 处 `# type: ignore[call-overload]` 保留并加说明（langgraph 0.2 类型签名未稳定） |
+| 符号链接测试 | Windows 本地跳过；Linux CI 必须执行，被跳过视为配置问题 |
+
+## 11. M2 阶段 LLM 推理节点（已完成）
+
+M2 在 M1 确定性工作流基础上新增 3 个 LLM 节点：
+
+| 节点 | 类型 | 输入 | 输出 | 降级策略 |
+|------|------|------|------|---------|
+| `issue_parser` | LLM | issue_description, error_log | IssueAnalysis | 用 M1 确定性符号提取，category=unknown |
+| `task_planner` | LLM | issue_analysis, issue_description | InvestigationPlan (3-6 步) | 用确定性最小排查计划 |
+| `root_cause_analyzer` | LLM | snippets, issue_analysis, plan | RootCauseAnalysis | 输出 insufficient_evidence |
+
+### LLM 客户端抽象
+
+```python
+class LLMClient(Protocol):
+    def invoke_structured(
+        self, *,
+        system_prompt: str,
+        user_prompt: str,
+        response_model: type[T],
+        trace_context: LLMTraceContext,
+    ) -> T: ...
+```
+
+- `MockLLMClient`：测试 / CI / 离线开发，不需要 API Key
+- `OpenAICompatibleLLMClient`：真实模型，httpx 实现，OpenAI 兼容端点
+- LLM_PROVIDER 切换：`mock` / `openai_compatible`
+
+### 结构化输出 Schema
+
+- `IssueAnalysis`：issue_category / summary / symptoms / exception_types / extracted_symbols / search_terms / spring_concepts
+- `InvestigationPlan`：3-6 个 InvestigationStep，step_id 严格递增
+- `RootCauseAnalysis`：diagnosis_status (complete / partial / insufficient_evidence) + 最多 3 个 RootCauseCandidate
+- 每个候选必须引用 retrieved_snippets 中真实存在的文件和行号
+
+### 超时与重试
+
+仅重试：网络超时 / 连接失败 / 429 / 5xx / 首次 Schema 校验失败（一次格式修复）
+
+不重试：401 / 403 / 配置缺失 / 持续 Schema 校验失败 / Prompt 逻辑错误
+
+所有重试有最大次数（默认 2），记录 attempt，不形成无限循环。
+
+### Prompt 管理
+
+- 模板存放在 `llm/prompts/*.md`，独立于 Python 代码
+- 每个 Prompt 明确：角色 / 输入边界 / 输出 Schema / 禁止编造 / 证据不足处理 / 长度约束 / 禁止项
+- 不要求模型输出隐藏思维链
+- Prompt Injection 防护：代码 / 注释 / README / 日志视为数据，嵌入式指令不执行
+
+### LLM Trace
+
+每次 LLM 调用记录：
+
+- node_name / provider / model / attempt
+- start / end / duration_ms（单调时钟）
+- status (success / retry / error)
+- prompt_chars / response_chars（字符数，不保存正文）
+- input_tokens / output_tokens（模型返回时记录，否则 null）
+- error_type / error_message（长度限制 500 字符）
+- 永不保存 API Key / 完整 Prompt / 完整响应
+
+API traces 响应区分 `node_traces` / `tool_traces` / `llm_traces`。
+
+### Live 模式
+
+`scripts/run_live_diagnosis.py`：
+
+- 参数：`--repository` / `--issue` / `--error-log-file` / `--output`
+- 从环境变量读取模型配置
+- 缺少配置时清晰失败
+- 输出 task_id / diagnosis_status / LLM 调用次数 / 耗时 / Token
+- 永不输出 API Key
+- 普通 CI 不运行该脚本
+
+三个真实模型 Live Case 已完成回归。它们不构成准确率评测；Prompt Injection
+Case 只验证当前防护设计和一次模型行为，不代表绝对安全。
+
+### M2 运行边界
+
+- 检索仍使用 M1 简单词法评分，BM25 在 M3 实现
+- 任务与 Trace 使用 `InMemoryTaskRepository`
+- 后台任务使用进程内 `threading.Thread`
+- Agent 不执行 Maven、不执行用户代码，也不修改代码
+
+## 12. M0 阶段技术栈（精简）
 
 仅引入：
 

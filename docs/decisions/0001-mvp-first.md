@@ -33,7 +33,7 @@ SpringFix Agent 是面向 Agent 应用开发岗位面试的个人项目，最终
 
 **Q2（示例 Bug 数量）**：M1 只创建 1 个示例项目 `transaction-self-invocation`（同类内部方法调用导致 `@Transactional` 代理失效）。M4 评测阶段再补 2 个共 3 个。明确不使用 `@Transactional` 标在 private 方法作为示例 Bug。
 
-**Q3（评测指标）**：保留 7 个指标设计（issue_class_accuracy、key_file_recall@5、root_cause_hit@1、root_cause_hit@3、average_duration_ms、tool_call_count、llm_call_count）。M0 仅落盘设计文档，M4 才实现评测运行器与输出。M0-M3 期间不输出任何准确率或命中率数据。
+**Q3（评测指标）**：保留 7 个指标设计（issue_category_accuracy、key_file_recall@5、root_cause_hit@1、root_cause_hit@3、average_duration_ms、tool_call_count、llm_call_count）。M0 仅落盘设计文档，M4 才实现评测运行器与输出。M0-M3 期间不输出任何准确率或命中率数据。
 
 **Q4（路径沙箱）**：采用 `allow_root` 方案。所有项目路径必须位于 `allow_root` 子目录中。工具只接收相对 `repository_path` 的路径。即使内部支持绝对路径解析，也必须在 canonicalize 后验证路径仍位于 `repository_path` 内。禁止工具读取仓库外文件。
 
@@ -41,7 +41,7 @@ SpringFix Agent 是面向 Agent 应用开发岗位面试的个人项目，最终
 
 **Q6（状态查询）**：采用 polling：`POST /api/v1/tasks`、`GET /api/v1/tasks/{task_id}`、`GET /api/v1/tasks/{task_id}/traces`、`GET /api/v1/tasks/{task_id}/report`。统一资源化 tasks API。不使用 `POST /api/v1/diagnose`。不实现 SSE 和 WebSocket。
 
-**Q7（LangGraph）**：采用静态线性图。M1 为 4 节点线性图（validate_input → explore_repository → retrieve_code → build_basic_report）。M2 扩展为 6 节点（增加 IssueParser / TaskPlanner / RootCauseAnalyzer）。不实现条件边、循环、反思、回退。
+**Q7（LangGraph）**：采用静态线性图。M1 为 4 节点线性图（validate_input → explore_repository → retrieve_code → build_basic_report）。M2 扩展为 7 节点（增加 IssueParser / TaskPlanner / RootCauseAnalyzer，并将末节点替换为 build_diagnostic_report）。不实现条件边、循环、反思、回退。
 
 ### 设计矛盾修正
 

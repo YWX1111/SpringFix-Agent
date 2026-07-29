@@ -4,13 +4,15 @@ The Tracer is the long-stable interface used by every Graph node and Tool
 to record observability data. Implementations:
 
 - M1: ``InMemoryTracer`` (writes to TaskRepository in-process)
-- M4+: Redis Stream publisher for cross-service streaming
+- M2: same, plus LLM call records.
+- M4+: Redis Stream publisher for cross-service streaming.
 """
 
 from __future__ import annotations
 
 from typing import Protocol, TypedDict
 
+from springfix_agent.llm.trace import LLMCall
 from springfix_agent.tools.base import ToolCall
 
 
@@ -37,4 +39,8 @@ class Tracer(Protocol):
 
     def record_node_timing(self, task_id: str, timing: NodeTiming) -> None:
         """Persist a single node timing record."""
+        ...
+
+    def record_llm_call(self, task_id: str, call: LLMCall) -> None:
+        """Persist a single LLM call record."""
         ...

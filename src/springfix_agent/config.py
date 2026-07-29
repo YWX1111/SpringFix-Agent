@@ -12,14 +12,14 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     """Runtime settings for SpringFix Agent.
 
-    Loaded from environment variables or a local ``.env`` file.
-    M0 uses only ``allow_root``; LLM-related fields will be added in M2.
+    M2 adds the LLM_* block. When LLM_PROVIDER="mock" (default) no API
+    key is required and the agent runs entirely offline.
     """
 
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
-        case_sensitive=True,
+        case_sensitive=False,
         extra="ignore",
     )
 
@@ -27,7 +27,15 @@ class Settings(BaseSettings):
     host: str = Field(default="0.0.0.0")
     port: int = Field(default=8000)
     log_level: str = Field(default="INFO")
-    app_version: str = Field(default="0.1.0")
+    # LLM configuration (M2)
+    llm_provider: str = Field(default="mock")
+    llm_base_url: str = Field(default="")
+    llm_api_key: str = Field(default="")
+    llm_model: str = Field(default="")
+    llm_timeout_seconds: int = Field(default=60)
+    llm_max_retries: int = Field(default=2)
+    llm_temperature: float = Field(default=0.0)
+    llm_max_output_tokens: int = Field(default=2000)
 
     def resolved_allow_root(self) -> Path:
         """Return allow_root as an absolute, canonicalized path."""

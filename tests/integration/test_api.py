@@ -117,6 +117,47 @@ def test_invalid_request_returns_structured_error(
         assert "message" in data
 
 
+def test_request_validation_error_is_structured(
+    client: TestClient, sample_repo_path: str
+) -> None:
+    """422 errors return the structured request_validation_error shape."""
+    body = {
+        "repository_path": sample_repo_path,
+        "issue_description": "short",
+    }
+    r = client.post("/api/v1/tasks", json=body)
+    # FastAPI may return 422 (pydantic) before our handler runs; either way
+    # the response shape must be the structured one defined in M1.1.
+    assert r.status_code in (400, 422)
+    data = r.json()
+    if r.status_code == 422:
+        assert data["error"] == "request_validation_error"
+        assert data["message"] == "Request validation failed"
+        assert "details" in data
+        assert isinstance(data["details"], list)
+        assert len(data["details"]) > 0
+        first = data["details"][0]
+        assert "field" in first and "reason" in first
+        assert first["field"] == "issue_description"
+    else:
+        assert data["error"] in ("validation_error", "error")
+        assert "message" in data
+
+
+def test_missing_required_field_is_structured(
+    client: TestClient, sample_repo_path: str
+) -> None:
+    """Omitting issue_description still returns a structured 422."""
+    body = {"repository_path": sample_repo_path}
+    r = client.post("/api/v1/tasks", json=body)
+    assert r.status_code == 422
+    data = r.json()
+    assert data["error"] == "request_validation_error"
+    assert "details" in data
+    fields = {d["field"] for d in data["details"]}
+    assert "issue_description" in fields
+
+
 def test_report_not_ready_returns_409(client: TestClient, sample_repo_path: str) -> None:
     """Report endpoint returns 409 when task is still pending (consistent with docs)."""
     svc = _service(client)

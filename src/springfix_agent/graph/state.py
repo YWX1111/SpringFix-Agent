@@ -1,9 +1,23 @@
-"""AgentState for M1 (deterministic vertical slice).
+"""AgentState for M2 (LLM-assisted diagnostic graph).
 
-This state holds only fields that M1 nodes actually read or write.
-M2 will extend with issue_class / plan_steps / root_causes; M3 with
-retrieval scoring metadata. Each new field must have a real consumer
-node — no placeholder fields.
+M2 adds five new fields on top of M1:
+
+- ``issue_analysis``      (IssueParser output)
+- ``investigation_plan``  (TaskPlanner output)
+- ``root_cause_analysis`` (RootCauseAnalyzer output)
+- ``diagnostic_report``   (build_diagnostic_report output, replaces M1 basic_report)
+- ``llm_calls``           (append-only LLM trace accumulator)
+- ``warnings``            (append-only node-level warnings)
+
+M1 fields that remain in active use:
+
+- ``extracted_symbols`` is merged from deterministic + IssueParser output.
+- ``project_tree_summary``, ``candidate_files``, ``retrieved_snippets``,
+  ``retrieval_summary`` continue to flow through the existing tools.
+- ``errors``, ``tool_calls``, ``node_timings`` continue to accumulate.
+
+State volume limits (100 KB total, 10 snippets, 60 lines / 4000 chars
+each, 500-char trace summaries) remain in force.
 """
 
 from __future__ import annotations
@@ -11,6 +25,7 @@ from __future__ import annotations
 import operator
 from typing import Annotated, TypedDict
 
+from springfix_agent.llm.trace import LLMCall
 from springfix_agent.observability.tracer import NodeTiming
 from springfix_agent.storage.models import TaskStatus
 from springfix_agent.tools.base import ToolCall
@@ -33,7 +48,7 @@ class RetrievedSnippet(TypedDict):
 
 
 class AgentState(TypedDict):
-    """M1 state shape. Fields use overwrite semantics unless annotated with operator.add."""
+    """M2 state shape. Append-reducer fields use ``Annotated[..., operator.add]``."""
 
     # Inputs (written once at task creation)
     task_id: str
@@ -45,23 +60,37 @@ class AgentState(TypedDict):
     validation_ok: bool
     validation_errors: list[str]
 
+    # IssueParser outputs (M2)
+    issue_analysis: dict[str, object]
+
     # explore_repository outputs
     extracted_symbols: list[str]
     project_tree_summary: str
     candidate_files: list[str]
 
+    # TaskPlanner outputs (M2)
+    investigation_plan: dict[str, object]
+
     # retrieve_code outputs
     retrieved_snippets: list[RetrievedSnippet]
     retrieval_summary: str
 
-    # build_basic_report outputs
-    basic_report: dict[str, object]
+    # RootCauseAnalyzer outputs (M2)
+    root_cause_analysis: dict[str, object]
+
+    # build_diagnostic_report outputs (M2)
+    diagnostic_report: dict[str, object]
     markdown_report: str
+
+    # Back-compat alias used by M1 report path; M2 report node writes both.
+    basic_report: dict[str, object]
 
     # Tracing accumulators (append reducer)
     tool_calls: Annotated[list[ToolCall], operator.add]
     node_timings: Annotated[list[NodeTiming], operator.add]
     errors: Annotated[list[str], operator.add]
+    warnings: Annotated[list[str], operator.add]
+    llm_calls: Annotated[list[LLMCall], operator.add]
 
     # Task status
     status: TaskStatus
@@ -82,16 +111,22 @@ def make_initial_state(
         error_log=error_log,
         validation_ok=False,
         validation_errors=[],
+        issue_analysis={},
         extracted_symbols=[],
         project_tree_summary="",
         candidate_files=[],
+        investigation_plan={},
         retrieved_snippets=[],
         retrieval_summary="",
-        basic_report={},
+        root_cause_analysis={},
+        diagnostic_report={},
         markdown_report="",
+        basic_report={},
         tool_calls=[],
         node_timings=[],
         errors=[],
+        warnings=[],
+        llm_calls=[],
         status="pending",
         current_node="",
     )

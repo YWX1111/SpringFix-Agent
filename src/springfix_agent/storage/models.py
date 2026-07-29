@@ -43,18 +43,17 @@ class Task(BaseModel):
 
 
 class Trace(BaseModel):
-    """A single tool-call or node-timing record persisted to the trace store.
+    """A single tool-call, node-timing or llm-call record persisted to the trace store.
 
-    Two trace kinds are stored:
+    Three trace kinds are stored:
 
     - ``tool_call``: a single tool invocation (mirrors ToolCall fields).
     - ``node_timing``: a node's start/end/duration.
-
-    M0 defines the model only; persistence and Tracer implementation land in M1.
+    - ``llm_call``: a single LLM invocation (mirrors LLMCall fields).
     """
 
     task_id: str
-    kind: Literal["tool_call", "node_timing"]
+    kind: Literal["tool_call", "node_timing", "llm_call"]
     recorded_at: datetime = Field(default_factory=_utc_now)
     payload: dict[str, object] = Field(
         description="Typed payload; structure depends on ``kind``.",

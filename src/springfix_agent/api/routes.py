@@ -12,6 +12,7 @@ directly. Errors are raised as ``ApiError`` and converted to a uniform
 from __future__ import annotations
 
 from fastapi import APIRouter, Request, status
+from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
 from springfix_agent import __version__
@@ -23,6 +24,7 @@ from springfix_agent.api.schemas import (
     TaskStatusResponse,
     TraceItem,
     TraceListResponse,
+    ValidationDetail,
 )
 from springfix_agent.service.task_service import TaskService, TaskValidationError
 
@@ -117,17 +119,29 @@ def get_task(task_id: str, request: Request) -> TaskStatusResponse:
 
 @router.get("/tasks/{task_id}/traces", response_model=TraceListResponse)
 def get_traces(task_id: str, request: Request) -> TraceListResponse:
-    """Return all trace records for a task, ordered by recorded_at."""
+    """Return all trace records for a task, grouped by kind."""
     service = _service(request)
     if service.get_task(task_id) is None:
         raise _not_found(task_id)
     traces = service.get_traces(task_id)
+    # Redact any accidental secret material before returning.
+    sanitized: list[TraceItem] = []
+    for t in traces:
+        payload = dict(t.payload)
+        if "error_message" in payload and isinstance(payload["error_message"], str):
+            payload["error_message"] = payload["error_message"][:500]
+        # Strip any raw prompt/response fields (defensive).
+        payload.pop("raw_prompt", None)
+        payload.pop("raw_response", None)
+        sanitized.append(
+            TraceItem(kind=t.kind, recorded_at=t.recorded_at, payload=payload)
+        )
     return TraceListResponse(
         task_id=task_id,
-        traces=[
-            TraceItem(kind=t.kind, recorded_at=t.recorded_at, payload=t.payload)
-            for t in traces
-        ],
+        traces=sanitized,
+        node_traces=[t for t in sanitized if t.kind == "node_timing"],
+        tool_traces=[t for t in sanitized if t.kind == "tool_call"],
+        llm_traces=[t for t in sanitized if t.kind == "llm_call"],
     )
 
 
@@ -157,4 +171,23 @@ def api_error_to_json_response(exc: ApiError) -> JSONResponse:
     return JSONResponse(
         status_code=exc.status_code,
         content={"error": exc.error, "message": exc.message},
+    )
+
+
+def request_validation_to_json_response(exc: RequestValidationError) -> JSONResponse:
+    """Convert a Pydantic validation error into the structured error shape."""
+    details: list[ValidationDetail] = []
+    skip_keys = {"body", "query", "path", "header", "cookie"}
+    for err in exc.errors():
+        loc = err.get("loc", ())
+        field_parts = [str(p) for p in loc if p not in skip_keys]
+        field = ".".join(field_parts) if field_parts else ".".join(str(p) for p in loc)
+        details.append(ValidationDetail(field=field, reason=err.get("msg", "validation error")))
+    return JSONResponse(
+        status_code=422,
+        content={
+            "error": "request_validation_error",
+            "message": "Request validation failed",
+            "details": [d.model_dump() for d in details],
+        },
     )

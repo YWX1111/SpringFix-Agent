@@ -10,6 +10,10 @@ Scheduling boundary (must be documented in API and README):
     - Service restart loses any in-flight task
     - No coordination across multiple service instances
     - Will be replaced by Redis Stream or a job queue in a later milestone
+
+M2 adds:
+    - An ``LLMClient`` dependency passed at construction.
+    - The LLM client is forwarded to ``build_graph``.
 """
 
 from __future__ import annotations
@@ -22,6 +26,7 @@ from pathlib import Path
 
 from springfix_agent.graph.builder import build_graph
 from springfix_agent.graph.state import AgentState, make_initial_state
+from springfix_agent.llm.client import LLMClient
 from springfix_agent.observability.in_memory_tracer import InMemoryTracer
 from springfix_agent.storage.models import Report, Task, TaskStatus, Trace
 from springfix_agent.storage.repository import TaskRepository  # Protocol
@@ -47,9 +52,16 @@ class TaskService:
         self,
         repository: TaskRepository,
         allow_root: Path,
+        llm: LLMClient,
     ) -> None:
         self._repo = repository
         self._allow_root = allow_root
+        self._llm = llm
+
+    @property
+    def llm(self) -> LLMClient:
+        """The LLM client used by this service's graph invocations."""
+        return self._llm
 
     def submit_task(
         self,
@@ -137,6 +149,7 @@ class TaskService:
             repository_path=repository_path,
             allow_root=self._allow_root,
             tracer=tracer,
+            llm=self._llm,
         )
         initial = make_initial_state(
             task_id=task.task_id,
@@ -150,7 +163,10 @@ class TaskService:
         return result  # type: ignore[return-value]
 
     def _persist_outcome(self, task_id: str, final_state: AgentState) -> None:
-        basic_report = dict(final_state.get("basic_report", {}) or {})
+        # Prefer diagnostic_report if present (M2), fall back to basic_report (M1).
+        report_body = dict(final_state.get("diagnostic_report") or {})
+        if not report_body:
+            report_body = dict(final_state.get("basic_report") or {})
         markdown_report = str(final_state.get("markdown_report", "") or "")
         raw_status = str(final_state.get("status", "failed"))
         if raw_status not in ("pending", "running", "completed", "failed"):
@@ -159,7 +175,7 @@ class TaskService:
 
         report = Report(
             task_id=task_id,
-            json_report=basic_report,
+            json_report=report_body,
             markdown_report=markdown_report,
             created_at=datetime.now(tz=UTC),
         )
@@ -175,11 +191,13 @@ class TaskService:
             task_id=task_id,
             json_report={
                 "status": "failed",
+                "diagnosis_status": "insufficient_evidence",
                 "error": error_msg,
                 "disclaimer": "Task execution failed before report generation.",
             },
             markdown_report=(
-                f"# 诊断报告\n\n- status: **failed**\n\n"
+                f"# 诊断报告\n\n- status: **failed**\n"
+                f"- diagnosis_status: **insufficient_evidence**\n\n"
                 f"## 错误\n\n```\n{error_msg}\n```\n"
             ),
             created_at=datetime.now(tz=UTC),

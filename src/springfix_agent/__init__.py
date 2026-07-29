@@ -1,3 +1,3 @@
 """SpringFix Agent — intelligent diagnosis and repair platform for Java/Spring Boot projects."""
 
-__version__ = "0.2.0"
+__version__ = "0.4.1"

@@ -92,25 +92,48 @@
 
 ---
 
-## M2：LLM 推理节点
+## M2：LLM 推理节点（已完成）
 
 ### 范围
 
-- `LLMClient` Protocol + `MockLLMClient` + `OpenAICompatibleClient`
-- `IssueParser` 节点：LLM 问题分类
-- `TaskPlanner` 节点：LLM 排查计划
-- `RootCauseAnalyzer` 节点：LLM 根因推理
-- Pydantic 结构化 LLM 输出
-- Prompt 模板
-- LLM 超时、重试、降级
-- AgentState 扩展 M2 字段
-- LangGraph 扩展为 6 节点完整图
+- 7 节点 LangGraph：validate_input → issue_parser → task_planner → explore_repository → retrieve_code → root_cause_analyzer → build_diagnostic_report
+- LLM 客户端抽象：Protocol + MockLLMClient + OpenAICompatibleLLMClient
+- Pydantic 结构化输出：IssueAnalysis / InvestigationPlan / RootCauseAnalysis
+- 超时 / 重试 / 降级策略
+- Prompt 模板（.md 文件）
+- Prompt Injection 防护
+- LLM Trace
+- Live 诊断脚本 `scripts/run_live_diagnosis.py`
+- Mock 模式默认，无 API Key 也能运行
 
 ### 不做
 
-- BM25、向量检索（M3）
+- BM25 / Embedding / FAISS / Tree-sitter（M3）
 - SQLite 持久化（M4）
-- 真实评测运行（M4）
+- Vue 前端 / Spring Boot 后端
+- Docker 沙箱 / Maven 测试执行 / 自动代码修改
+- 多 Agent / 反思 / 循环
+
+### 验收标准
+
+1. 7 节点按顺序执行
+2. IssueParser / TaskPlanner / RootCauseAnalyzer LLM 失败时正确降级
+3. RootCauseAnalyzer 二次业务校验拒绝无效 evidence
+4. 报告区分 complete / partial / insufficient_evidence
+5. Prompt Injection 不改变系统行为
+6. LLM Trace 记录在 traces 响应中
+7. API 不暴露 Prompt 和模型完整响应
+8. Mock 模式 + 健康检查在无 API Key 时正常
+9. ruff + mypy strict + pytest 全部通过
+10. Live 诊断脚本在配置齐全时能运行（未配置时不伪造结果）
+
+### 当前运行边界
+
+- 三个真实模型 Live Case 仅为回归结果，不代表准确率
+- Prompt Injection Case 不代表绝对安全
+- 检索仍为 M1 简单词法评分；BM25 在 M3 实现
+- 当前使用 InMemory 存储和进程内后台线程
+- Agent 不执行 Maven、不执行用户代码，也不修改代码
 
 ---
 
@@ -145,7 +168,7 @@
 
 ### 评测指标
 
-- `issue_class_accuracy`
+- `issue_category_accuracy`
 - `key_file_recall@5`
 - `root_cause_hit@1`
 - `root_cause_hit@3`

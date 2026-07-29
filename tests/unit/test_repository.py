@@ -57,12 +57,15 @@ def test_trace_ordering(task_service: TaskService, sample_repo_path: str) -> Non
     timestamps = [t.recorded_at for t in traces]
     assert timestamps == sorted(timestamps)
     node_timings = [t for t in traces if t.kind == "node_timing"]
-    assert len(node_timings) == 4
+    assert len(node_timings) == 7  # 7 nodes in M2 graph
     assert [t.payload["node"] for t in node_timings] == [
         "validate_input",
+        "issue_parser",
+        "task_planner",
         "explore_repository",
         "retrieve_code",
-        "build_basic_report",
+        "root_cause_analyzer",
+        "build_diagnostic_report",
     ]
 
 

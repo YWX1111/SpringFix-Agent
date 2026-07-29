@@ -1,4 +1,4 @@
-"""Shared pytest fixtures for M1."""
+"""Shared pytest fixtures for M2."""
 
 from __future__ import annotations
 
@@ -6,12 +6,26 @@ from pathlib import Path
 
 import pytest
 from fastapi import FastAPI, HTTPException
+from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from fastapi.testclient import TestClient
 
-from springfix_agent.api.routes import ApiError, api_error_to_json_response, router
+from springfix_agent.api.routes import (
+    ApiError,
+    api_error_to_json_response,
+    request_validation_to_json_response,
+    router,
+)
+from springfix_agent.llm.client import LLMClient
+from springfix_agent.llm.mock import MockLLMClient
 from springfix_agent.service.task_service import TaskService
 from springfix_agent.storage.in_memory import InMemoryTaskRepository
+
+
+@pytest.fixture
+def mock_llm() -> MockLLMClient:
+    """A fresh MockLLMClient for each test."""
+    return MockLLMClient()
 
 
 @pytest.fixture
@@ -21,15 +35,27 @@ def app() -> object:
 
 
 @pytest.fixture
-def client(allow_root: Path) -> TestClient:
-    """TestClient wired to a fresh TaskService bound to the fixture allow_root."""
-    app = FastAPI(title="SpringFix Agent", version="0.1.0")
+def client(allow_root: Path, mock_llm: LLMClient) -> TestClient:
+    """TestClient wired to a fresh TaskService + MockLLMClient."""
+    app = FastAPI(title="SpringFix Agent", version="0.4.1")
     repository = InMemoryTaskRepository()
-    app.state.task_service = TaskService(repository=repository, allow_root=allow_root)
+    app.state.task_service = TaskService(
+        repository=repository,
+        allow_root=allow_root,
+        llm=mock_llm,
+    )
+    app.state.llm_provider = mock_llm.provider
+    app.state.llm_model = mock_llm.model
 
     @app.exception_handler(ApiError)
     async def _api_exc_handler(_request, exc: ApiError) -> JSONResponse:  # type: ignore[no-untyped-def]
         return api_error_to_json_response(exc)
+
+    @app.exception_handler(RequestValidationError)
+    async def _req_val_exc_handler(  # type: ignore[no-untyped-def]
+        _request, exc: RequestValidationError
+    ) -> JSONResponse:
+        return request_validation_to_json_response(exc)
 
     @app.exception_handler(HTTPException)
     async def _http_exc_handler(_request, exc: HTTPException) -> JSONResponse:  # type: ignore[no-untyped-def]
@@ -110,10 +136,10 @@ def sample_repo(allow_root: Path) -> Path:
 
 
 @pytest.fixture
-def task_service(allow_root: Path) -> TaskService:
-    """A TaskService with InMemoryTaskRepository bound to allow_root."""
+def task_service(allow_root: Path, mock_llm: LLMClient) -> TaskService:
+    """A TaskService with InMemoryTaskRepository + MockLLMClient."""
     repo = InMemoryTaskRepository()
-    return TaskService(repository=repo, allow_root=allow_root)
+    return TaskService(repository=repo, allow_root=allow_root, llm=mock_llm)
 
 
 @pytest.fixture

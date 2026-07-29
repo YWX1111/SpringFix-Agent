@@ -1,48 +1,71 @@
 # 项目级开发约束（SpringFix Agent）
 
-> 本文件仅约束 SpringFix Agent 项目内的开发。不覆盖全局 `C:\Users\Administrator\.claude\CLAUDE.md`。
+> 本文件仅约束 SpringFix Agent 项目内的开发，不覆盖工作站上的全局配置。
 
 ## 阶段定位
 
-当前阶段：**M1 确定性垂直切片（已完成）**。
+当前阶段：**M2 LLM 推理节点（已完成）**。
 
-M1 范围内已完成：
+M2 在 M1 确定性工作流基础上新增 3 个 LLM 节点，受控升级为完整 Agent 工作流。**不新增 BM25 / SQLite / Docker 等能力**。
+
+M2 范围内已完成：
+
+- 7 节点 LangGraph：
+  - `validate_input`（确定性）
+  - `issue_parser`（LLM）
+  - `task_planner`（LLM）
+  - `explore_repository`（确定性，合并 LLM 符号）
+  - `retrieve_code`（确定性，查询来源扩展）
+  - `root_cause_analyzer`（LLM，二次业务校验）
+  - `build_diagnostic_report`（确定性，区分 diagnosis_status）
+- LLM 层（`llm/`）：
+  - `client.py`（LLMClient Protocol + LLMTraceContext）
+  - `mock.py`（MockLLMClient，测试 / CI / 离线开发）
+  - `openai_compatible.py`（OpenAI 兼容客户端，httpx 实现）
+  - `schemas.py`（IssueAnalysis / InvestigationPlan / RootCauseAnalysis）
+  - `parser.py`（结构化解析 + 一次格式修复）
+  - `_retry.py`（bounded retry，仅重试可重试错误）
+  - `trace.py`（LLMCall TypedDict）
+  - `prompts/`（.md 模板，独立于 Python 代码）
+- AgentState 扩展：`issue_analysis` / `investigation_plan` / `root_cause_analysis` / `diagnostic_report` / `llm_calls` / `warnings`
+- Tracer 扩展：`record_llm_call`，Trace.kind 支持 `llm_call`
+- API 扩展：traces 响应区分 `node_traces` / `tool_traces` / `llm_traces`
+- Live 诊断脚本：`scripts/run_live_diagnosis.py`
+- 配置扩展：`LLM_PROVIDER` / `LLM_BASE_URL` / `LLM_API_KEY` / `LLM_MODEL` 等
+- 测试数量以当前完整回归结果为准；Windows 符号链接用例可能因权限跳过，Linux CI 必须实际执行
+- 三个真实模型 Live Case 已完成回归，但该样本不代表准确率
+- Prompt Injection Case 只验证当前防护设计和一次模型行为，不代表绝对安全
+
+M1 范围内已完成（M2 保留）：
 
 - 文档：README、本文件、product-requirements、architecture、mvp-scope、development-roadmap、evaluation-design、decisions/0001-mvp-first
 - 工程骨架：pyproject.toml、.gitignore、.env.example
 - API 层：`/api/v1/health`、`/api/v1/tasks`（POST/GET）、`/tasks/{id}/traces`、`/tasks/{id}/report`
-- 工具层（`tools/`）：
-  - `base.py`（Tool Protocol + ToolContext + ToolResult）
-  - `_path_safety.py`（canonicalize_repository / resolve_relative_path / is_within）
-  - `_java_patterns.py`（Java 正则，集中维护，M3 可替换为 Tree-sitter）
-  - `_invoker.py`（invoke_tool 包装 Tool.run，自动计时与 Tracer 记录）
-  - `list_project_tree.py`、`search_code.py`（简单词法评分，非 BM25）、`read_file.py`（含沙箱与 60 行/4000 字符截断）、`find_java_symbol.py`（正则）
-- 存储层（`storage/`）：
-  - `models.py`（Task / Trace / Report + TaskStatus）
-  - `repository.py`（TaskRepository Protocol）
-  - `in_memory.py`（InMemoryTaskRepository，进程内 dict + RLock）
-- 可观测层（`observability/`）：
-  - `tracer.py`（Tracer Protocol + NodeTiming）
-  - `in_memory_tracer.py`（InMemoryTracer，写入 TaskRepository）
-- LangGraph 层（`graph/`）：
-  - `state.py`（AgentState TypedDict，仅 M1 字段，无 M2 占位）
-  - `builder.py`（4 节点静态线性图）
-  - `nodes/__init__.py`、`validate_input.py`、`explore_repository.py`、`retrieve_code.py`、`build_basic_report.py`、`_symbol_extraction.py`
-- 服务层（`service/`）：`task_service.py`（TaskService.submit_task + run_task_sync）
-- 示例 Bug 项目：`samples/sample-springboot-bug-transaction-self-invocation`（`@Transactional` 同类内部调用绕过 AOP 代理）
-- 测试：55 通过 + 1 跳过（Windows 符号链接权限）
+- 工具层（`tools/`）：`base.py`、`_path_safety.py`、`_java_patterns.py`、`_invoker.py`、`list_project_tree.py`、`search_code.py`、`read_file.py`、`find_java_symbol.py`
+- 存储层（`storage/`）：`models.py`、`repository.py`、`in_memory.py`
+- 可观测层（`observability/`）：`tracer.py`、`in_memory_tracer.py`
+- 服务层（`service/`）：`task_service.py`（M2 接受 LLMClient）
+- 示例 Bug 项目：`samples/sample-springboot-bug-transaction-self-invocation`
 
-## M1 明确禁止创建
+M1.1 基线固化（M2 保留）：
 
-- `llm/` 任何文件（含 LLMClient Protocol、MockLLMClient）→ 推迟到 M2
-- Prompt 模板 → 推迟到 M2
-- BM25 / FAISS / Tree-sitter 实现 → 推迟到 M3
+- 统一请求校验错误：`RequestValidationError` 返回结构化 JSON
+- 示例 Bug 验证脚本：`scripts/verify_sample_bug.py`
+- GitHub Actions：`.github/workflows/ci.yml`（python-quality + sample-bug-verification）
+- Warning 过滤收窄：StarletteDeprecationWarning 用 message 限定
+- LangGraph type ignore：7 处 `# type: ignore[call-overload]` 保留并加说明
+- 符号链接测试说明：Windows 本地跳过；Linux CI 必须执行
+
+## M2 明确禁止创建
+
+- BM25 实现 → 推迟到 M3；Embedding / FAISS / Tree-sitter 留到后续里程碑
 - SQLite 实现 → 推迟到 M4
 - Vue 前端 / Spring Boot 后端 / MySQL / Redis / MinIO → 推迟到阶段 2+
 - Docker 沙箱 / Maven 测试执行 / 自动代码修改 → 推迟到阶段 3+
 - 评测运行器 → 推迟到 M4
+- 多 Agent / 循环 / Reflection → 推迟到阶段 3+
 - 任何 `raise NotImplementedError` 的占位实现文件
-- 任何 M2 字段占位（issue_class / plan_steps / root_causes）
+- 任何 M3 字段占位（检索评分 / 代码块 / 检索元数据）
 
 ## 代码规范
 
@@ -78,7 +101,7 @@ class ToolContext(TypedDict):
 不一次性定义包含 M1/M2/M3 全部字段的超大 State。按阶段演进：
 
 - M1：已定义确定性工作流需要的 AgentState（task_id, repository_path, issue_description, error_log, validation_ok, validation_errors, extracted_symbols, project_tree_summary, candidate_files, retrieved_snippets, retrieval_summary, basic_report, markdown_report, tool_calls, node_timings, errors, status, current_node）
-- M2：加入 `issue_class`、`investigation_plan`、`root_causes` 等字段
+- M2：加入 `issue_analysis`、`investigation_plan`、`root_cause_analysis`、`diagnostic_report`、`llm_calls`、`warnings`
 - M3：加入检索评分、代码块、检索元数据
 
 每次新增字段必须有实际节点使用，不创建纯占位字段。
@@ -127,7 +150,7 @@ M1 `search_code` 实现简单确定性词法评分：
 
 保留 7 个指标定义：
 
-- `issue_class_accuracy`
+- `issue_category_accuracy`
 - `key_file_recall@5`
 - `root_cause_hit@1`
 - `root_cause_hit@3`
@@ -139,13 +162,13 @@ M1-M3 期间不输出任何准确率或命中率。评测脚本 `scripts/run_eva
 
 ## Git 策略
 
-- M0/M1 不执行 Git commit（用户明确要求）
+- M0/M1/M1.1/M2 不执行 Git commit（用户明确要求）
 - 后续 Git commit 策略由用户指定
 
 ## 阶段切换准则
 
 进入下一里程碑的前提：
 
-1. 当前里程碑所有验收标准通过（ruff + mypy strict + pytest + 实际启动验证 + 示例 Bug Maven 预期失败验证）
+1. 当前里程碑所有验收标准通过（ruff + mypy strict + pytest + 实际启动验证 + 示例 Bug Maven 预期失败验证 + verify_sample_bug.py 通过）
 2. 没有创建任何下一里程碑的提前实现文件
 3. 用户明确确认"进入下一里程碑"

@@ -2,9 +2,9 @@
 
 ## 当前状态
 
-- 阶段：M1（确定性垂直切片）已完成
-- 状态：M0 ✅ 完成 / M1 ✅ 完成
-- 上次更新：2026-07-16
+- 阶段：M2（LLM 推理节点）已完成
+- 状态：M0 ✅ / M1 ✅ / M1.1 ✅ / M2 ✅
+- 上次更新：2026-07-29
 
 ## M0 任务清单（已完成）
 
@@ -42,22 +42,44 @@
 | T1.14 | 工具单元测试 + 端到端集成测试 | 完成 |
 | T1.15 | Ruff + MyPy + Pytest 全部通过 | 完成 |
 
-## M2 任务清单（待启动）
+## M1.1 任务清单（已完成 — 基线固化，不新增 Agent 能力）
 
-| ID | 任务 |
-|----|------|
-| T2.1 | 定义 `LLMClient` Protocol |
-| T2.2 | 实现 `MockLLMClient` |
-| T2.3 | 实现 `OpenAICompatibleClient` |
-| T2.4 | 实现 `IssueParser` 节点 |
-| T2.5 | 实现 `TaskPlanner` 节点 |
-| T2.6 | 实现 `RootCauseAnalyzer` 节点 |
-| T2.7 | Pydantic 结构化输出 |
-| T2.8 | Prompt 模板 |
-| T2.9 | LLM 超时、重试、降级 |
-| T2.10 | AgentState 扩展 M2 字段 |
-| T2.11 | LangGraph 扩展为 6 节点 |
-| T2.12 | 真实模型端到端测试 |
+| ID | 任务 | 状态 |
+|----|------|------|
+| T1.1.1 | 统一 RequestValidationError 返回结构化 `{error, message, details[]}` | 完成 |
+| T1.1.2 | 创建 `scripts/verify_sample_bug.py` 示例 Bug 跨平台验证脚本 | 完成 |
+| T1.1.3 | 创建 `.github/workflows/ci.yml`：`python-quality` + `sample-bug-verification` | 完成 |
+| T1.1.4 | 收窄 StarletteDeprecationWarning 过滤到 message 级别 | 完成 |
+| T1.1.5 | 为 `graph/builder.py` 4 处 `# type: ignore[call-overload]` 加说明注释 | 完成 |
+| T1.1.6 | 文档更新：README / CLAUDE / architecture / development-roadmap | 完成 |
+| T1.1.7 | 最终验证：ruff + mypy + pytest + verify_sample_bug.py | 完成 |
+
+## M2 任务清单（已完成 — LLM 推理节点）
+
+| ID | 任务 | 状态 |
+|----|------|------|
+| T2.1 | 创建 LLM 层：`llm/{client, mock, openai_compatible, schemas, parser, _retry, trace, prompts}` | 完成 |
+| T2.2 | 扩展 AgentState：`issue_analysis` / `investigation_plan` / `root_cause_analysis` / `diagnostic_report` / `llm_calls` / `warnings` | 完成 |
+| T2.3 | 扩展 Tracer：`record_llm_call`，Trace.kind 支持 `llm_call` | 完成 |
+| T2.4 | 扩展 Settings：`LLM_PROVIDER` / `LLM_BASE_URL` / `LLM_API_KEY` / `LLM_MODEL` 等 | 完成 |
+| T2.5 | 实现 `issue_parser` 节点（LLM + 降级） | 完成 |
+| T2.6 | 实现 `task_planner` 节点（LLM + 降级） | 完成 |
+| T2.7 | 实现 `root_cause_analyzer` 节点（LLM + 二次业务校验） | 完成 |
+| T2.8 | 实现 `build_diagnostic_report` 节点（确定性，区分 diagnosis_status） | 完成 |
+| T2.9 | 修改 `explore_repository`：合并 LLM + 确定性符号 | 完成 |
+| T2.10 | 修改 `retrieve_code`：查询来源扩展（search_terms / target_symbols / exception_types） | 完成 |
+| T2.11 | 扩展 `graph/builder.py`：7 节点线性图 | 完成 |
+| T2.12 | 扩展 API：traces 响应区分 node / tool / llm | 完成 |
+| T2.13 | 修改 `TaskService`：接受 LLMClient | 完成 |
+| T2.14 | 修改 `main.py`：根据 LLM_PROVIDER 构造 LLM 客户端 | 完成 |
+| T2.15 | 创建 `scripts/run_live_diagnosis.py` | 完成 |
+| T2.16 | 更新 `.env.example`：LLM 配置占位 | 完成 |
+| T2.17 | 测试：LLM client / parser / schemas / prompts / 3 节点 / e2e / injection | 完成 |
+| T2.18 | 最终验证：ruff + mypy + pytest + verify_sample_bug | 完成 |
+| T2.19 | 三个真实模型 Live Case 回归（transaction / insufficient-evidence / prompt-injection） | 完成 |
+
+三个 Live Case 只记录一次真实模型回归结果，不代表整体准确率。Prompt Injection
+Case 只验证当前防护设计和一次模型行为，不代表绝对安全。
 
 ## M3 任务清单（待启动）
 

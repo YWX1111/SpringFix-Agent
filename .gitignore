@@ -76,3 +76,8 @@ build_dists/
 samples/**/target/
 samples/**/.mvn/
 samples/**/.gradle/
+
+# Live validation artifacts (may contain local paths / model raw content)
+# Stable, redacted reports can be force-added if needed.
+artifacts/live-validation/*
+!artifacts/live-validation/README.md

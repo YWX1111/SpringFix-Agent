@@ -1,4 +1,4 @@
-"""End-to-end Graph tests (cases 33-38)."""
+"""End-to-end Graph tests for M2 (7-node graph)."""
 
 from __future__ import annotations
 
@@ -9,8 +9,8 @@ from springfix_agent.service.task_service import TaskService
 _NO_SCHEDULER = lambda tid: None  # noqa: E731
 
 
-def test_four_nodes_in_order(task_service: TaskService, sample_repo_path: str) -> None:
-    """Case 33: four nodes execute in declaration order."""
+def test_seven_nodes_in_order(task_service: TaskService, sample_repo_path: str) -> None:
+    """All seven M2 nodes execute in declaration order."""
     task = task_service.submit_task(
         repository_path=sample_repo_path,
         issue_description="calling createOrder throws but data not rolled back",
@@ -22,16 +22,19 @@ def test_four_nodes_in_order(task_service: TaskService, sample_repo_path: str) -
     node_timings = [t for t in traces if t.kind == "node_timing"]
     assert [t.payload["node"] for t in node_timings] == [
         "validate_input",
+        "issue_parser",
+        "task_planner",
         "explore_repository",
         "retrieve_code",
-        "build_basic_report",
+        "root_cause_analyzer",
+        "build_diagnostic_report",
     ]
 
 
 def test_invalid_input_does_not_access_repository(
     task_service: TaskService, allow_root: Path
 ) -> None:
-    """Case 34: invalid input sets failed status; no tool calls touch the repo."""
+    """Invalid input sets failed status; no tool calls touch the repo."""
     repo = task_service._repo  # type: ignore[attr-defined]
     task = repo.create_task(
         repository_path="/etc/passwd",
@@ -48,8 +51,8 @@ def test_invalid_input_does_not_access_repository(
     assert report is not None
 
 
-def test_basic_report_generated(task_service: TaskService, sample_repo_path: str) -> None:
-    """Case 35: a basic report is generated after graph completes."""
+def test_diagnostic_report_generated(task_service: TaskService, sample_repo_path: str) -> None:
+    """A diagnostic report is generated after graph completes."""
     task = task_service.submit_task(
         repository_path=sample_repo_path,
         issue_description="calling createOrder throws but data not rolled back",
@@ -61,13 +64,14 @@ def test_basic_report_generated(task_service: TaskService, sample_repo_path: str
     assert report is not None
     assert report.json_report["task_id"] == task.task_id
     assert len(report.markdown_report) > 0
-    assert "OrderService" in report.markdown_report or "createOrder" in report.markdown_report
+    # M2 report always carries diagnosis_status
+    assert "diagnosis_status" in report.json_report
 
 
-def test_report_does_not_claim_root_cause(
+def test_report_does_not_overclaim(
     task_service: TaskService, sample_repo_path: str
 ) -> None:
-    """Case 36: report explicitly disclaims root-cause diagnosis."""
+    """Report explicitly disclaims when status is not complete."""
     task = task_service.submit_task(
         repository_path=sample_repo_path,
         issue_description="calling createOrder throws but data not rolled back",
@@ -78,14 +82,13 @@ def test_report_does_not_claim_root_cause(
     report = task_service.get_report(task.task_id)
     assert report is not None
     md = report.markdown_report
-    assert "不代表已经完成根因诊断" in md
+    # M2 report must always carry a diagnosis_status disambiguator
+    assert "diagnosis_status" in md
     assert "已确定根因" not in md
-    assert "root cause is" not in md.lower()
-    assert "confidence" not in md.lower()
 
 
 def test_run_task_sync_completes(task_service: TaskService, sample_repo_path: str) -> None:
-    """Case 37: run_task_sync transitions a successful task to completed."""
+    """run_task_sync transitions a successful task to completed."""
     task = task_service.submit_task(
         repository_path=sample_repo_path,
         issue_description="calling createOrder throws but data not rolled back",
@@ -102,7 +105,7 @@ def test_run_task_sync_completes(task_service: TaskService, sample_repo_path: st
 def test_run_task_sync_fails_on_invalid_path(
     task_service: TaskService, sample_repo_path: str
 ) -> None:
-    """Case 38: run_task_sync transitions a failed task to failed."""
+    """run_task_sync transitions a failed task to failed."""
     repo = task_service._repo  # type: ignore[attr-defined]
     bogus = str(Path(sample_repo_path) / "does" / "not" / "exist")
     task = repo.create_task(

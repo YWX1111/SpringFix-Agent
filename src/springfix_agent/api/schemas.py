@@ -13,7 +13,7 @@ class HealthResponse(BaseModel):
     """Response model for GET /api/v1/health."""
 
     status: str = Field(description="Service health status.", examples=["ok"])
-    version: str = Field(description="Application version from pyproject.toml.", examples=["0.1.0"])
+    version: str = Field(description="Application package version.", examples=["0.4.1"])
 
 
 class ErrorResponse(BaseModel):
@@ -71,10 +71,18 @@ class TraceItem(BaseModel):
 
 
 class TraceListResponse(BaseModel):
-    """Response for GET /api/v1/tasks/{task_id}/traces."""
+    """Response for GET /api/v1/tasks/{task_id}/traces.
+
+    The ``traces`` field preserves chronological order and backward
+    compatibility with M1.1 consumers. ``node_traces``, ``tool_traces``
+    and ``llm_traces`` provide grouped access for M2 UI consumers.
+    """
 
     task_id: str
     traces: list[TraceItem]
+    node_traces: list[TraceItem] = Field(default_factory=list)
+    tool_traces: list[TraceItem] = Field(default_factory=list)
+    llm_traces: list[TraceItem] = Field(default_factory=list)
 
 
 class ReportResponse(BaseModel):
@@ -84,3 +92,20 @@ class ReportResponse(BaseModel):
     json_report: dict[str, object]
     markdown_report: str
     created_at: datetime
+
+
+class ValidationDetail(BaseModel):
+    """A single field-level validation failure."""
+
+    field: str = Field(
+        description="Dot-separated field path (e.g. 'issue_description', 'body.repository_path')."
+    )
+    reason: str = Field(description="Human-readable reason the field failed validation.")
+
+
+class ValidationErrorResponse(BaseModel):
+    """Response for 422 request validation errors."""
+
+    error: str = Field(default="request_validation_error")
+    message: str = Field(default="Request validation failed")
+    details: list[ValidationDetail] = Field(description="Per-field failure list.")

@@ -1,6 +1,6 @@
 [project]
 name = "springfix-agent"
-version = "0.2.0"
+version = "0.4.1"
 description = "SpringFix Agent — intelligent diagnosis and repair platform for Java/Spring Boot projects"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -13,6 +13,8 @@ dependencies = [
     "pydantic>=2.9.0",
     "pydantic-settings>=2.5.0",
     "langgraph>=0.2.0",
+    "httpx>=0.27.0",
+    "pyyaml>=6.0",
 ]
 
 [project.optional-dependencies]
@@ -33,7 +35,7 @@ packages = ["src/springfix_agent"]
 [tool.ruff]
 target-version = "py311"
 line-length = 100
-src = ["src", "tests"]
+src = ["src", "tests", "scripts"]
 
 [tool.ruff.lint]
 select = [
@@ -90,7 +92,11 @@ addopts = [
 filterwarnings = [
     "error",
     "ignore::DeprecationWarning:pytest.*",
-    "ignore::starlette.exceptions.StarletteDeprecationWarning",
+    # Third-party: starlette 0.51+ warns on import of its own testclient
+    # because it imports httpx 1.x. The warning is raised inside
+    # starlette.testclient itself, not by project code; narrowed by message
+    # so other StarletteDeprecationWarnings would still surface.
+    "ignore:Using .httpx. with .starlette.testclient. is deprecated:starlette.exceptions.StarletteDeprecationWarning",
 ]
 
 [tool.hatch.metadata]

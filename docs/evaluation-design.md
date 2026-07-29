@@ -23,7 +23,7 @@
   "issue_description": "用户调用 service 的 saveOrder 方法,数据没入库,但没异常",
   "error_log": "可选,可为 null",
   "expected": {
-    "issue_class": "transaction",
+    "issue_category": "transaction",
     "key_files": [
       "src/main/java/com/example/service/OrderService.java"
     ],
@@ -42,9 +42,9 @@
 
 ## 3. 评测指标定义
 
-### 3.1 `issue_class_accuracy`
+### 3.1 `issue_category_accuracy`
 
-定义：Agent 输出的 `issue_class` 与 `expected.issue_class` 是否一致。
+定义：Agent 输出的 `issue_analysis.issue_category` 与 `expected.issue_category` 是否一致。
 
 取值：二值（0 或 1）。
 
@@ -99,7 +99,7 @@
 ## 4. 评测输出格式（M4 实现）
 
 ```
-case_id                                    | issue_class_acc | key_file_recall@5 | root_cause_hit@1 | root_cause_hit@3 | duration_ms | tool_calls | llm_calls
+case_id                                    | issue_category_acc | key_file_recall@5 | root_cause_hit@1 | root_cause_hit@3 | duration_ms | tool_calls | llm_calls
 bug-001-transaction-self-invocation        | ✓               | 1.00               | ✓                | ✓                | 8234        | 7          | 3
 bug-002-di-missing-bean                    | ✓               | 0.50               | ✗                | ✓                | 9102        | 5          | 3
 bug-003-config-yaml-indent                | ✗               | 1.00               | ✗                | ✗                | 7521        | 6          | 3
@@ -116,7 +116,7 @@ Summary                                    | 2/3 (66.7%)     | avg 0.83         
 
 M4 评测数据集至少包含 3 个可复现 Spring Boot Bug：
 
-| Case ID | issue_class | Bug 描述 |
+| Case ID | issue_category | Bug 描述 |
 |---------|-------------|---------|
 | bug-001-transaction-self-invocation | transaction | 同类内部方法调用导致 `@Transactional` 代理失效 |
 | bug-002-? | 待定 | 待定 |
@@ -153,6 +153,7 @@ uv run python scripts/run_eval.py --dataset tests/eval/cases.jsonl --output-dir 
 - M0：仅定义评测设计（本文档）
 - M1：无评测输出
 - M2：无评测输出
+- M2 的三个 Live Case 仅用于真实模型回归，不作为准确率或命中率评测
 - M3：仅做检索指标对比（简单词法 vs BM25 Recall@K），不输出根因命中率
 - M4：完整评测运行与指标输出
 

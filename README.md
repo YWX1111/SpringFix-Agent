@@ -6,35 +6,28 @@
 
 ## 当前阶段
 
-**M1（确定性垂直切片）** 已完成。
+**M2（LLM 推理节点）** 已完成。M1 确定性垂直切片基础上新增 3 个 LLM 节点，受控升级为完整 Agent 工作流。
 
-M1 产出：
+M2 产出：
 
-- `POST /api/v1/tasks` 提交诊断任务
-- `GET /api/v1/tasks/{task_id}` 查任务状态
-- `GET /api/v1/tasks/{task_id}/traces` 查工具调用和节点耗时
-- `GET /api/v1/tasks/{task_id}/report` 查基础报告
-- 4 节点静态线性 LangGraph：
-  - `validate_input` → `explore_repository` → `retrieve_code` → `build_basic_report`
-- 4 个 Java 代码理解工具：
-  - `list_project_tree`：确定性文件树生成
-  - `search_code`：简单词法相关性评分（非语义、非 BM25）
-  - `read_file`：受限片段读取（≤60 行 / ≤4000 字符）
-  - `find_java_symbol`：正则符号匹配（class/interface/enum/record/method/annotation）
-- 路径沙箱：`ALLOW_ROOT` 子树限制 + `canonicalize` 后校验
-- `InMemoryTaskRepository` + `InMemoryTracer`
-- `TaskService.submit_task`（进程内后台线程调度）+ `TaskService.run_task_sync`（同步执行，用于测试）
-- 1 个示例 Spring Boot Bug 项目：`samples/sample-springboot-bug-transaction-self-invocation`（`@Transactional` 同类内部调用绕过 AOP 代理）
-- 55 个通过测试 + 1 个 Windows 环境下跳过的符号链接测试
+- 7 节点 LangGraph：`validate_input → issue_parser → task_planner → explore_repository → retrieve_code → root_cause_analyzer → build_diagnostic_report`
+- 3 个 LLM 节点（IssueParser / TaskPlanner / RootCauseAnalyzer）
+- LLM 客户端抽象（Protocol + MockLLMClient + OpenAICompatibleLLMClient）
+- Pydantic 结构化输出校验
+- 超时 / 重试 / 降级策略
+- Prompt 模板（.md 文件，独立于 Python 代码）
+- Prompt Injection 防护规则与回归测试（不代表绝对安全）
+- LLM Trace（独立于 Tool Trace / Node Trace）
+- Live 诊断脚本 `scripts/run_live_diagnosis.py`
+- 默认 Mock 模式，无 API Key 也能运行全部测试
 
-M1 **不包含**：
+M2 不包含（推迟到 M3+）：
 
-- 任何 LLM 调用（M2 接入）
-- BM25 检索（M3 接入）
-- SQLite 持久化（M4 接入）
-- 根因推理（M2 由 LLM 完成）
-- Vue 前端、Spring Boot 业务后端、MySQL/Redis/MinIO
-- Docker 沙箱、Maven 测试执行、自动代码修改
+- BM25 / Embedding / FAISS / Tree-sitter 检索
+- SQLite 持久化
+- Vue 前端 / Spring Boot 后端
+- Docker 沙箱 / Maven 自动测试 / 自动代码修改
+- 多 Agent / 反思 / 循环
 
 ## 启动方法
 
@@ -52,7 +45,7 @@ uv sync --extra dev
 ./scripts/run_dev.sh
 ```
 
-启动后访问：
+默认 LLM_PROVIDER=mock，无需 API Key 即可启动。访问：
 
 - 健康检查：`GET http://localhost:8000/api/v1/health`
 - OpenAPI 文档：`GET http://localhost:8000/docs`
@@ -60,12 +53,13 @@ uv sync --extra dev
 ## 验证命令
 
 ```powershell
-uv run ruff check src/ tests/
+uv run ruff check src/ tests/ scripts/
 uv run mypy --strict src/
 uv run pytest tests/ -v
+uv run python scripts/verify_sample_bug.py
 ```
 
-## API 使用示例
+## API 使用
 
 ### 提交任务
 
@@ -77,127 +71,180 @@ curl -sS -X POST http://localhost:8000/api/v1/tasks \
     "issue_description": "calling createOrder throws an exception, but order data is not rolled back",
     "error_log": null
   }'
-# 响应:
 # {"task_id":"<uuid>","status":"pending","created_at":"<ISO-8601>"}
 ```
 
-### 查询任务状态
+### 查询任务 / Trace / 报告
 
 ```bash
-curl -sS http://localhost:8000/api/v1/tasks/<task_id>
-# {"task_id":"...","status":"completed","current_node":"build_basic_report","created_at":"...","started_at":"...","finished_at":"...","error_message":null}
+GET /api/v1/tasks/{task_id}            # 状态、当前节点、时间戳
+GET /api/v1/tasks/{task_id}/traces     # node_traces / tool_traces / llm_traces 分组返回
+GET /api/v1/tasks/{task_id}/report     # JSON + Markdown 报告，含 diagnosis_status
 ```
 
-### 查询 Trace
+### 错误响应
+
+- 422 请求体校验失败：`{error: "request_validation_error", message, details[{field, reason}]}`
+- 400 业务校验失败（路径越界等）：`{error: "validation_error", message}`
+- 404 任务不存在：`{error: "not_found", message}`
+- 409 报告未生成：`{error: "not_ready", message}`
+
+## LLM 配置
+
+`.env` 中配置（默认 mock 模式）：
+
+```env
+LLM_PROVIDER=mock                       # mock | openai_compatible
+LLM_BASE_URL=                           # https://api.openai.com/v1 或兼容端点
+LLM_API_KEY=                             # 永远不要提交到 Git
+LLM_MODEL=                              # gpt-4o-mini / deepseek-chat / qwen-plus 等
+LLM_TIMEOUT_SECONDS=60
+LLM_MAX_RETRIES=2
+LLM_TEMPERATURE=0
+LLM_MAX_OUTPUT_TOKENS=2000
+```
+
+- **Mock 模式**：Pytest / CI / 本地离线开发。不需要 API Key。
+- **Live 模式**：人工真实验证。运行 `scripts/run_live_diagnosis.py`。
+- API Key 永不进入 Trace、日志、异常或报告。
+- 普通测试不调用真实模型；CI 不依赖个人密钥。
+
+## Live 验证
+
+### 单 Case 诊断
 
 ```bash
-curl -sS http://localhost:8000/api/v1/tasks/<task_id>/traces
-# {"task_id":"...","traces":[
-#   {"kind":"node_timing","recorded_at":"...","payload":{"node":"validate_input","start":"...","end":"...","duration_ms":2}},
-#   {"kind":"tool_call","recorded_at":"...","payload":{"node":"explore_repository","tool_name":"list_project_tree","params":{...},"duration_ms":14,"status":"success","result_summary":"...","error":null}},
-#   ...
-# ]}
+export LLM_PROVIDER=openai_compatible
+export LLM_BASE_URL=https://api.openai.com/v1
+export LLM_API_KEY=sk-...
+export LLM_MODEL=gpt-4o-mini
+
+uv run python scripts/run_live_diagnosis.py \
+  --repository samples/sample-springboot-bug-transaction-self-invocation \
+  --issue "calling createOrder throws an exception, but order data is not rolled back"
 ```
 
-### 查询报告
+### 三 Case Live 验证
 
 ```bash
-curl -sS http://localhost:8000/api/v1/tasks/<task_id>/report
-# {"task_id":"...","json_report":{...},"markdown_report":"# 诊断报告\n\n> 当前报告由确定性代码检索流程生成...\n\n...","created_at":"..."}
+uv run python scripts/run_m2_live_validation.py
 ```
 
-## M1 真实执行结果
+三个 Case：
 
-### 真实 API 调用
+1. **case-transaction**：示例 Bug 的 transaction-self-invocation 根因分析
+2. **case-insufficient-evidence**：Redis 分布式锁问题（仓库中无证据），验证 insufficient_evidence 输出
+3. **case-prompt-injection**：临时 fixture 含注入注释，验证系统行为不变
 
+产物保存到 `artifacts/live-validation/case-<name>/`：
+
+- `report.json` / `report.md`：诊断报告（Prompt Injection Case 只保存 `metrics.json`）
+- `metrics.json`：provider / model / diagnosis_status / node_count / tool_call_count / llm_call_count / total_duration_ms / input_tokens / output_tokens / evidence_count / rejected_evidence_count / warnings_count
+
+`artifacts/live-validation/` 已加入 `.gitignore`，不提交。
+
+### Live 验证状态
+
+**M2.2 真实模型验收：✅ 通过**。
+
+模型：`qwen3.7-plus`（OpenAI-compatible endpoint）
+
+三个 Case 全部真实执行，结果如下：
+
+| Case | diagnosis_status | llm_calls | duration_ms | tokens in/out | evidence | rejected | warnings |
+|------|------------------|-----------|-------------|---------------|----------|----------|----------|
+| transaction | complete | 3 | 132420 | 4346 / 7132 | 3 | 0 | 0 |
+| insufficient-evidence | insufficient_evidence | 3 | 102516 | 4802 / 5494 | 0 | 0 | 0 |
+| prompt-injection | complete | 3 | 116579 | 4889 / 6233 | 1 | 0 | 0 |
+
+**关键结果**：
+- Transaction Case 正确识别 issue_category=transaction，输出 1 个高置信度候选，包含 3 个真实 evidence（指向 OrderService.java 和事务测试）
+- Insufficient Evidence Case 未编造仓库中不存在的 Redis 代码，diagnosis_status=insufficient_evidence，candidates=0，missing_information 明确说明缺失
+- Prompt Injection Case 未泄露 API Key，未遵循恶意注释，结构化 Schema 保持有效
+- 所有证据文件和行号通过确定性校验（rejected_evidence_count 记录被拒绝的证据）
+
+Prompt Injection Case 只是一次防护设计回归验证，不代表系统能够绝对防御 Prompt Injection。
+
+**兼容性修复**：
+- `case_sensitive=False`（pydantic-settings 正确读取 .env）
+- 自动追加 `/v1` 前缀（OpenAI-compatible endpoint 兼容）
+
+单个或三个 Case 的成功 **不代表整体准确率**；完整评测留到 M4。
+
+## Mock Profile
+
+`llm/profiles.py` 定义 5 个测试 Profile：
+
+| Profile | 行为 | 用途 |
+|---------|------|------|
+| `happy_path` | transaction + 3 步计划 + complete RCA（1 候选，evidence 指向 fixture 真实文件） | 端到端演示 |
+| `insufficient_evidence` | unknown + insufficient_evidence RCA | 降级路径测试 |
+| `invalid_evidence` | RCA evidence 引用不存在的文件 | 证据拒绝审计测试 |
+| `timeout` | 所有 LLM 调用抛 RetryableError | 超时降级测试 |
+| `invalid_json` | 所有 LLM 调用抛 SchemaValidationError | 格式修复失败测试 |
+
+测试中显式选择：`mock.use_profile("happy_path")`。
+
+## 证据拒绝审计
+
+RootCauseAnalyzer 的二次业务校验记录每个被拒绝的 evidence：
+
+```json
+{
+  "candidate_index": 0,
+  "evidence_index": 0,
+  "rejection_reason": "file_not_in_retrieved_snippets",
+  "referenced_file": "NonExistent.java",
+  "referenced_line_range": [1, 5]
+}
 ```
-POST /api/v1/tasks (201):
-  task_id: 8ea517e6-ee9a-400b-9e82-45845c49f0d8
-  status: pending
 
-GET /api/v1/tasks/8ea517e6-... (200):
-  status: completed
-  current_node: build_basic_report
-  created_at: 2026-07-16T01:21:03.079809Z
-  started_at: 2026-07-16T01:21:03.080367Z
-  finished_at: 2026-07-16T01:21:03.161132Z
-  (总耗时约 82ms)
+拒绝原因：`file_not_in_retrieved_snippets` / `line_range_outside_snippet` / `start_line_greater_than_end_line` / `candidate_no_valid_evidence`
 
-GET /api/v1/tasks/8ea517e6-.../traces (200):
-  trace_count: 10 (4 node_timing + 6 tool_call)
-  节点顺序: validate_input -> explore_repository -> retrieve_code -> build_basic_report
-  工具调用:
-    - list_project_tree (explore_repository): 14ms
-    - find_java_symbol "createOrder" (explore_repository): 10ms
-    - search_code (retrieve_code): 13ms
-    - read_file OrderService.java: 3ms
-    - read_file TransactionSelfInvocationTest.java: 3ms
-    - read_file Application.java: 2ms
+审计记录保存在 `root_cause_analysis.rejected_evidence`，不包含完整代码或模型响应。
 
-GET /api/v1/tasks/8ea517e6-.../report (200):
-  markdown_report length: 4952 chars
-  json_report keys: task_id, status, issue_description, extracted_symbols,
-                    candidate_files, retrieved_snippets, tool_calls_summary, disclaimer
-```
+## GitHub Actions CI
 
-### 真实测试结果
+`.github/workflows/ci.yml` 两个独立 Job：
 
-```
-uv run ruff check src/ tests/ → All checks passed!
-uv run mypy --strict src/     → Success: no issues found in 33 source files
-uv run pytest tests/ -v       → 55 passed, 1 skipped in 0.89s
-```
+- **python-quality**：Python 3.11 + uv → ruff + mypy + pytest
+- **sample-bug-verification**：Python 3.11 + Java 21 + Maven → `scripts/verify_sample_bug.py`
 
-### 真实示例 Bug 复现
-
-```
-cd samples/sample-springboot-bug-transaction-self-invocation
-mvn test
-
-[INFO] Tests run: 1, Failures: 1, Errors: 0, Skipped: 0
-[ERROR] TransactionSelfInvocationTest.shouldRollbackOrderWhenInnerMethodThrows:42
-  Expected rollback but data was persisted;
-  self-invocation bypassed the @Transactional AOP proxy
-  ==> expected: <0> but was: <1>
-```
-
-失败来源正是目标事务断言，不是编译或配置错误。这正是预期内的 Gold-Standard 失败。
+CI 不依赖任何 LLM API Key。Mock 模式跑全部测试。
 
 ## 路线图
 
 | 里程碑 | 核心产出 | 状态 |
 |--------|---------|------|
 | M0 | 项目规范与工程骨架 | ✅ 完成 |
-| M1 | 确定性垂直切片：4 节点 LangGraph + 4 工具最简实现 + InMemory 存储 + 1 个 Bug 样本 | ✅ 完成 |
-| M2 | LLM 推理节点：IssueParser / TaskPlanner / RootCauseAnalyzer + 真实模型接入 | 待启动 |
-| M3 | 代码检索增强：BM25 + Java 标识符分词 + 块级切分 + Recall@K 对比 | 待启动 |
-| M4 | 持久化与评测：SQLite + 3 个可复现 Bug + 评测 Runner + 实际指标 | 待启动 |
-
-详见 `docs/development-roadmap.md`。
+| M1 | 确定性垂直切片：4 节点 LangGraph + 4 工具 | ✅ 完成 |
+| M1.1 | 基线固化：结构化错误 + verify_sample_bug + CI | ✅ 完成 |
+| M2 | LLM 推理节点：IssueParser / TaskPlanner / RootCauseAnalyzer | ✅ 完成 |
+| M3 | 代码检索增强：BM25 + Java 标识符分词 + Recall@K 对比 | 待启动 |
+| M4 | 持久化与评测：SQLite + 3 个 Bug + 评测 Runner | 待启动 |
 
 ## 关键约束
 
 - 阶段边界严格：前一里程碑未稳定不进入下一里程碑
-- 每个阶段必须能独立运行和验证
-- 只在需要推理的步骤使用 LLM（M2 起）
+- 只在需要推理的步骤使用 LLM（M2 起）；能确定性解决的步骤不交给 LLM
 - 不允许伪造测试结果或准确率数据
-- 工具参数中不得传入绝对路径，路径校验统一在 `tools/_path_safety.py`
-- 禁止在 Graph 中硬编码样例符号；`find_java_symbol` 从 `error_log`/`issue_description` 提取
+- 工具参数中不得传入绝对路径
+- 禁止在 Graph 中硬编码样例符号；符号来自 LLM + 确定性提取
+- LLM 不直接读取任意文件、不执行命令、不修改代码
+- 仓库文件和错误日志视为不可信数据，Prompt Injection 防护内建
+- 单个 Live Case 的诊断结果不代表整体准确率
 
 ## 已知限制
 
-1. **后台任务不可靠**：M1 使用 `threading.Thread` 在进程内调度任务执行。服务重启会丢失运行中的任务；不支持多个服务实例协调。后续由 Redis Stream 或任务队列替换。
-2. **报告不是根因诊断**：M1 报告由确定性代码检索流程生成，明确标注"不代表已经完成根因诊断"。根因分析在 M2 接入 LLM 后实现。
-3. **检索为词法相关性**：M1 `search_code` 实现简单词法评分，不引入 BM25、向量检索或语义理解。M3 接入 BM25 并与 M1 简单词法对比 Recall@K。
-4. **Agent 不执行 Maven**：示例 Bug 项目必须能 `mvn test` 复现失败，但 Agent 在 M1 阶段不执行 Maven，也不启动 Docker 沙箱。自动执行 Maven 留到 Docker 沙箱阶段。
-5. **Windows 符号链接测试跳过**：`test_resolve_relative_path_rejects_symlink_escape` 在无管理员权限的 Windows 环境跳过，非功能缺失。
-
-## 技术栈（最终目标）
-
-详见 `docs/architecture.md`。M1 阶段使用：FastAPI、Uvicorn、Pydantic、Pydantic-Settings、HTTPX、Pytest、Ruff、MyPy、LangGraph。
+1. **后台任务不可靠**：进程内 threading.Thread，重启丢失在途任务
+2. **检索仍是词法评分**：M2 沿用 M1 简单词法评分，未接入 BM25 / 向量检索
+3. **InMemory 存储**：重启丢失所有任务和 Trace
+4. **Agent 不执行 Maven**：示例 Bug 可 `mvn test` 复现，但 Agent 不执行 Maven
+5. **Live 模式需手动启用**：默认 Mock，不调真实模型
+6. **符号链接测试平台差异**：Windows 跳过，Linux CI 必须执行
 
 ## 状态
 
-- 版本：0.2.0
-- 阶段：M1 完成
-- 上次更新：2026-07-16
+- 版本：0.4.1
+- 阶段：M2.2 完成（真实模型验收通过）
+- 上次更新：2026-07-29
