@@ -6,7 +6,7 @@
 
 ## 当前阶段
 
-**M2（LLM 推理节点）** 已完成。M1 确定性垂直切片基础上新增 3 个 LLM 节点，受控升级为完整 Agent 工作流。
+**M3（代码检索增强）** 已完成。M2 Agent 工作流基础上新增多通道代码检索模块，提升候选文件召回质量。
 
 M2 产出：
 
@@ -21,13 +21,36 @@ M2 产出：
 - Live 诊断脚本 `scripts/run_live_diagnosis.py`
 - 默认 Mock 模式，无 API Key 也能运行全部测试
 
-M2 不包含（推迟到 M3+）：
+M2 不包含（M3 已实现）：
 
-- BM25 / Embedding / FAISS / Tree-sitter 检索
-- SQLite 持久化
+- ~~BM25 词法检索~~（M3 ✅）
+- Embedding / FAISS / Tree-sitter（后续）
+- SQLite 持久化（M4）
 - Vue 前端 / Spring Boot 后端
 - Docker 沙箱 / Maven 自动测试 / 自动代码修改
 - 多 Agent / 反思 / 循环
+
+M3 产出：
+
+- 检索模块 `retrieval/`：BM25（词法检索）、Java 标识符分词、代码块切分、符号检索、RRF 融合
+- BM25 per-task 内存索引，不持久化
+- Baseline（M1 词法评分）保留为 fallback 和评测对照
+- AgentState 扩展：`retrieval_strategy` / `retrieval_query` / `retrieval_diagnostics`
+- 检索评测：13 个 case（7 Development + 6 Holdout），Recall@1/3/5、MRR@10、P95 query time
+- 评测脚本 `scripts/run_retrieval_eval.py`
+- 不新增 LLM 节点（仍为 3 次 LLM 调用）
+- 263 测试通过，ruff clean，mypy strict clean
+
+**评测说明**：
+- Symbol 通道的部分输入来自模拟的 `IssueAnalysis.extracted_symbols`，属于 enriched-query retrieval，不完全等同于仅使用原始用户问题的检索效果
+- `expected_symbols` 只作为金标，不进入 `RetrievalQuery`
+- 当前评测主要是相关文件级 Recall/MRR；方法块、行号和证据片段级排序质量尚未被完整量化
+- 后续完整评测可增加 Evidence Hit@K、Relevant Line Range Recall@K 和 First Relevant Chunk Rank
+- Hybrid 的定位是提高 Top-K 召回完整性，不代表全面提升 Top-1 排序
+- Development 用于有限参数选择，Holdout 只用于冻结后的验证
+- `k=10`、三路等权是在当前指标全部相同情况下选择的简单配置，不是大规模调优结果
+- BM25 是词法检索，不是语义检索
+- 当前 Benchmark 样本规模小（13 case），不代表生产环境召回率或 Agent 根因准确率
 
 ## 启动方法
 
@@ -57,6 +80,7 @@ uv run ruff check src/ tests/ scripts/
 uv run mypy --strict src/
 uv run pytest tests/ -v
 uv run python scripts/verify_sample_bug.py
+uv run python scripts/run_retrieval_eval.py  # M3 检索评测
 ```
 
 ## API 使用
@@ -220,7 +244,7 @@ CI 不依赖任何 LLM API Key。Mock 模式跑全部测试。
 | M1 | 确定性垂直切片：4 节点 LangGraph + 4 工具 | ✅ 完成 |
 | M1.1 | 基线固化：结构化错误 + verify_sample_bug + CI | ✅ 完成 |
 | M2 | LLM 推理节点：IssueParser / TaskPlanner / RootCauseAnalyzer | ✅ 完成 |
-| M3 | 代码检索增强：BM25 + Java 标识符分词 + Recall@K 对比 | 待启动 |
+| M3 | 代码检索增强：BM25 + Java 标识符分词 + RRF 融合 + Recall@K 评测 | ✅ 完成 |
 | M4 | 持久化与评测：SQLite + 3 个 Bug + 评测 Runner | 待启动 |
 
 ## 关键约束
@@ -237,7 +261,7 @@ CI 不依赖任何 LLM API Key。Mock 模式跑全部测试。
 ## 已知限制
 
 1. **后台任务不可靠**：进程内 threading.Thread，重启丢失在途任务
-2. **检索仍是词法评分**：M2 沿用 M1 简单词法评分，未接入 BM25 / 向量检索
+2. **检索已升级为多通道**：M3 新增 BM25 词法检索 + 符号检索 + RRF 融合（k=10，三路等权），M1 词法评分保留为 baseline
 3. **InMemory 存储**：重启丢失所有任务和 Trace
 4. **Agent 不执行 Maven**：示例 Bug 可 `mvn test` 复现，但 Agent 不执行 Maven
 5. **Live 模式需手动启用**：默认 Mock，不调真实模型
@@ -245,6 +269,6 @@ CI 不依赖任何 LLM API Key。Mock 模式跑全部测试。
 
 ## 状态
 
-- 版本：0.4.1
-- 阶段：M2.2 完成（真实模型验收通过）
-- 上次更新：2026-07-29
+- 版本：0.5.0
+- 阶段：M3 完成（代码检索增强）
+- 上次更新：2026-07-31

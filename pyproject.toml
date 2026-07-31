@@ -1,6 +1,6 @@
 [project]
 name = "springfix-agent"
-version = "0.4.1"
+version = "0.5.0"
 description = "SpringFix Agent — intelligent diagnosis and repair platform for Java/Spring Boot projects"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -15,6 +15,7 @@ dependencies = [
     "langgraph>=0.2.0",
     "httpx>=0.27.0",
     "pyyaml>=6.0",
+    "rank-bm25>=0.2.2",
 ]
 
 [project.optional-dependencies]
@@ -61,7 +62,7 @@ quote-style = "double"
 indent-style = "space"
 
 [tool.mypy]
-python_version = "3.11"
+python_version = "3.12"
 strict = true
 warn_return_any = true
 warn_unused_configs = true
@@ -77,6 +78,11 @@ warn_unreachable = true
 mypy_path = "src"
 packages = ["springfix_agent"]
 exclude = ["tests/eval/", "samples/"]
+
+[[tool.mypy.overrides]]
+module = ["rank_bm25", "numpy"]
+ignore_missing_imports = true
+follow_imports = "skip"
 
 [tool.pytest.ini_options]
 minversion = "8.0"

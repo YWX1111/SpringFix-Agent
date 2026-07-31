@@ -1,6 +1,6 @@
 # 评测设计（Evaluation Design）
 
-> 本文档仅定义评测设计。评测运行器 `scripts/run_eval.py` 与实际评测结果输出推迟到 M4。M0-M3 期间不输出任何准确率或命中率数据。
+> 本文档定义评测设计。Agent 评测运行器 `scripts/run_eval.py` 与实际评测结果输出推迟到 M4。M3 检索评测（Recall@K / MRR / P95）是检索质量指标，不等于 Agent 准确率。
 
 ## 1. 设计原则
 
@@ -154,7 +154,46 @@ uv run python scripts/run_eval.py --dataset tests/eval/cases.jsonl --output-dir 
 - M1：无评测输出
 - M2：无评测输出
 - M2 的三个 Live Case 仅用于真实模型回归，不作为准确率或命中率评测
-- M3：仅做检索指标对比（简单词法 vs BM25 Recall@K），不输出根因命中率
+- M3：检索评测（Recall@1/3/5、MRR@10、P95 query time），不输出 Agent 根因命中率
 - M4：完整评测运行与指标输出
 
-**M0-M3 期间禁止输出任何准确率或命中率数据**。
+**M0-M3 期间禁止输出 Agent 准确率或命中率数据**。M3 检索评测指标是检索质量度量，不等于 Agent 准确率。
+
+## 8. M3 检索评测（已完成）
+
+M3 新增独立的检索质量评测，与 Agent 评测分离。
+
+### 评测数据集
+
+文件：`tests/fixtures/retrieval/benchmark/retrieval_cases.jsonl`（13 个 case，7 Development + 6 Holdout）
+
+### 评测指标
+
+| 指标 | 定义 |
+|------|------|
+| Recall@1 | top-1 检索结果中包含相关文件的比率 |
+| Recall@3 | top-3 检索结果中包含相关文件的比率 |
+| Recall@5 | top-5 检索结果中包含相关文件的比率 |
+| MRR@10 | Mean Reciprocal Rank（前 10 个结果中第一个相关结果的倒数排名的均值） |
+| P95 query time | 95 分位查询延迟 |
+
+### 运行方法
+
+```bash
+uv run python scripts/run_retrieval_eval.py
+```
+
+### 重要说明
+
+- 检索评测指标（Recall@K / MRR / P95）衡量的是**检索模块质量**，不是 Agent 整体准确率
+- Agent 准确率评测（issue_category_accuracy / root_cause_hit@K 等）推迟到 M4
+- Baseline（M1 词法评分）可用于对照，但两者都是词法检索，不是语义对比
+- Symbol 通道的部分输入来自模拟的 `IssueAnalysis.extracted_symbols`，属于 enriched-query retrieval
+- `expected_symbols` 只作为金标，不进入 `RetrievalQuery`
+- 当前评测主要是相关文件级 Recall/MRR；方法块、行号和证据片段级排序质量尚未被完整量化
+- 后续完整评测可增加 Evidence Hit@K、Relevant Line Range Recall@K 和 First Relevant Chunk Rank
+- Hybrid 的定位是提高 Top-K 召回完整性，不代表全面提升 Top-1 排序
+- Development 用于有限参数选择，Holdout 只用于冻结后的验证
+- `k=10`、三路等权是在当前指标全部相同情况下选择的简单配置，不是大规模调优结果
+- BM25 是词法检索，不是语义检索
+- 当前 Benchmark 样本规模小（13 case），不代表生产环境召回率或 Agent 根因准确率

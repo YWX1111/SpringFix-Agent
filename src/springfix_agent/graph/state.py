@@ -1,11 +1,17 @@
-"""AgentState for M2 (LLM-assisted diagnostic graph).
+"""AgentState for M3 (hybrid retrieval + LLM-assisted diagnostic graph).
 
-M2 adds five new fields on top of M1:
+M3 adds four new fields on top of M2:
+
+- ``retrieval_strategy``     ("hybrid" / "baseline" / "fallback")
+- ``retrieval_query``        (serialized RetrievalQuery dict)
+- ``retrieval_diagnostics``  (serialized RetrievalDiagnostics dict)
+
+M2 fields that remain in active use:
 
 - ``issue_analysis``      (IssueParser output)
 - ``investigation_plan``  (TaskPlanner output)
 - ``root_cause_analysis`` (RootCauseAnalyzer output)
-- ``diagnostic_report``   (build_diagnostic_report output, replaces M1 basic_report)
+- ``diagnostic_report``   (build_diagnostic_report output)
 - ``llm_calls``           (append-only LLM trace accumulator)
 - ``warnings``            (append-only node-level warnings)
 
@@ -85,6 +91,11 @@ class AgentState(TypedDict):
     # Back-compat alias used by M1 report path; M2 report node writes both.
     basic_report: dict[str, object]
 
+    # M3 retrieval metadata
+    retrieval_strategy: str
+    retrieval_query: dict[str, object]
+    retrieval_diagnostics: dict[str, object]
+
     # Tracing accumulators (append reducer)
     tool_calls: Annotated[list[ToolCall], operator.add]
     node_timings: Annotated[list[NodeTiming], operator.add]
@@ -122,6 +133,9 @@ def make_initial_state(
         diagnostic_report={},
         markdown_report="",
         basic_report={},
+        retrieval_strategy="",
+        retrieval_query={},
+        retrieval_diagnostics={},
         tool_calls=[],
         node_timings=[],
         errors=[],

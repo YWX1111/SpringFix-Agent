@@ -56,7 +56,7 @@ def test_reject_file_not_in_snippets() -> None:
         ],
     )
     cleaned, dropped, rejections = _validate_evidence(
-        analysis, {s["file"]: s for s in _snippets()}
+        analysis, {s["file"]: [s] for s in _snippets()}
     )
     assert dropped >= 1
     assert len(cleaned.candidates) == 0
@@ -90,7 +90,7 @@ def test_reject_line_range_outside_snippet() -> None:
         ],
     )
     cleaned, dropped, rejections = _validate_evidence(
-        analysis, {s["file"]: s for s in _snippets()}
+        analysis, {s["file"]: [s] for s in _snippets()}
     )
     assert dropped >= 1
     assert len(cleaned.candidates) == 0
@@ -137,7 +137,7 @@ def test_candidate_no_valid_evidence_recorded() -> None:
         ],
     )
     cleaned, dropped, rejections = _validate_evidence(
-        analysis, {s["file"]: s for s in _snippets()}
+        analysis, {s["file"]: [s] for s in _snippets()}
     )
     assert len(cleaned.candidates) == 0
     candidate_rejections = [r for r in rejections if r["rejection_reason"] == "candidate_no_valid_evidence"]
@@ -166,7 +166,7 @@ def test_valid_evidence_passes() -> None:
         ],
     )
     cleaned, dropped, rejections = _validate_evidence(
-        analysis, {s["file"]: s for s in _snippets()}
+        analysis, {s["file"]: [s] for s in _snippets()}
     )
     assert dropped == 0
     assert len(rejections) == 0
@@ -196,7 +196,7 @@ def test_rejection_record_does_not_save_code() -> None:
         ],
     )
     _, _, rejections = _validate_evidence(
-        analysis, {s["file"]: s for s in _snippets()}
+        analysis, {s["file"]: [s] for s in _snippets()}
     )
     serialized = str(rejections)
     assert "code" not in serialized.lower() or "referenced" in serialized

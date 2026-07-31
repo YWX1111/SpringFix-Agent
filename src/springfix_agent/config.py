@@ -37,6 +37,16 @@ class Settings(BaseSettings):
     llm_temperature: float = Field(default=0.0)
     llm_max_output_tokens: int = Field(default=2000)
 
+    # M3 retrieval configuration
+    retrieval_max_files: int = Field(default=200)
+    retrieval_max_file_bytes: int = Field(default=200_000)
+    retrieval_max_chunks: int = Field(default=1000)
+    retrieval_top_k: int = Field(default=10)
+    retrieval_chunk_max_lines: int = Field(default=60)
+    retrieval_chunk_max_chars: int = Field(default=4000)
+    retrieval_chunk_overlap_lines: int = Field(default=5)
+    retrieval_max_query_terms: int = Field(default=50)
+
     def resolved_allow_root(self) -> Path:
         """Return allow_root as an absolute, canonicalized path."""
         return self.allow_root.resolve()

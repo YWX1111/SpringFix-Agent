@@ -4,11 +4,41 @@
 
 ## 阶段定位
 
-当前阶段：**M2 LLM 推理节点（已完成）**。
+当前阶段：**M3 代码检索增强（已完成）**。
 
-M2 在 M1 确定性工作流基础上新增 3 个 LLM 节点，受控升级为完整 Agent 工作流。**不新增 BM25 / SQLite / Docker 等能力**。
+M3 在 M2 Agent 工作流基础上新增多通道代码检索模块（`retrieval/`），引入 BM25 词法检索、Java 标识符分词、代码块切分、符号检索和 Reciprocal Rank Fusion，提升候选文件召回质量。**不新增 LLM 节点**（仍为 3 次 LLM 调用），不引入 Embedding / FAISS / Tree-sitter。
 
-M2 范围内已完成：
+M3 范围内已完成：
+
+- 检索模块（`retrieval/`）：
+  - `models.py`（检索领域模型：Chunk / RetrievalResult / RetrievalDiagnostics 等）
+  - `tokenizer.py`（Java 标识符分词器：camelCase / PascalCase / snake_case / package paths / annotations / exception classes）
+  - `chunker.py`（Java 代码块切分：regex + brace-depth scanning，fallback 到固定窗口；NOT Tree-sitter / AST）
+  - `baseline.py`（M1 词法评分保留为 fallback 和评测对照）
+  - `bm25.py`（BM25Okapi 词法检索，rank-bm25 依赖；按任务在内存中建索引，不持久化）
+  - `symbol.py`（符号检索，封装 find_java_symbol）
+  - `query_builder.py`（从 AgentState 构建检索查询）
+  - `fusion.py`（Reciprocal Rank Fusion：score = Σ weight_i / (k + rank)，k=10）
+  - `index.py`（BM25 索引管理，per-task 内存索引）
+  - `diagnostics.py`（检索诊断信息收集）
+- AgentState 扩展：`retrieval_strategy` / `retrieval_query` / `retrieval_diagnostics`
+- 配置扩展：`RETRIEVAL_MAX_FILES=200` / `RETRIEVAL_MAX_FILE_BYTES=200000` / `RETRIEVAL_MAX_CHUNKS=1000` / `RETRIEVAL_TOP_K=10` / `RETRIEVAL_CHUNK_MAX_LINES=60` / `RETRIEVAL_CHUNK_MAX_CHARS=4000` / `RETRIEVAL_CHUNK_OVERLAP_LINES=5` / `RETRIEVAL_MAX_QUERY_TERMS=50`
+- 检索评测：13 个 case（7 Development + 6 Holdout，`tests/fixtures/retrieval/benchmark/retrieval_cases.jsonl`），脚本 `scripts/run_retrieval_eval.py`
+- 评测指标：Recall@1/3/5、MRR@10、P95 query time（检索指标，非 Agent 准确率）
+- 263 测试通过，ruff clean，mypy strict clean
+- Live 回归：3 个 case 全部通过，每个 3 次 LLM 调用
+
+**检索评测说明**：
+- Symbol 通道的部分输入来自模拟的 `IssueAnalysis.extracted_symbols`，属于 enriched-query retrieval
+- `expected_symbols` 只作为金标，不进入 `RetrievalQuery`
+- 当前评测主要是相关文件级 Recall/MRR；方法块、行号和证据片段级排序质量尚未被完整量化
+- 后续完整评测可增加 Evidence Hit@K、Relevant Line Range Recall@K 和 First Relevant Chunk Rank
+- Hybrid 的定位是提高 Top-K 召回完整性，不代表全面提升 Top-1 排序
+- `k=10`、三路等权是在当前指标全部相同情况下选择的简单配置，不是大规模调优结果
+- BM25 是词法检索，不是语义检索
+- 当前 Benchmark 样本规模小，不代表生产环境召回率或 Agent 根因准确率
+
+M2 范围内已完成（M3 保留）：
 
 - 7 节点 LangGraph：
   - `validate_input`（确定性）
@@ -56,16 +86,16 @@ M1.1 基线固化（M2 保留）：
 - LangGraph type ignore：7 处 `# type: ignore[call-overload]` 保留并加说明
 - 符号链接测试说明：Windows 本地跳过；Linux CI 必须执行
 
-## M2 明确禁止创建
+## M3 禁止创建（M3 已实现 BM25 和检索评测）
 
-- BM25 实现 → 推迟到 M3；Embedding / FAISS / Tree-sitter 留到后续里程碑
+- Embedding / FAISS / 向量检索 → 推迟到后续里程碑
+- Tree-sitter AST → 推迟到后续里程碑（M3 使用 regex + brace-depth scanning）
 - SQLite 实现 → 推迟到 M4
 - Vue 前端 / Spring Boot 后端 / MySQL / Redis / MinIO → 推迟到阶段 2+
 - Docker 沙箱 / Maven 测试执行 / 自动代码修改 → 推迟到阶段 3+
-- 评测运行器 → 推迟到 M4
+- Agent 评测运行器 → 推迟到 M4
 - 多 Agent / 循环 / Reflection → 推迟到阶段 3+
 - 任何 `raise NotImplementedError` 的占位实现文件
-- 任何 M3 字段占位（检索评分 / 代码块 / 检索元数据）
 
 ## 代码规范
 
@@ -102,7 +132,7 @@ class ToolContext(TypedDict):
 
 - M1：已定义确定性工作流需要的 AgentState（task_id, repository_path, issue_description, error_log, validation_ok, validation_errors, extracted_symbols, project_tree_summary, candidate_files, retrieved_snippets, retrieval_summary, basic_report, markdown_report, tool_calls, node_timings, errors, status, current_node）
 - M2：加入 `issue_analysis`、`investigation_plan`、`root_cause_analysis`、`diagnostic_report`、`llm_calls`、`warnings`
-- M3：加入检索评分、代码块、检索元数据
+- M3：加入 `retrieval_strategy`、`retrieval_query`、`retrieval_diagnostics`
 
 每次新增字段必须有实际节点使用，不创建纯占位字段。
 
@@ -134,9 +164,9 @@ State 体积限制（M1 起强制）：
 - 没有明确符号时跳过该工具，不伪造候选
 - Graph 必须适用于不同仓库和不同方法名
 
-## 检索评分规则（M1 起强制）
+## 检索评分规则（M1 起强制，M3 多通道增强）
 
-M1 `search_code` 实现简单确定性词法评分：
+M1 `search_code` 实现简单确定性词法评分（M3 保留为 baseline fallback）：
 
 - 普通关键词命中：加基础分
 - 类名、方法名命中（lowerCamelCase / UpperCamelCase）：提高权重
@@ -144,7 +174,15 @@ M1 `search_code` 实现简单确定性词法评分：
 - Spring 注解命中（@...）：提高权重
 - 按总分降序返回 Top K
 - 无任何命中时返回空结果
-- M1 不引入 `rank_bm25`，M3 再实现并通过同一批 Case 对比 Recall@K
+
+M3 多通道检索（`retrieval/` 模块）：
+
+- BM25（`bm25.py`）：rank-bm25 BM25Okapi，**词法检索**而非语义检索；per-task 内存索引，不持久化
+- 符号检索（`symbol.py`）：封装 find_java_symbol，基于 LLM 提取的符号
+- Baseline（`baseline.py`）：M1 词法评分，保留为 fallback 和评测对照
+- RRF 融合（`fusion.py`）：Reciprocal Rank Fusion，score = Σ weight_i / (k + rank)，k=10
+- Java 分词（`tokenizer.py`）：camelCase / PascalCase / snake_case / package paths / annotations / exception classes
+- 代码块切分（`chunker.py`）：regex + brace-depth scanning，fallback 固定窗口；不使用 Tree-sitter
 
 ## 评测指标（M4 落地，M1 仅落盘设计）
 
@@ -158,12 +196,11 @@ M1 `search_code` 实现简单确定性词法评分：
 - `tool_call_count`
 - `llm_call_count`
 
-M1-M3 期间不输出任何准确率或命中率。评测脚本 `scripts/run_eval.py` 推迟到 M4。
+M1-M3 期间不输出 Agent 准确率或命中率。M3 检索评测（Recall@K / MRR / P95）是检索质量指标，不等于 Agent 准确率。Agent 评测脚本 `scripts/run_eval.py` 推迟到 M4。
 
 ## Git 策略
 
-- M0/M1/M1.1/M2 不执行 Git commit（用户明确要求）
-- 后续 Git commit 策略由用户指定
+- M0/M1/M1.1/M2/M3 已完成基线固化并提交 Git
 
 ## 阶段切换准则
 

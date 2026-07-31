@@ -1,0 +1,4769 @@
+{
+  "cases": [
+    {
+      "case_id": "retrieval-transaction-self-invocation",
+      "split": "development",
+      "query_terms": [
+        "transactional",
+        "self",
+        "invocation",
+        "bypass",
+        "create",
+        "order"
+      ],
+      "exact_symbols": [],
+      "baseline": {
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0,
+        "mrr@10": 1.0,
+        "query_ms": 6.0,
+        "hits": 4,
+        "files": [
+          "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+          "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+          "pom.xml",
+          "src/main/java/com/springfix/sample/transaction/Application.java"
+        ],
+        "diagnostics": {
+          "top5": [
+            {
+              "chunk_id": "472de5f6d62b6f18",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": null,
+              "line_range": [
+                6,
+                37
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 1
+              },
+              "fused_score": 29.0,
+              "matched_terms": [
+                "@Transactional",
+                "bypass",
+                "createOrder",
+                "self-invocation"
+              ]
+            },
+            {
+              "chunk_id": "31e47cd534e0aa88",
+              "file": "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+              "symbol_name": null,
+              "line_range": [
+                13,
+                46
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 2
+              },
+              "fused_score": 21.0,
+              "matched_terms": [
+                "@Transactional",
+                "bypass",
+                "createOrder",
+                "self-invocation"
+              ]
+            },
+            {
+              "chunk_id": "0a63fcbd12903405",
+              "file": "pom.xml",
+              "symbol_name": null,
+              "line_range": [
+                15,
+                18
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 3
+              },
+              "fused_score": 5.5,
+              "matched_terms": [
+                "@Transactional",
+                "self-invocation"
+              ]
+            },
+            {
+              "chunk_id": "796e42f2281a9111",
+              "file": "src/main/java/com/springfix/sample/transaction/Application.java",
+              "symbol_name": null,
+              "line_range": [
+                7,
+                7
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 4
+              },
+              "fused_score": 1.0,
+              "matched_terms": [
+                "self-invocation"
+              ]
+            }
+          ],
+          "first_relevant_rank": 0
+        }
+      },
+      "bm25": {
+        "recall@1": 0.0,
+        "recall@3": 0.0,
+        "recall@5": 0.0,
+        "mrr@10": 0.0,
+        "query_ms": 0.499,
+        "build_ms": 130.0,
+        "hits": 0,
+        "files": [],
+        "diagnostics": {
+          "top5": [],
+          "first_relevant_rank": -1
+        }
+      },
+      "symbol": {
+        "activated": false,
+        "input_symbols": [],
+        "hits": 0,
+        "query_ms": 0,
+        "diagnostics": {
+          "top5": [],
+          "first_relevant_rank": -1
+        }
+      },
+      "hybrid": {
+        "recall@1": 0.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0,
+        "mrr@10": 0.5,
+        "query_ms": 12.428,
+        "build_ms": 0.0,
+        "hits": 4,
+        "files": [
+          "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+          "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+          "pom.xml",
+          "src/main/java/com/springfix/sample/transaction/Application.java"
+        ],
+        "diagnostics": {
+          "top5": [
+            {
+              "chunk_id": "821996faaeffe3a4",
+              "file": "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+              "symbol_name": null,
+              "line_range": [
+                14,
+                46
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 1
+              },
+              "fused_score": 0.016393,
+              "matched_terms": [
+                "bypass",
+                "create",
+                "invocation",
+                "order",
+                "self",
+                "transactional"
+              ]
+            },
+            {
+              "chunk_id": "4e74eb174ec17c2d",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": null,
+              "line_range": [
+                9,
+                39
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 2
+              },
+              "fused_score": 0.016129,
+              "matched_terms": [
+                "bypass",
+                "create",
+                "invocation",
+                "order",
+                "self"
+              ]
+            },
+            {
+              "chunk_id": "0a63fcbd12903405",
+              "file": "pom.xml",
+              "symbol_name": null,
+              "line_range": [
+                15,
+                18
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 3
+              },
+              "fused_score": 0.015873,
+              "matched_terms": [
+                "invocation",
+                "self"
+              ]
+            },
+            {
+              "chunk_id": "af48ee9b8ff7ed1c",
+              "file": "src/main/java/com/springfix/sample/transaction/Application.java",
+              "symbol_name": null,
+              "line_range": [
+                7,
+                9
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 4
+              },
+              "fused_score": 0.015625,
+              "matched_terms": [
+                "invocation",
+                "self"
+              ]
+            }
+          ],
+          "first_relevant_rank": 1
+        },
+        "symbol_channel": {
+          "activated": false,
+          "input_symbols": [],
+          "symbol_hit_count": 0
+        }
+      }
+    },
+    {
+      "case_id": "retrieval-dependency-injection",
+      "split": "development",
+      "query_terms": [
+        "autowired",
+        "constructor",
+        "injection",
+        "jdbc",
+        "template",
+        "dependency",
+        "order",
+        "service"
+      ],
+      "exact_symbols": [
+        "OrderService",
+        "JdbcTemplate"
+      ],
+      "baseline": {
+        "recall@1": 0.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0,
+        "mrr@10": 0.5,
+        "query_ms": 4.0,
+        "hits": 2,
+        "files": [
+          "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+          "src/main/java/com/springfix/sample/transaction/service/OrderService.java"
+        ],
+        "diagnostics": {
+          "top5": [
+            {
+              "chunk_id": "c6a0fe1e03c02759",
+              "file": "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+              "symbol_name": null,
+              "line_range": [
+                5,
+                28
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 1
+              },
+              "fused_score": 11.5,
+              "matched_terms": [
+                "@Autowired",
+                "JdbcTemplate"
+              ]
+            },
+            {
+              "chunk_id": "09e9d921a2840db5",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": null,
+              "line_range": [
+                3,
+                23
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 2
+              },
+              "fused_score": 11.0,
+              "matched_terms": [
+                "@Autowired",
+                "JdbcTemplate"
+              ]
+            }
+          ],
+          "first_relevant_rank": 1
+        }
+      },
+      "bm25": {
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0,
+        "mrr@10": 1.0,
+        "query_ms": 0.316,
+        "build_ms": 0.0,
+        "hits": 5,
+        "files": [
+          "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+          "pom.xml",
+          "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java"
+        ],
+        "diagnostics": {
+          "top5": [
+            {
+              "chunk_id": "17b53cbc1626180e",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": "OrderService",
+              "line_range": [
+                21,
+                25
+              ],
+              "chunk_type": "constructor",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 1
+              },
+              "fused_score": 3.541537,
+              "matched_terms": [
+                "autowired",
+                "jdbc",
+                "template",
+                "order",
+                "service"
+              ]
+            },
+            {
+              "chunk_id": "c978c2ec41a5ae08",
+              "file": "pom.xml",
+              "symbol_name": null,
+              "line_range": [
+                36,
+                49
+              ],
+              "chunk_type": "config_block",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 2
+              },
+              "fused_score": 1.790564,
+              "matched_terms": [
+                "dependency"
+              ]
+            },
+            {
+              "chunk_id": "5ba0148cf68df3bc",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": "OrderService",
+              "line_range": [
+                9,
+                44
+              ],
+              "chunk_type": "class",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 3
+              },
+              "fused_score": 1.545524,
+              "matched_terms": [
+                "autowired",
+                "jdbc",
+                "template",
+                "order",
+                "service"
+              ]
+            },
+            {
+              "chunk_id": "6951de3103aedbd0",
+              "file": "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+              "symbol_name": "TransactionSelfInvocationTest",
+              "line_range": [
+                13,
+                49
+              ],
+              "chunk_type": "class",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 4
+              },
+              "fused_score": 1.480343,
+              "matched_terms": [
+                "autowired",
+                "jdbc",
+                "template",
+                "order",
+                "service"
+              ]
+            },
+            {
+              "chunk_id": "fc8836444d1a9a24",
+              "file": "pom.xml",
+              "symbol_name": null,
+              "line_range": [
+                1,
+                40
+              ],
+              "chunk_type": "config_block",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 5
+              },
+              "fused_score": 1.404334,
+              "matched_terms": [
+                "jdbc",
+                "dependency"
+              ]
+            }
+          ],
+          "first_relevant_rank": 0
+        }
+      },
+      "symbol": {
+        "activated": true,
+        "input_symbols": [
+          "OrderService",
+          "JdbcTemplate"
+        ],
+        "hits": 1,
+        "query_ms": 6,
+        "diagnostics": {
+          "top5": [
+            {
+              "chunk_id": "2886b6f0128ebae6",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": "OrderService",
+              "line_range": [
+                18,
+                44
+              ],
+              "chunk_type": "class",
+              "sources": [
+                "symbol"
+              ],
+              "source_ranks": {
+                "symbol": 1
+              },
+              "fused_score": 0.0,
+              "matched_terms": [
+                "OrderService"
+              ]
+            }
+          ],
+          "first_relevant_rank": 0
+        }
+      },
+      "hybrid": {
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0,
+        "mrr@10": 1.0,
+        "query_ms": 16.852,
+        "build_ms": 0.0,
+        "hits": 5,
+        "files": [
+          "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+          "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+          "pom.xml",
+          "src/main/resources/application.properties"
+        ],
+        "diagnostics": {
+          "top5": [
+            {
+              "chunk_id": "33f733132f34e934",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": null,
+              "line_range": [
+                1,
+                39
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "symbol",
+                "bm25",
+                "baseline"
+              ],
+              "source_ranks": {
+                "symbol": 1,
+                "bm25": 3,
+                "baseline": 3
+              },
+              "fused_score": 0.02459,
+              "matched_terms": [
+                "OrderService",
+                "autowired",
+                "jdbc",
+                "order",
+                "service",
+                "template"
+              ]
+            },
+            {
+              "chunk_id": "6951de3103aedbd0",
+              "file": "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+              "symbol_name": "TransactionSelfInvocationTest",
+              "line_range": [
+                13,
+                49
+              ],
+              "chunk_type": "class",
+              "sources": [
+                "baseline",
+                "bm25"
+              ],
+              "source_ranks": {
+                "baseline": 1,
+                "bm25": 4
+              },
+              "fused_score": 0.016393,
+              "matched_terms": [
+                "autowired",
+                "jdbc",
+                "order",
+                "service",
+                "template"
+              ]
+            },
+            {
+              "chunk_id": "fc8836444d1a9a24",
+              "file": "pom.xml",
+              "symbol_name": null,
+              "line_range": [
+                1,
+                40
+              ],
+              "chunk_type": "config_block",
+              "sources": [
+                "baseline",
+                "bm25"
+              ],
+              "source_ranks": {
+                "baseline": 2,
+                "bm25": 5
+              },
+              "fused_score": 0.016129,
+              "matched_terms": [
+                "dependency",
+                "jdbc"
+              ]
+            },
+            {
+              "chunk_id": "c978c2ec41a5ae08",
+              "file": "pom.xml",
+              "symbol_name": null,
+              "line_range": [
+                36,
+                49
+              ],
+              "chunk_type": "config_block",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 2
+              },
+              "fused_score": 0.016129,
+              "matched_terms": [
+                "dependency"
+              ]
+            },
+            {
+              "chunk_id": "a80ea72285feb771",
+              "file": "src/main/resources/application.properties",
+              "symbol_name": null,
+              "line_range": [
+                1,
+                1
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 4
+              },
+              "fused_score": 0.015625,
+              "matched_terms": [
+                "jdbc"
+              ]
+            }
+          ],
+          "first_relevant_rank": 0
+        },
+        "symbol_channel": {
+          "activated": true,
+          "input_symbols": [
+            "OrderService",
+            "JdbcTemplate"
+          ],
+          "symbol_hit_count": 1
+        }
+      }
+    },
+    {
+      "case_id": "retrieval-config-binding",
+      "split": "development",
+      "query_terms": [
+        "spring",
+        "datasource",
+        "configuration",
+        "properties"
+      ],
+      "exact_symbols": [],
+      "baseline": {
+        "recall@1": 0.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0,
+        "mrr@10": 0.5,
+        "query_ms": 4.0,
+        "hits": 5,
+        "files": [
+          "pom.xml",
+          "src/main/resources/application.properties",
+          "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+          "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+          "src/main/java/com/springfix/sample/transaction/Application.java"
+        ],
+        "diagnostics": {
+          "top5": [
+            {
+              "chunk_id": "c0bcfdcbec257d22",
+              "file": "pom.xml",
+              "symbol_name": null,
+              "line_range": [
+                8,
+                45
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 1
+              },
+              "fused_score": 11.0,
+              "matched_terms": [
+                "properties",
+                "spring"
+              ]
+            },
+            {
+              "chunk_id": "9f69cc87aa8b112f",
+              "file": "src/main/resources/application.properties",
+              "symbol_name": null,
+              "line_range": [
+                1,
+                6
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 2
+              },
+              "fused_score": 10.0,
+              "matched_terms": [
+                "datasource",
+                "spring"
+              ]
+            },
+            {
+              "chunk_id": "ec216e720767594a",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": null,
+              "line_range": [
+                1,
+                6
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 3
+              },
+              "fused_score": 5.0,
+              "matched_terms": [
+                "spring"
+              ]
+            },
+            {
+              "chunk_id": "ccd00f6a451d7856",
+              "file": "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+              "symbol_name": null,
+              "line_range": [
+                1,
+                7
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 4
+              },
+              "fused_score": 5.0,
+              "matched_terms": [
+                "spring"
+              ]
+            },
+            {
+              "chunk_id": "06b8b254592fffed",
+              "file": "src/main/java/com/springfix/sample/transaction/Application.java",
+              "symbol_name": null,
+              "line_range": [
+                1,
+                4
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 5
+              },
+              "fused_score": 3.0,
+              "matched_terms": [
+                "spring"
+              ]
+            }
+          ],
+          "first_relevant_rank": 1
+        }
+      },
+      "bm25": {
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0,
+        "mrr@10": 1.0,
+        "query_ms": 0.103,
+        "build_ms": 0.0,
+        "hits": 5,
+        "files": [
+          "src/main/resources/application.properties",
+          "pom.xml",
+          "src/main/java/com/springfix/sample/transaction/Application.java",
+          "src/main/java/com/springfix/sample/transaction/service/OrderService.java"
+        ],
+        "diagnostics": {
+          "top5": [
+            {
+              "chunk_id": "2edad1c7f5b5296c",
+              "file": "src/main/resources/application.properties",
+              "symbol_name": null,
+              "line_range": [
+                1,
+                6
+              ],
+              "chunk_type": "config_block",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 1
+              },
+              "fused_score": 2.783437,
+              "matched_terms": [
+                "spring",
+                "datasource"
+              ]
+            },
+            {
+              "chunk_id": "fc8836444d1a9a24",
+              "file": "pom.xml",
+              "symbol_name": null,
+              "line_range": [
+                1,
+                40
+              ],
+              "chunk_type": "config_block",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 2
+              },
+              "fused_score": 1.870419,
+              "matched_terms": [
+                "spring",
+                "properties"
+              ]
+            },
+            {
+              "chunk_id": "7fa99ab3a6ba27f0",
+              "file": "src/main/java/com/springfix/sample/transaction/Application.java",
+              "symbol_name": "main",
+              "line_range": [
+                13,
+                16
+              ],
+              "chunk_type": "method",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 3
+              },
+              "fused_score": 0.543654,
+              "matched_terms": [
+                "spring"
+              ]
+            },
+            {
+              "chunk_id": "c978c2ec41a5ae08",
+              "file": "pom.xml",
+              "symbol_name": null,
+              "line_range": [
+                36,
+                49
+              ],
+              "chunk_type": "config_block",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 4
+              },
+              "fused_score": 0.471832,
+              "matched_terms": [
+                "spring"
+              ]
+            },
+            {
+              "chunk_id": "03bcf9627412b73d",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": "createOrder",
+              "line_range": [
+                28,
+                34
+              ],
+              "chunk_type": "method",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 5
+              },
+              "fused_score": 0.416772,
+              "matched_terms": [
+                "spring"
+              ]
+            }
+          ],
+          "first_relevant_rank": 0
+        }
+      },
+      "symbol": {
+        "activated": false,
+        "input_symbols": [],
+        "hits": 0,
+        "query_ms": 0,
+        "diagnostics": {
+          "top5": [],
+          "first_relevant_rank": -1
+        }
+      },
+      "hybrid": {
+        "recall@1": 0.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0,
+        "mrr@10": 0.5,
+        "query_ms": 9.726,
+        "build_ms": 0.0,
+        "hits": 5,
+        "files": [
+          "pom.xml",
+          "src/main/resources/application.properties",
+          "src/main/java/com/springfix/sample/transaction/Application.java",
+          "src/main/java/com/springfix/sample/transaction/service/OrderService.java"
+        ],
+        "diagnostics": {
+          "top5": [
+            {
+              "chunk_id": "fc8836444d1a9a24",
+              "file": "pom.xml",
+              "symbol_name": null,
+              "line_range": [
+                1,
+                40
+              ],
+              "chunk_type": "config_block",
+              "sources": [
+                "baseline",
+                "bm25"
+              ],
+              "source_ranks": {
+                "baseline": 1,
+                "bm25": 2
+              },
+              "fused_score": 0.016393,
+              "matched_terms": [
+                "properties",
+                "spring"
+              ]
+            },
+            {
+              "chunk_id": "2edad1c7f5b5296c",
+              "file": "src/main/resources/application.properties",
+              "symbol_name": null,
+              "line_range": [
+                1,
+                6
+              ],
+              "chunk_type": "config_block",
+              "sources": [
+                "bm25",
+                "baseline"
+              ],
+              "source_ranks": {
+                "bm25": 1,
+                "baseline": 2
+              },
+              "fused_score": 0.016393,
+              "matched_terms": [
+                "datasource",
+                "spring"
+              ]
+            },
+            {
+              "chunk_id": "7fa99ab3a6ba27f0",
+              "file": "src/main/java/com/springfix/sample/transaction/Application.java",
+              "symbol_name": "main",
+              "line_range": [
+                13,
+                16
+              ],
+              "chunk_type": "method",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 3
+              },
+              "fused_score": 0.015873,
+              "matched_terms": [
+                "spring"
+              ]
+            },
+            {
+              "chunk_id": "ec216e720767594a",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": null,
+              "line_range": [
+                1,
+                6
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 3
+              },
+              "fused_score": 0.015873,
+              "matched_terms": [
+                "spring"
+              ]
+            },
+            {
+              "chunk_id": "c978c2ec41a5ae08",
+              "file": "pom.xml",
+              "symbol_name": null,
+              "line_range": [
+                36,
+                49
+              ],
+              "chunk_type": "config_block",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 4
+              },
+              "fused_score": 0.015625,
+              "matched_terms": [
+                "spring"
+              ]
+            }
+          ],
+          "first_relevant_rank": 1
+        },
+        "symbol_channel": {
+          "activated": false,
+          "input_symbols": [],
+          "symbol_hit_count": 0
+        }
+      }
+    },
+    {
+      "case_id": "retrieval-sql-repository",
+      "split": "development",
+      "query_terms": [
+        "create",
+        "table",
+        "orders",
+        "insert",
+        "jdbc",
+        "template",
+        "sql",
+        "update",
+        "order",
+        "in",
+        "transaction"
+      ],
+      "exact_symbols": [
+        "JdbcTemplate",
+        "createOrderInTransaction"
+      ],
+      "baseline": {
+        "recall@1": 0.5,
+        "recall@3": 0.5,
+        "recall@5": 0.5,
+        "mrr@10": 1.0,
+        "query_ms": 3.0,
+        "hits": 2,
+        "files": [
+          "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+          "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java"
+        ],
+        "diagnostics": {
+          "top5": [
+            {
+              "chunk_id": "37f03cae9074ff72",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": null,
+              "line_range": [
+                4,
+                39
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 1
+              },
+              "fused_score": 11.0,
+              "matched_terms": [
+                "INSERT",
+                "INTO",
+                "JdbcTemplate",
+                "orders"
+              ]
+            },
+            {
+              "chunk_id": "3eb8bde238ea2d36",
+              "file": "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+              "symbol_name": null,
+              "line_range": [
+                7,
+                37
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 2
+              },
+              "fused_score": 6.0,
+              "matched_terms": [
+                "JdbcTemplate",
+                "orders"
+              ]
+            }
+          ],
+          "first_relevant_rank": 0
+        }
+      },
+      "bm25": {
+        "recall@1": 0.5,
+        "recall@3": 1.0,
+        "recall@5": 1.0,
+        "mrr@10": 1.0,
+        "query_ms": 0.218,
+        "build_ms": 0.0,
+        "hits": 5,
+        "files": [
+          "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+          "src/main/resources/schema.sql",
+          "src/main/resources/application.properties",
+          "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java"
+        ],
+        "diagnostics": {
+          "top5": [
+            {
+              "chunk_id": "3cac179d16f35109",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": "createOrderInTransaction",
+              "line_range": [
+                35,
+                43
+              ],
+              "chunk_type": "method",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 1
+              },
+              "fused_score": 4.829771,
+              "matched_terms": [
+                "create",
+                "orders",
+                "insert",
+                "jdbc",
+                "template",
+                "update",
+                "order",
+                "in",
+                "transaction"
+              ]
+            },
+            {
+              "chunk_id": "5b7283f93f1e65a6",
+              "file": "src/main/resources/schema.sql",
+              "symbol_name": null,
+              "line_range": [
+                1,
+                5
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 2
+              },
+              "fused_score": 3.250479,
+              "matched_terms": [
+                "create",
+                "table",
+                "orders"
+              ]
+            },
+            {
+              "chunk_id": "5ba0148cf68df3bc",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": "OrderService",
+              "line_range": [
+                9,
+                44
+              ],
+              "chunk_type": "class",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 3
+              },
+              "fused_score": 2.958353,
+              "matched_terms": [
+                "create",
+                "orders",
+                "insert",
+                "jdbc",
+                "template",
+                "update",
+                "order",
+                "in",
+                "transaction"
+              ]
+            },
+            {
+              "chunk_id": "2edad1c7f5b5296c",
+              "file": "src/main/resources/application.properties",
+              "symbol_name": null,
+              "line_range": [
+                1,
+                6
+              ],
+              "chunk_type": "config_block",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 4
+              },
+              "fused_score": 2.783437,
+              "matched_terms": [
+                "jdbc",
+                "sql"
+              ]
+            },
+            {
+              "chunk_id": "b51bf5d4ec6a6eef",
+              "file": "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+              "symbol_name": "shouldRollbackOrderWhenInnerMethodThrows",
+              "line_range": [
+                29,
+                48
+              ],
+              "chunk_type": "method",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 5
+              },
+              "fused_score": 1.756841,
+              "matched_terms": [
+                "create",
+                "orders",
+                "insert",
+                "jdbc",
+                "template",
+                "order",
+                "transaction"
+              ]
+            }
+          ],
+          "first_relevant_rank": 0
+        }
+      },
+      "symbol": {
+        "activated": true,
+        "input_symbols": [
+          "JdbcTemplate",
+          "createOrderInTransaction"
+        ],
+        "hits": 1,
+        "query_ms": 6,
+        "diagnostics": {
+          "top5": [
+            {
+              "chunk_id": "4475c8c7d3828fd0",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": "createOrderInTransaction",
+              "line_range": [
+                37,
+                43
+              ],
+              "chunk_type": "method",
+              "sources": [
+                "symbol"
+              ],
+              "source_ranks": {
+                "symbol": 1
+              },
+              "fused_score": 0.0,
+              "matched_terms": [
+                "createOrderInTransaction"
+              ]
+            }
+          ],
+          "first_relevant_rank": 0
+        }
+      },
+      "hybrid": {
+        "recall@1": 0.5,
+        "recall@3": 1.0,
+        "recall@5": 1.0,
+        "mrr@10": 1.0,
+        "query_ms": 17.533,
+        "build_ms": 0.0,
+        "hits": 5,
+        "files": [
+          "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+          "src/main/resources/schema.sql",
+          "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+          "pom.xml"
+        ],
+        "diagnostics": {
+          "top5": [
+            {
+              "chunk_id": "5ba0148cf68df3bc",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": "OrderService",
+              "line_range": [
+                9,
+                44
+              ],
+              "chunk_type": "class",
+              "sources": [
+                "symbol",
+                "bm25"
+              ],
+              "source_ranks": {
+                "symbol": 1,
+                "bm25": 3
+              },
+              "fused_score": 0.02459,
+              "matched_terms": [
+                "create",
+                "createOrderInTransaction",
+                "in",
+                "insert",
+                "jdbc",
+                "order",
+                "orders",
+                "template",
+                "transaction",
+                "update"
+              ]
+            },
+            {
+              "chunk_id": "33f733132f34e934",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": null,
+              "line_range": [
+                1,
+                39
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 1
+              },
+              "fused_score": 0.016393,
+              "matched_terms": [
+                "create",
+                "in",
+                "insert",
+                "jdbc",
+                "order",
+                "orders",
+                "transaction",
+                "update"
+              ]
+            },
+            {
+              "chunk_id": "5b7283f93f1e65a6",
+              "file": "src/main/resources/schema.sql",
+              "symbol_name": null,
+              "line_range": [
+                1,
+                5
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 2
+              },
+              "fused_score": 0.016129,
+              "matched_terms": [
+                "create",
+                "orders",
+                "table"
+              ]
+            },
+            {
+              "chunk_id": "4acde4a454782c5c",
+              "file": "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+              "symbol_name": null,
+              "line_range": [
+                1,
+                46
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline",
+                "bm25"
+              ],
+              "source_ranks": {
+                "baseline": 2,
+                "bm25": 5
+              },
+              "fused_score": 0.016129,
+              "matched_terms": [
+                "create",
+                "in",
+                "insert",
+                "jdbc",
+                "order",
+                "orders",
+                "template",
+                "transaction"
+              ]
+            },
+            {
+              "chunk_id": "9f55643a31e34902",
+              "file": "pom.xml",
+              "symbol_name": null,
+              "line_range": [
+                1,
+                47
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 3
+              },
+              "fused_score": 0.015873,
+              "matched_terms": [
+                "in",
+                "jdbc",
+                "transaction"
+              ]
+            }
+          ],
+          "first_relevant_rank": 0
+        },
+        "symbol_channel": {
+          "activated": true,
+          "input_symbols": [
+            "JdbcTemplate",
+            "createOrderInTransaction"
+          ],
+          "symbol_hit_count": 1
+        }
+      }
+    },
+    {
+      "case_id": "retrieval-cache",
+      "split": "development",
+      "query_terms": [
+        "cacheable",
+        "cache",
+        "evict",
+        "manager",
+        "miss",
+        "self",
+        "invocation",
+        "proxy",
+        "bypass",
+        "user",
+        "service",
+        "by",
+        "id"
+      ],
+      "exact_symbols": [
+        "UserCacheService",
+        "getUserById",
+        "Cacheable"
+      ],
+      "baseline": {
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0,
+        "mrr@10": 1.0,
+        "query_ms": 0.0,
+        "hits": 1,
+        "files": [
+          "UserCacheService.java"
+        ],
+        "diagnostics": {
+          "top5": [
+            {
+              "chunk_id": "1495ae93207816d9",
+              "file": "UserCacheService.java",
+              "symbol_name": null,
+              "line_range": [
+                3,
+                22
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 1
+              },
+              "fused_score": 16.0,
+              "matched_terms": [
+                "@CacheEvict",
+                "@Cacheable",
+                "CacheManager"
+              ]
+            }
+          ],
+          "first_relevant_rank": 0
+        }
+      },
+      "bm25": {
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0,
+        "mrr@10": 1.0,
+        "query_ms": 0.118,
+        "build_ms": 0.0,
+        "hits": 3,
+        "files": [
+          "UserCacheService.java"
+        ],
+        "diagnostics": {
+          "top5": [
+            {
+              "chunk_id": "4a8c79163769465f",
+              "file": "UserCacheService.java",
+              "symbol_name": "UserCacheService",
+              "line_range": [
+                7,
+                30
+              ],
+              "chunk_type": "class",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 1
+              },
+              "fused_score": 1.107368,
+              "matched_terms": [
+                "cacheable",
+                "cache",
+                "evict",
+                "manager",
+                "user",
+                "service",
+                "by",
+                "id"
+              ]
+            },
+            {
+              "chunk_id": "d812fa849caea46e",
+              "file": "UserCacheService.java",
+              "symbol_name": "getUserById",
+              "line_range": [
+                16,
+                20
+              ],
+              "chunk_type": "method",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 2
+              },
+              "fused_score": 1.082413,
+              "matched_terms": [
+                "cacheable",
+                "user",
+                "by",
+                "id"
+              ]
+            },
+            {
+              "chunk_id": "14ff4e99302260c1",
+              "file": "UserCacheService.java",
+              "symbol_name": "UserCacheService",
+              "line_range": [
+                12,
+                15
+              ],
+              "chunk_type": "constructor",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 3
+              },
+              "fused_score": 0.525506,
+              "matched_terms": [
+                "cache",
+                "manager",
+                "user",
+                "service"
+              ]
+            }
+          ],
+          "first_relevant_rank": 0
+        }
+      },
+      "symbol": {
+        "activated": true,
+        "input_symbols": [
+          "UserCacheService",
+          "getUserById",
+          "Cacheable"
+        ],
+        "hits": 3,
+        "query_ms": 1,
+        "diagnostics": {
+          "top5": [
+            {
+              "chunk_id": "73fcf17c8e63333f",
+              "file": "UserCacheService.java",
+              "symbol_name": "UserCacheService",
+              "line_range": [
+                9,
+                30
+              ],
+              "chunk_type": "class",
+              "sources": [
+                "symbol"
+              ],
+              "source_ranks": {
+                "symbol": 1
+              },
+              "fused_score": 0.0,
+              "matched_terms": [
+                "UserCacheService"
+              ]
+            },
+            {
+              "chunk_id": "f0b5696835eb1a68",
+              "file": "UserCacheService.java",
+              "symbol_name": "getUserById",
+              "line_range": [
+                18,
+                20
+              ],
+              "chunk_type": "method",
+              "sources": [
+                "symbol"
+              ],
+              "source_ranks": {
+                "symbol": 2
+              },
+              "fused_score": 0.0,
+              "matched_terms": [
+                "getUserById"
+              ]
+            },
+            {
+              "chunk_id": "8f175ad9c00124d6",
+              "file": "UserCacheService.java",
+              "symbol_name": "Cacheable",
+              "line_range": [
+                17,
+                30
+              ],
+              "chunk_type": "annotation_block",
+              "sources": [
+                "symbol"
+              ],
+              "source_ranks": {
+                "symbol": 3
+              },
+              "fused_score": 0.0,
+              "matched_terms": [
+                "Cacheable"
+              ]
+            }
+          ],
+          "first_relevant_rank": 0
+        }
+      },
+      "hybrid": {
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0,
+        "mrr@10": 1.0,
+        "query_ms": 2.599,
+        "build_ms": 0.0,
+        "hits": 1,
+        "files": [
+          "UserCacheService.java"
+        ],
+        "diagnostics": {
+          "top5": [
+            {
+              "chunk_id": "ad0058e9237dabab",
+              "file": "UserCacheService.java",
+              "symbol_name": null,
+              "line_range": [
+                1,
+                28
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "symbol",
+                "baseline",
+                "bm25"
+              ],
+              "source_ranks": {
+                "symbol": 3,
+                "baseline": 1,
+                "bm25": 3
+              },
+              "fused_score": 0.02459,
+              "matched_terms": [
+                "Cacheable",
+                "UserCacheService",
+                "by",
+                "cache",
+                "cacheable",
+                "evict",
+                "getUserById",
+                "id",
+                "manager",
+                "service"
+              ]
+            }
+          ],
+          "first_relevant_rank": 0
+        },
+        "symbol_channel": {
+          "activated": true,
+          "input_symbols": [
+            "UserCacheService",
+            "getUserById",
+            "Cacheable"
+          ],
+          "symbol_hit_count": 3
+        }
+      }
+    },
+    {
+      "case_id": "retrieval-concurrency",
+      "split": "development",
+      "query_terms": [
+        "reentrant",
+        "lock",
+        "synchronized",
+        "thread",
+        "safety",
+        "stock",
+        "race",
+        "condition",
+        "inventory",
+        "service",
+        "reduce"
+      ],
+      "exact_symbols": [
+        "InventoryService",
+        "reduceStock"
+      ],
+      "baseline": {
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0,
+        "mrr@10": 1.0,
+        "query_ms": 0.0,
+        "hits": 1,
+        "files": [
+          "InventoryService.java"
+        ],
+        "diagnostics": {
+          "top5": [
+            {
+              "chunk_id": "8c9e814e870c88fb",
+              "file": "InventoryService.java",
+              "symbol_name": null,
+              "line_range": [
+                3,
+                24
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 1
+              },
+              "fused_score": 10.0,
+              "matched_terms": [
+                "ReentrantLock",
+                "stock",
+                "synchronized"
+              ]
+            }
+          ],
+          "first_relevant_rank": 0
+        }
+      },
+      "bm25": {
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0,
+        "mrr@10": 1.0,
+        "query_ms": 0.097,
+        "build_ms": 0.0,
+        "hits": 1,
+        "files": [
+          "InventoryService.java"
+        ],
+        "diagnostics": {
+          "top5": [
+            {
+              "chunk_id": "f0e498d6fd5fc07c",
+              "file": "InventoryService.java",
+              "symbol_name": "InventoryService",
+              "line_range": [
+                4,
+                26
+              ],
+              "chunk_type": "class",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 1
+              },
+              "fused_score": 0.894446,
+              "matched_terms": [
+                "reentrant",
+                "lock",
+                "synchronized",
+                "stock",
+                "inventory",
+                "service",
+                "reduce"
+              ]
+            }
+          ],
+          "first_relevant_rank": 0
+        }
+      },
+      "symbol": {
+        "activated": true,
+        "input_symbols": [
+          "InventoryService",
+          "reduceStock"
+        ],
+        "hits": 2,
+        "query_ms": 0,
+        "diagnostics": {
+          "top5": [
+            {
+              "chunk_id": "f0e498d6fd5fc07c",
+              "file": "InventoryService.java",
+              "symbol_name": "InventoryService",
+              "line_range": [
+                4,
+                26
+              ],
+              "chunk_type": "class",
+              "sources": [
+                "symbol"
+              ],
+              "source_ranks": {
+                "symbol": 1
+              },
+              "fused_score": 0.0,
+              "matched_terms": [
+                "InventoryService"
+              ]
+            },
+            {
+              "chunk_id": "0cbb9676e97f6858",
+              "file": "InventoryService.java",
+              "symbol_name": "reduceStock",
+              "line_range": [
+                9,
+                21
+              ],
+              "chunk_type": "method",
+              "sources": [
+                "symbol"
+              ],
+              "source_ranks": {
+                "symbol": 2
+              },
+              "fused_score": 0.0,
+              "matched_terms": [
+                "reduceStock"
+              ]
+            }
+          ],
+          "first_relevant_rank": 0
+        }
+      },
+      "hybrid": {
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0,
+        "mrr@10": 1.0,
+        "query_ms": 2.164,
+        "build_ms": 0.0,
+        "hits": 1,
+        "files": [
+          "InventoryService.java"
+        ],
+        "diagnostics": {
+          "top5": [
+            {
+              "chunk_id": "f0e498d6fd5fc07c",
+              "file": "InventoryService.java",
+              "symbol_name": "InventoryService",
+              "line_range": [
+                4,
+                26
+              ],
+              "chunk_type": "class",
+              "sources": [
+                "bm25",
+                "symbol",
+                "baseline"
+              ],
+              "source_ranks": {
+                "bm25": 1,
+                "symbol": 2,
+                "baseline": 1
+              },
+              "fused_score": 0.040984,
+              "matched_terms": [
+                "InventoryService",
+                "inventory",
+                "lock",
+                "reduce",
+                "reduceStock",
+                "reentrant",
+                "service",
+                "stock",
+                "synchronized"
+              ]
+            }
+          ],
+          "first_relevant_rank": 0
+        },
+        "symbol_channel": {
+          "activated": true,
+          "input_symbols": [
+            "InventoryService",
+            "reduceStock"
+          ],
+          "symbol_hit_count": 2
+        }
+      }
+    },
+    {
+      "case_id": "retrieval-exact-method-createOrder",
+      "split": "development",
+      "query_terms": [
+        "create",
+        "order"
+      ],
+      "exact_symbols": [
+        "createOrder"
+      ],
+      "baseline": {
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0,
+        "mrr@10": 1.0,
+        "query_ms": 3.0,
+        "hits": 2,
+        "files": [
+          "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+          "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java"
+        ],
+        "diagnostics": {
+          "top5": [
+            {
+              "chunk_id": "7e9f5f9440500a5f",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": null,
+              "line_range": [
+                11,
+                37
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 1
+              },
+              "fused_score": 10.0,
+              "matched_terms": [
+                "createOrder"
+              ]
+            },
+            {
+              "chunk_id": "d70fe37ee18b4df6",
+              "file": "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+              "symbol_name": null,
+              "line_range": [
+                14,
+                34
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 2
+              },
+              "fused_score": 6.0,
+              "matched_terms": [
+                "createOrder"
+              ]
+            }
+          ],
+          "first_relevant_rank": 0
+        }
+      },
+      "bm25": {
+        "recall@1": 0.0,
+        "recall@3": 0.0,
+        "recall@5": 0.0,
+        "mrr@10": 0.0,
+        "query_ms": 0.05,
+        "build_ms": 0.0,
+        "hits": 0,
+        "files": [],
+        "diagnostics": {
+          "top5": [],
+          "first_relevant_rank": -1
+        }
+      },
+      "symbol": {
+        "activated": true,
+        "input_symbols": [
+          "createOrder"
+        ],
+        "hits": 1,
+        "query_ms": 3,
+        "diagnostics": {
+          "top5": [
+            {
+              "chunk_id": "c019d11139c27d82",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": "createOrder",
+              "line_range": [
+                31,
+                34
+              ],
+              "chunk_type": "method",
+              "sources": [
+                "symbol"
+              ],
+              "source_ranks": {
+                "symbol": 1
+              },
+              "fused_score": 0.0,
+              "matched_terms": [
+                "createOrder"
+              ]
+            }
+          ],
+          "first_relevant_rank": 0
+        }
+      },
+      "hybrid": {
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0,
+        "mrr@10": 1.0,
+        "query_ms": 12.336,
+        "build_ms": 0.0,
+        "hits": 2,
+        "files": [
+          "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+          "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java"
+        ],
+        "diagnostics": {
+          "top5": [
+            {
+              "chunk_id": "7183f5b0e302af14",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": null,
+              "line_range": [
+                11,
+                39
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "symbol",
+                "baseline"
+              ],
+              "source_ranks": {
+                "symbol": 1,
+                "baseline": 2
+              },
+              "fused_score": 0.02459,
+              "matched_terms": [
+                "create",
+                "createOrder",
+                "order"
+              ]
+            },
+            {
+              "chunk_id": "b4d7251832048824",
+              "file": "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+              "symbol_name": null,
+              "line_range": [
+                14,
+                37
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 1
+              },
+              "fused_score": 0.016393,
+              "matched_terms": [
+                "create",
+                "order"
+              ]
+            }
+          ],
+          "first_relevant_rank": 0
+        },
+        "symbol_channel": {
+          "activated": true,
+          "input_symbols": [
+            "createOrder"
+          ],
+          "symbol_hit_count": 1
+        }
+      }
+    },
+    {
+      "case_id": "retrieval-exception-class",
+      "split": "holdout",
+      "query_terms": [
+        "runtime",
+        "exception",
+        "rollback",
+        "self",
+        "invocation",
+        "create",
+        "order",
+        "in",
+        "transaction"
+      ],
+      "exact_symbols": [
+        "RuntimeException",
+        "createOrderInTransaction"
+      ],
+      "baseline": {
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0,
+        "mrr@10": 1.0,
+        "query_ms": 4.0,
+        "hits": 4,
+        "files": [
+          "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+          "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+          "pom.xml",
+          "src/main/java/com/springfix/sample/transaction/Application.java"
+        ],
+        "diagnostics": {
+          "top5": [
+            {
+              "chunk_id": "0eb784822301ef4c",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": null,
+              "line_range": [
+                9,
+                42
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 1
+              },
+              "fused_score": 9.0,
+              "matched_terms": [
+                "RuntimeException",
+                "rollback",
+                "self-invocation"
+              ]
+            },
+            {
+              "chunk_id": "31e47cd534e0aa88",
+              "file": "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+              "symbol_name": null,
+              "line_range": [
+                13,
+                46
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 2
+              },
+              "fused_score": 7.0,
+              "matched_terms": [
+                "RuntimeException",
+                "rollback",
+                "self-invocation"
+              ]
+            },
+            {
+              "chunk_id": "0a63fcbd12903405",
+              "file": "pom.xml",
+              "symbol_name": null,
+              "line_range": [
+                15,
+                18
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 3
+              },
+              "fused_score": 3.0,
+              "matched_terms": [
+                "self-invocation"
+              ]
+            },
+            {
+              "chunk_id": "796e42f2281a9111",
+              "file": "src/main/java/com/springfix/sample/transaction/Application.java",
+              "symbol_name": null,
+              "line_range": [
+                7,
+                7
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 4
+              },
+              "fused_score": 1.0,
+              "matched_terms": [
+                "self-invocation"
+              ]
+            }
+          ],
+          "first_relevant_rank": 0
+        }
+      },
+      "bm25": {
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0,
+        "mrr@10": 1.0,
+        "query_ms": 0.143,
+        "build_ms": 0.0,
+        "hits": 5,
+        "files": [
+          "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+          "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java"
+        ],
+        "diagnostics": {
+          "top5": [
+            {
+              "chunk_id": "3cac179d16f35109",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": "createOrderInTransaction",
+              "line_range": [
+                35,
+                43
+              ],
+              "chunk_type": "method",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 1
+              },
+              "fused_score": 3.214054,
+              "matched_terms": [
+                "runtime",
+                "exception",
+                "rollback",
+                "create",
+                "order",
+                "in",
+                "transaction"
+              ]
+            },
+            {
+              "chunk_id": "5ba0148cf68df3bc",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": "OrderService",
+              "line_range": [
+                9,
+                44
+              ],
+              "chunk_type": "class",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 2
+              },
+              "fused_score": 1.968687,
+              "matched_terms": [
+                "runtime",
+                "exception",
+                "rollback",
+                "self",
+                "invocation",
+                "create",
+                "order",
+                "in",
+                "transaction"
+              ]
+            },
+            {
+              "chunk_id": "b51bf5d4ec6a6eef",
+              "file": "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+              "symbol_name": "shouldRollbackOrderWhenInnerMethodThrows",
+              "line_range": [
+                29,
+                48
+              ],
+              "chunk_type": "method",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 3
+              },
+              "fused_score": 1.711166,
+              "matched_terms": [
+                "runtime",
+                "exception",
+                "rollback",
+                "self",
+                "invocation",
+                "create",
+                "order",
+                "transaction"
+              ]
+            },
+            {
+              "chunk_id": "03bcf9627412b73d",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": "createOrder",
+              "line_range": [
+                28,
+                34
+              ],
+              "chunk_type": "method",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 4
+              },
+              "fused_score": 1.517257,
+              "matched_terms": [
+                "self",
+                "invocation",
+                "create",
+                "order",
+                "in",
+                "transaction"
+              ]
+            },
+            {
+              "chunk_id": "6951de3103aedbd0",
+              "file": "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+              "symbol_name": "TransactionSelfInvocationTest",
+              "line_range": [
+                13,
+                49
+              ],
+              "chunk_type": "class",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 5
+              },
+              "fused_score": 1.249295,
+              "matched_terms": [
+                "runtime",
+                "exception",
+                "rollback",
+                "self",
+                "invocation",
+                "create",
+                "order",
+                "transaction"
+              ]
+            }
+          ],
+          "first_relevant_rank": 0
+        }
+      },
+      "symbol": {
+        "activated": true,
+        "input_symbols": [
+          "RuntimeException",
+          "createOrderInTransaction"
+        ],
+        "hits": 1,
+        "query_ms": 6,
+        "diagnostics": {
+          "top5": [
+            {
+              "chunk_id": "4475c8c7d3828fd0",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": "createOrderInTransaction",
+              "line_range": [
+                37,
+                43
+              ],
+              "chunk_type": "method",
+              "sources": [
+                "symbol"
+              ],
+              "source_ranks": {
+                "symbol": 1
+              },
+              "fused_score": 0.0,
+              "matched_terms": [
+                "createOrderInTransaction"
+              ]
+            }
+          ],
+          "first_relevant_rank": 0
+        }
+      },
+      "hybrid": {
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0,
+        "mrr@10": 1.0,
+        "query_ms": 17.465,
+        "build_ms": 0.0,
+        "hits": 5,
+        "files": [
+          "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+          "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+          "pom.xml",
+          "src/main/java/com/springfix/sample/transaction/Application.java",
+          "src/main/resources/application.properties"
+        ],
+        "diagnostics": {
+          "top5": [
+            {
+              "chunk_id": "5f624a793a4d0de7",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": null,
+              "line_range": [
+                1,
+                42
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "symbol",
+                "bm25",
+                "baseline"
+              ],
+              "source_ranks": {
+                "symbol": 1,
+                "bm25": 4,
+                "baseline": 2
+              },
+              "fused_score": 0.02459,
+              "matched_terms": [
+                "create",
+                "createOrderInTransaction",
+                "exception",
+                "in",
+                "invocation",
+                "order",
+                "rollback",
+                "runtime",
+                "self",
+                "transaction"
+              ]
+            },
+            {
+              "chunk_id": "4acde4a454782c5c",
+              "file": "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+              "symbol_name": null,
+              "line_range": [
+                1,
+                46
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline",
+                "bm25"
+              ],
+              "source_ranks": {
+                "baseline": 1,
+                "bm25": 5
+              },
+              "fused_score": 0.016393,
+              "matched_terms": [
+                "create",
+                "exception",
+                "in",
+                "invocation",
+                "order",
+                "rollback",
+                "runtime",
+                "self",
+                "transaction"
+              ]
+            },
+            {
+              "chunk_id": "9f55643a31e34902",
+              "file": "pom.xml",
+              "symbol_name": null,
+              "line_range": [
+                1,
+                47
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 3
+              },
+              "fused_score": 0.015873,
+              "matched_terms": [
+                "in",
+                "invocation",
+                "runtime",
+                "self",
+                "transaction"
+              ]
+            },
+            {
+              "chunk_id": "3812121de76f2994",
+              "file": "src/main/java/com/springfix/sample/transaction/Application.java",
+              "symbol_name": null,
+              "line_range": [
+                1,
+                15
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 4
+              },
+              "fused_score": 0.015625,
+              "matched_terms": [
+                "in",
+                "invocation",
+                "self",
+                "transaction"
+              ]
+            },
+            {
+              "chunk_id": "9f69cc87aa8b112f",
+              "file": "src/main/resources/application.properties",
+              "symbol_name": null,
+              "line_range": [
+                1,
+                6
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 5
+              },
+              "fused_score": 0.015385,
+              "matched_terms": [
+                "in"
+              ]
+            }
+          ],
+          "first_relevant_rank": 0
+        },
+        "symbol_channel": {
+          "activated": true,
+          "input_symbols": [
+            "RuntimeException",
+            "createOrderInTransaction"
+          ],
+          "symbol_hit_count": 1
+        }
+      }
+    },
+    {
+      "case_id": "retrieval-exact-class-OrderService",
+      "split": "holdout",
+      "query_terms": [
+        "order",
+        "service",
+        "class",
+        "declaration"
+      ],
+      "exact_symbols": [
+        "OrderService"
+      ],
+      "baseline": {
+        "recall@1": 0.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0,
+        "mrr@10": 0.5,
+        "query_ms": 4.0,
+        "hits": 4,
+        "files": [
+          "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+          "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+          "src/main/java/com/springfix/sample/transaction/Application.java",
+          "src/main/resources/application.properties"
+        ],
+        "diagnostics": {
+          "top5": [
+            {
+              "chunk_id": "e82875c2984b003c",
+              "file": "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+              "symbol_name": null,
+              "line_range": [
+                3,
+                38
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 1
+              },
+              "fused_score": 9.0,
+              "matched_terms": [
+                "OrderService",
+                "class"
+              ]
+            },
+            {
+              "chunk_id": "5b837a06bb62c71c",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": null,
+              "line_range": [
+                9,
+                23
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 2
+              },
+              "fused_score": 7.0,
+              "matched_terms": [
+                "OrderService",
+                "class"
+              ]
+            },
+            {
+              "chunk_id": "e9199be5fac0f7b5",
+              "file": "src/main/java/com/springfix/sample/transaction/Application.java",
+              "symbol_name": null,
+              "line_range": [
+                12,
+                15
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 3
+              },
+              "fused_score": 2.0,
+              "matched_terms": [
+                "class"
+              ]
+            },
+            {
+              "chunk_id": "245d8461f1a399a4",
+              "file": "src/main/resources/application.properties",
+              "symbol_name": null,
+              "line_range": [
+                2,
+                6
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 4
+              },
+              "fused_score": 2.0,
+              "matched_terms": [
+                "class"
+              ]
+            }
+          ],
+          "first_relevant_rank": 1
+        }
+      },
+      "bm25": {
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0,
+        "mrr@10": 1.0,
+        "query_ms": 0.105,
+        "build_ms": 0.0,
+        "hits": 4,
+        "files": [
+          "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+          "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java"
+        ],
+        "diagnostics": {
+          "top5": [
+            {
+              "chunk_id": "17b53cbc1626180e",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": "OrderService",
+              "line_range": [
+                21,
+                25
+              ],
+              "chunk_type": "constructor",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 1
+              },
+              "fused_score": 0.969669,
+              "matched_terms": [
+                "order",
+                "service"
+              ]
+            },
+            {
+              "chunk_id": "b51bf5d4ec6a6eef",
+              "file": "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+              "symbol_name": "shouldRollbackOrderWhenInnerMethodThrows",
+              "line_range": [
+                29,
+                48
+              ],
+              "chunk_type": "method",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 2
+              },
+              "fused_score": 0.555163,
+              "matched_terms": [
+                "order",
+                "service",
+                "class"
+              ]
+            },
+            {
+              "chunk_id": "5ba0148cf68df3bc",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": "OrderService",
+              "line_range": [
+                9,
+                44
+              ],
+              "chunk_type": "class",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 3
+              },
+              "fused_score": 0.423163,
+              "matched_terms": [
+                "order",
+                "service",
+                "class"
+              ]
+            },
+            {
+              "chunk_id": "6951de3103aedbd0",
+              "file": "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+              "symbol_name": "TransactionSelfInvocationTest",
+              "line_range": [
+                13,
+                49
+              ],
+              "chunk_type": "class",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 4
+              },
+              "fused_score": 0.405316,
+              "matched_terms": [
+                "order",
+                "service",
+                "class"
+              ]
+            }
+          ],
+          "first_relevant_rank": 0
+        }
+      },
+      "symbol": {
+        "activated": true,
+        "input_symbols": [
+          "OrderService"
+        ],
+        "hits": 1,
+        "query_ms": 3,
+        "diagnostics": {
+          "top5": [
+            {
+              "chunk_id": "2886b6f0128ebae6",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": "OrderService",
+              "line_range": [
+                18,
+                44
+              ],
+              "chunk_type": "class",
+              "sources": [
+                "symbol"
+              ],
+              "source_ranks": {
+                "symbol": 1
+              },
+              "fused_score": 0.0,
+              "matched_terms": [
+                "OrderService"
+              ]
+            }
+          ],
+          "first_relevant_rank": 0
+        }
+      },
+      "hybrid": {
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0,
+        "mrr@10": 1.0,
+        "query_ms": 13.718,
+        "build_ms": 0.0,
+        "hits": 4,
+        "files": [
+          "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+          "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+          "src/main/java/com/springfix/sample/transaction/Application.java",
+          "src/main/resources/application.properties"
+        ],
+        "diagnostics": {
+          "top5": [
+            {
+              "chunk_id": "33f733132f34e934",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": null,
+              "line_range": [
+                1,
+                39
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "symbol",
+                "bm25",
+                "baseline"
+              ],
+              "source_ranks": {
+                "symbol": 1,
+                "bm25": 3,
+                "baseline": 2
+              },
+              "fused_score": 0.02459,
+              "matched_terms": [
+                "OrderService",
+                "class",
+                "order",
+                "service"
+              ]
+            },
+            {
+              "chunk_id": "6951de3103aedbd0",
+              "file": "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+              "symbol_name": "TransactionSelfInvocationTest",
+              "line_range": [
+                13,
+                49
+              ],
+              "chunk_type": "class",
+              "sources": [
+                "baseline",
+                "bm25"
+              ],
+              "source_ranks": {
+                "baseline": 1,
+                "bm25": 4
+              },
+              "fused_score": 0.016393,
+              "matched_terms": [
+                "class",
+                "order",
+                "service"
+              ]
+            },
+            {
+              "chunk_id": "e9199be5fac0f7b5",
+              "file": "src/main/java/com/springfix/sample/transaction/Application.java",
+              "symbol_name": null,
+              "line_range": [
+                12,
+                15
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 3
+              },
+              "fused_score": 0.015873,
+              "matched_terms": [
+                "class"
+              ]
+            },
+            {
+              "chunk_id": "245d8461f1a399a4",
+              "file": "src/main/resources/application.properties",
+              "symbol_name": null,
+              "line_range": [
+                2,
+                6
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 4
+              },
+              "fused_score": 0.015625,
+              "matched_terms": [
+                "class"
+              ]
+            }
+          ],
+          "first_relevant_rank": 0
+        },
+        "symbol_channel": {
+          "activated": true,
+          "input_symbols": [
+            "OrderService"
+          ],
+          "symbol_hit_count": 1
+        }
+      }
+    },
+    {
+      "case_id": "retrieval-spring-application",
+      "split": "holdout",
+      "query_terms": [
+        "spring",
+        "boot",
+        "application",
+        "main",
+        "entry",
+        "point"
+      ],
+      "exact_symbols": [],
+      "baseline": {
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0,
+        "mrr@10": 1.0,
+        "query_ms": 3.0,
+        "hits": 2,
+        "files": [
+          "src/main/java/com/springfix/sample/transaction/Application.java",
+          "src/main/java/com/springfix/sample/transaction/service/OrderService.java"
+        ],
+        "diagnostics": {
+          "top5": [
+            {
+              "chunk_id": "763e552aead0008b",
+              "file": "src/main/java/com/springfix/sample/transaction/Application.java",
+              "symbol_name": null,
+              "line_range": [
+                4,
+                14
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 1
+              },
+              "fused_score": 8.0,
+              "matched_terms": [
+                "@SpringBootApplication",
+                "entry",
+                "main",
+                "point"
+              ]
+            },
+            {
+              "chunk_id": "787d979e2f9fb2aa",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": null,
+              "line_range": [
+                11,
+                28
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 2
+              },
+              "fused_score": 4.0,
+              "matched_terms": [
+                "entry",
+                "point"
+              ]
+            }
+          ],
+          "first_relevant_rank": 0
+        }
+      },
+      "bm25": {
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0,
+        "mrr@10": 1.0,
+        "query_ms": 0.112,
+        "build_ms": 0.0,
+        "hits": 5,
+        "files": [
+          "src/main/java/com/springfix/sample/transaction/Application.java",
+          "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+          "pom.xml"
+        ],
+        "diagnostics": {
+          "top5": [
+            {
+              "chunk_id": "7fa99ab3a6ba27f0",
+              "file": "src/main/java/com/springfix/sample/transaction/Application.java",
+              "symbol_name": "main",
+              "line_range": [
+                13,
+                16
+              ],
+              "chunk_type": "method",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 1
+              },
+              "fused_score": 4.669901,
+              "matched_terms": [
+                "spring",
+                "application",
+                "main"
+              ]
+            },
+            {
+              "chunk_id": "5ff3951b55542502",
+              "file": "src/main/java/com/springfix/sample/transaction/Application.java",
+              "symbol_name": "Application",
+              "line_range": [
+                7,
+                17
+              ],
+              "chunk_type": "class",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 2
+              },
+              "fused_score": 4.219386,
+              "matched_terms": [
+                "spring",
+                "boot",
+                "application",
+                "main"
+              ]
+            },
+            {
+              "chunk_id": "03bcf9627412b73d",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": "createOrder",
+              "line_range": [
+                28,
+                34
+              ],
+              "chunk_type": "method",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 3
+              },
+              "fused_score": 3.580005,
+              "matched_terms": [
+                "spring",
+                "entry",
+                "point"
+              ]
+            },
+            {
+              "chunk_id": "5ba0148cf68df3bc",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": "OrderService",
+              "line_range": [
+                9,
+                44
+              ],
+              "chunk_type": "class",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 4
+              },
+              "fused_score": 2.161314,
+              "matched_terms": [
+                "spring",
+                "entry",
+                "point"
+              ]
+            },
+            {
+              "chunk_id": "c978c2ec41a5ae08",
+              "file": "pom.xml",
+              "symbol_name": null,
+              "line_range": [
+                36,
+                49
+              ],
+              "chunk_type": "config_block",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 5
+              },
+              "fused_score": 1.265359,
+              "matched_terms": [
+                "spring",
+                "boot"
+              ]
+            }
+          ],
+          "first_relevant_rank": 0
+        }
+      },
+      "symbol": {
+        "activated": false,
+        "input_symbols": [],
+        "hits": 0,
+        "query_ms": 0,
+        "diagnostics": {
+          "top5": [],
+          "first_relevant_rank": -1
+        }
+      },
+      "hybrid": {
+        "recall@1": 0.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0,
+        "mrr@10": 0.5,
+        "query_ms": 10.754,
+        "build_ms": 0.0,
+        "hits": 5,
+        "files": [
+          "pom.xml",
+          "src/main/java/com/springfix/sample/transaction/Application.java",
+          "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+          "src/main/resources/application.properties"
+        ],
+        "diagnostics": {
+          "top5": [
+            {
+              "chunk_id": "c0bcfdcbec257d22",
+              "file": "pom.xml",
+              "symbol_name": null,
+              "line_range": [
+                8,
+                45
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline",
+                "bm25"
+              ],
+              "source_ranks": {
+                "baseline": 1,
+                "bm25": 5
+              },
+              "fused_score": 0.016393,
+              "matched_terms": [
+                "boot",
+                "spring"
+              ]
+            },
+            {
+              "chunk_id": "4960db8b30dfa080",
+              "file": "src/main/java/com/springfix/sample/transaction/Application.java",
+              "symbol_name": null,
+              "line_range": [
+                1,
+                14
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "bm25",
+                "baseline"
+              ],
+              "source_ranks": {
+                "bm25": 2,
+                "baseline": 2
+              },
+              "fused_score": 0.016393,
+              "matched_terms": [
+                "application",
+                "boot",
+                "entry",
+                "main",
+                "point",
+                "spring"
+              ]
+            },
+            {
+              "chunk_id": "5ba0148cf68df3bc",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": "OrderService",
+              "line_range": [
+                9,
+                44
+              ],
+              "chunk_type": "class",
+              "sources": [
+                "baseline",
+                "bm25"
+              ],
+              "source_ranks": {
+                "baseline": 3,
+                "bm25": 4
+              },
+              "fused_score": 0.015873,
+              "matched_terms": [
+                "entry",
+                "point",
+                "spring"
+              ]
+            },
+            {
+              "chunk_id": "03bcf9627412b73d",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": "createOrder",
+              "line_range": [
+                28,
+                34
+              ],
+              "chunk_type": "method",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 3
+              },
+              "fused_score": 0.015873,
+              "matched_terms": [
+                "entry",
+                "point",
+                "spring"
+              ]
+            },
+            {
+              "chunk_id": "9f69cc87aa8b112f",
+              "file": "src/main/resources/application.properties",
+              "symbol_name": null,
+              "line_range": [
+                1,
+                6
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 4
+              },
+              "fused_score": 0.015625,
+              "matched_terms": [
+                "spring"
+              ]
+            }
+          ],
+          "first_relevant_rank": 1
+        },
+        "symbol_channel": {
+          "activated": false,
+          "input_symbols": [],
+          "symbol_hit_count": 0
+        }
+      }
+    },
+    {
+      "case_id": "retrieval-jdbc-sql-operations",
+      "split": "holdout",
+      "query_terms": [
+        "jdbc",
+        "template",
+        "update",
+        "insert",
+        "sql",
+        "query",
+        "execution"
+      ],
+      "exact_symbols": [
+        "JdbcTemplate"
+      ],
+      "baseline": {
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0,
+        "mrr@10": 1.0,
+        "query_ms": 4.0,
+        "hits": 2,
+        "files": [
+          "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+          "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java"
+        ],
+        "diagnostics": {
+          "top5": [
+            {
+              "chunk_id": "37f03cae9074ff72",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": null,
+              "line_range": [
+                4,
+                39
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 1
+              },
+              "fused_score": 9.0,
+              "matched_terms": [
+                "INSERT",
+                "JdbcTemplate",
+                "update"
+              ]
+            },
+            {
+              "chunk_id": "84498e6bddf78c56",
+              "file": "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+              "symbol_name": null,
+              "line_range": [
+                7,
+                36
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 2
+              },
+              "fused_score": 5.0,
+              "matched_terms": [
+                "JdbcTemplate",
+                "query"
+              ]
+            }
+          ],
+          "first_relevant_rank": 0
+        }
+      },
+      "bm25": {
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0,
+        "mrr@10": 1.0,
+        "query_ms": 0.13,
+        "build_ms": 0.0,
+        "hits": 5,
+        "files": [
+          "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+          "src/main/resources/application.properties",
+          "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java"
+        ],
+        "diagnostics": {
+          "top5": [
+            {
+              "chunk_id": "3cac179d16f35109",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": "createOrderInTransaction",
+              "line_range": [
+                35,
+                43
+              ],
+              "chunk_type": "method",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 1
+              },
+              "fused_score": 2.997418,
+              "matched_terms": [
+                "jdbc",
+                "template",
+                "update",
+                "insert"
+              ]
+            },
+            {
+              "chunk_id": "2edad1c7f5b5296c",
+              "file": "src/main/resources/application.properties",
+              "symbol_name": null,
+              "line_range": [
+                1,
+                6
+              ],
+              "chunk_type": "config_block",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 2
+              },
+              "fused_score": 2.783437,
+              "matched_terms": [
+                "jdbc",
+                "sql"
+              ]
+            },
+            {
+              "chunk_id": "b51bf5d4ec6a6eef",
+              "file": "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+              "symbol_name": "shouldRollbackOrderWhenInnerMethodThrows",
+              "line_range": [
+                29,
+                48
+              ],
+              "chunk_type": "method",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 3
+              },
+              "fused_score": 2.408708,
+              "matched_terms": [
+                "jdbc",
+                "template",
+                "insert",
+                "query"
+              ]
+            },
+            {
+              "chunk_id": "5ba0148cf68df3bc",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": "OrderService",
+              "line_range": [
+                9,
+                44
+              ],
+              "chunk_type": "class",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 4
+              },
+              "fused_score": 1.835992,
+              "matched_terms": [
+                "jdbc",
+                "template",
+                "update",
+                "insert"
+              ]
+            },
+            {
+              "chunk_id": "6951de3103aedbd0",
+              "file": "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+              "symbol_name": "TransactionSelfInvocationTest",
+              "line_range": [
+                13,
+                49
+              ],
+              "chunk_type": "class",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 5
+              },
+              "fused_score": 1.75856,
+              "matched_terms": [
+                "jdbc",
+                "template",
+                "insert",
+                "query"
+              ]
+            }
+          ],
+          "first_relevant_rank": 0
+        }
+      },
+      "symbol": {
+        "activated": true,
+        "input_symbols": [
+          "JdbcTemplate"
+        ],
+        "hits": 0,
+        "query_ms": 3,
+        "diagnostics": {
+          "top5": [],
+          "first_relevant_rank": -1
+        }
+      },
+      "hybrid": {
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0,
+        "mrr@10": 1.0,
+        "query_ms": 14.189,
+        "build_ms": 0.0,
+        "hits": 5,
+        "files": [
+          "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+          "src/main/resources/application.properties",
+          "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+          "pom.xml"
+        ],
+        "diagnostics": {
+          "top5": [
+            {
+              "chunk_id": "5ba0148cf68df3bc",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": "OrderService",
+              "line_range": [
+                9,
+                44
+              ],
+              "chunk_type": "class",
+              "sources": [
+                "baseline",
+                "bm25"
+              ],
+              "source_ranks": {
+                "baseline": 1,
+                "bm25": 4
+              },
+              "fused_score": 0.016393,
+              "matched_terms": [
+                "insert",
+                "jdbc",
+                "template",
+                "update"
+              ]
+            },
+            {
+              "chunk_id": "3cac179d16f35109",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": "createOrderInTransaction",
+              "line_range": [
+                35,
+                43
+              ],
+              "chunk_type": "method",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 1
+              },
+              "fused_score": 0.016393,
+              "matched_terms": [
+                "insert",
+                "jdbc",
+                "template",
+                "update"
+              ]
+            },
+            {
+              "chunk_id": "2edad1c7f5b5296c",
+              "file": "src/main/resources/application.properties",
+              "symbol_name": null,
+              "line_range": [
+                1,
+                6
+              ],
+              "chunk_type": "config_block",
+              "sources": [
+                "bm25",
+                "baseline"
+              ],
+              "source_ranks": {
+                "bm25": 2,
+                "baseline": 3
+              },
+              "fused_score": 0.016129,
+              "matched_terms": [
+                "jdbc",
+                "sql"
+              ]
+            },
+            {
+              "chunk_id": "6951de3103aedbd0",
+              "file": "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+              "symbol_name": "TransactionSelfInvocationTest",
+              "line_range": [
+                13,
+                49
+              ],
+              "chunk_type": "class",
+              "sources": [
+                "baseline",
+                "bm25"
+              ],
+              "source_ranks": {
+                "baseline": 2,
+                "bm25": 5
+              },
+              "fused_score": 0.016129,
+              "matched_terms": [
+                "insert",
+                "jdbc",
+                "query",
+                "template"
+              ]
+            },
+            {
+              "chunk_id": "4dd33cd48d56bbeb",
+              "file": "pom.xml",
+              "symbol_name": null,
+              "line_range": [
+                27,
+                27
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 4
+              },
+              "fused_score": 0.015625,
+              "matched_terms": [
+                "jdbc"
+              ]
+            }
+          ],
+          "first_relevant_rank": 0
+        },
+        "symbol_channel": {
+          "activated": true,
+          "input_symbols": [
+            "JdbcTemplate"
+          ],
+          "symbol_hit_count": 0
+        }
+      }
+    },
+    {
+      "case_id": "retrieval-service-stereotype",
+      "split": "holdout",
+      "query_terms": [
+        "service",
+        "stereotype",
+        "annotation",
+        "spring",
+        "bean",
+        "registration"
+      ],
+      "exact_symbols": [],
+      "baseline": {
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0,
+        "mrr@10": 1.0,
+        "query_ms": 4.0,
+        "hits": 4,
+        "files": [
+          "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+          "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+          "src/main/java/com/springfix/sample/transaction/Application.java",
+          "pom.xml"
+        ],
+        "diagnostics": {
+          "top5": [
+            {
+              "chunk_id": "fbe6ae546a73fa83",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": null,
+              "line_range": [
+                3,
+                32
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 1
+              },
+              "fused_score": 20.5,
+              "matched_terms": [
+                "@Service",
+                "Spring",
+                "annotation",
+                "bean",
+                "stereotype"
+              ]
+            },
+            {
+              "chunk_id": "c48b5e3a1a283edd",
+              "file": "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+              "symbol_name": null,
+              "line_range": [
+                3,
+                34
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 2
+              },
+              "fused_score": 16.0,
+              "matched_terms": [
+                "@Service",
+                "Spring",
+                "annotation",
+                "bean"
+              ]
+            },
+            {
+              "chunk_id": "23ddc03041b33c44",
+              "file": "src/main/java/com/springfix/sample/transaction/Application.java",
+              "symbol_name": null,
+              "line_range": [
+                3,
+                15
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 3
+              },
+              "fused_score": 12.0,
+              "matched_terms": [
+                "Spring"
+              ]
+            },
+            {
+              "chunk_id": "ee7c942c13f7073b",
+              "file": "pom.xml",
+              "symbol_name": null,
+              "line_range": [
+                18,
+                18
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 4
+              },
+              "fused_score": 2.0,
+              "matched_terms": [
+                "Spring"
+              ]
+            }
+          ],
+          "first_relevant_rank": 0
+        }
+      },
+      "bm25": {
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0,
+        "mrr@10": 1.0,
+        "query_ms": 0.183,
+        "build_ms": 0.0,
+        "hits": 5,
+        "files": [
+          "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+          "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+          "src/main/java/com/springfix/sample/transaction/Application.java"
+        ],
+        "diagnostics": {
+          "top5": [
+            {
+              "chunk_id": "17b53cbc1626180e",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": "OrderService",
+              "line_range": [
+                21,
+                25
+              ],
+              "chunk_type": "constructor",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 1
+              },
+              "fused_score": 0.969669,
+              "matched_terms": [
+                "service"
+              ]
+            },
+            {
+              "chunk_id": "5ba0148cf68df3bc",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": "OrderService",
+              "line_range": [
+                9,
+                44
+              ],
+              "chunk_type": "class",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 2
+              },
+              "fused_score": 0.674775,
+              "matched_terms": [
+                "service",
+                "spring"
+              ]
+            },
+            {
+              "chunk_id": "6951de3103aedbd0",
+              "file": "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+              "symbol_name": "TransactionSelfInvocationTest",
+              "line_range": [
+                13,
+                49
+              ],
+              "chunk_type": "class",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 3
+              },
+              "fused_score": 0.646317,
+              "matched_terms": [
+                "service",
+                "spring"
+              ]
+            },
+            {
+              "chunk_id": "b51bf5d4ec6a6eef",
+              "file": "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+              "symbol_name": "shouldRollbackOrderWhenInnerMethodThrows",
+              "line_range": [
+                29,
+                48
+              ],
+              "chunk_type": "method",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 4
+              },
+              "fused_score": 0.555163,
+              "matched_terms": [
+                "service"
+              ]
+            },
+            {
+              "chunk_id": "7fa99ab3a6ba27f0",
+              "file": "src/main/java/com/springfix/sample/transaction/Application.java",
+              "symbol_name": "main",
+              "line_range": [
+                13,
+                16
+              ],
+              "chunk_type": "method",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 5
+              },
+              "fused_score": 0.543654,
+              "matched_terms": [
+                "spring"
+              ]
+            }
+          ],
+          "first_relevant_rank": 0
+        }
+      },
+      "symbol": {
+        "activated": false,
+        "input_symbols": [],
+        "hits": 0,
+        "query_ms": 0,
+        "diagnostics": {
+          "top5": [],
+          "first_relevant_rank": -1
+        }
+      },
+      "hybrid": {
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0,
+        "mrr@10": 1.0,
+        "query_ms": 11.317,
+        "build_ms": 0.0,
+        "hits": 5,
+        "files": [
+          "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+          "pom.xml",
+          "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java"
+        ],
+        "diagnostics": {
+          "top5": [
+            {
+              "chunk_id": "ec216e720767594a",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": null,
+              "line_range": [
+                1,
+                6
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 1
+              },
+              "fused_score": 0.016393,
+              "matched_terms": [
+                "annotation",
+                "bean",
+                "service",
+                "spring",
+                "stereotype"
+              ]
+            },
+            {
+              "chunk_id": "5ba0148cf68df3bc",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": "OrderService",
+              "line_range": [
+                9,
+                44
+              ],
+              "chunk_type": "class",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 2
+              },
+              "fused_score": 0.016393,
+              "matched_terms": [
+                "service",
+                "spring"
+              ]
+            },
+            {
+              "chunk_id": "c0bcfdcbec257d22",
+              "file": "pom.xml",
+              "symbol_name": null,
+              "line_range": [
+                8,
+                45
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 2
+              },
+              "fused_score": 0.016129,
+              "matched_terms": [
+                "spring"
+              ]
+            },
+            {
+              "chunk_id": "ccd00f6a451d7856",
+              "file": "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+              "symbol_name": null,
+              "line_range": [
+                1,
+                7
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 3
+              },
+              "fused_score": 0.015873,
+              "matched_terms": [
+                "annotation",
+                "bean",
+                "service",
+                "spring"
+              ]
+            },
+            {
+              "chunk_id": "6951de3103aedbd0",
+              "file": "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+              "symbol_name": "TransactionSelfInvocationTest",
+              "line_range": [
+                13,
+                49
+              ],
+              "chunk_type": "class",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 4
+              },
+              "fused_score": 0.015873,
+              "matched_terms": [
+                "service",
+                "spring"
+              ]
+            }
+          ],
+          "first_relevant_rank": 0
+        },
+        "symbol_channel": {
+          "activated": false,
+          "input_symbols": [],
+          "symbol_hit_count": 0
+        }
+      }
+    },
+    {
+      "case_id": "retrieval-test-assertion-failure",
+      "split": "holdout",
+      "query_terms": [
+        "assert",
+        "equals",
+        "assertion",
+        "failure",
+        "rollback",
+        "expected",
+        "actual",
+        "count",
+        "test",
+        "verification",
+        "self",
+        "invocation",
+        "transaction",
+        "order",
+        "inner",
+        "method",
+        "throws",
+        "failed",
+        "error"
+      ],
+      "exact_symbols": [
+        "TransactionSelfInvocationTest",
+        "shouldRollbackOrderWhenInnerMethodThrows",
+        "AssertionFailedError"
+      ],
+      "baseline": {
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0,
+        "mrr@10": 1.0,
+        "query_ms": 3.0,
+        "hits": 2,
+        "files": [
+          "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+          "src/main/java/com/springfix/sample/transaction/service/OrderService.java"
+        ],
+        "diagnostics": {
+          "top5": [
+            {
+              "chunk_id": "b972507113b97dfe",
+              "file": "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+              "symbol_name": null,
+              "line_range": [
+                9,
+                45
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 1
+              },
+              "fused_score": 11.0,
+              "matched_terms": [
+                "assertEquals",
+                "assertion",
+                "count",
+                "expected",
+                "failure",
+                "rollback"
+              ]
+            },
+            {
+              "chunk_id": "15dd8dcf993aa2e7",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": null,
+              "line_range": [
+                42,
+                42
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 2
+              },
+              "fused_score": 2.0,
+              "matched_terms": [
+                "failure",
+                "rollback"
+              ]
+            }
+          ],
+          "first_relevant_rank": 0
+        }
+      },
+      "bm25": {
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0,
+        "mrr@10": 1.0,
+        "query_ms": 0.219,
+        "build_ms": 0.0,
+        "hits": 5,
+        "files": [
+          "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+          "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+          "src/main/java/com/springfix/sample/transaction/Application.java"
+        ],
+        "diagnostics": {
+          "top5": [
+            {
+              "chunk_id": "b51bf5d4ec6a6eef",
+              "file": "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+              "symbol_name": "shouldRollbackOrderWhenInnerMethodThrows",
+              "line_range": [
+                29,
+                48
+              ],
+              "chunk_type": "method",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 1
+              },
+              "fused_score": 10.415494,
+              "matched_terms": [
+                "assert",
+                "equals",
+                "rollback",
+                "expected",
+                "actual",
+                "count",
+                "test",
+                "self",
+                "invocation",
+                "transaction"
+              ]
+            },
+            {
+              "chunk_id": "6951de3103aedbd0",
+              "file": "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+              "symbol_name": "TransactionSelfInvocationTest",
+              "line_range": [
+                13,
+                49
+              ],
+              "chunk_type": "class",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 2
+              },
+              "fused_score": 9.538659,
+              "matched_terms": [
+                "assert",
+                "equals",
+                "assertion",
+                "failure",
+                "rollback",
+                "expected",
+                "actual",
+                "count",
+                "test",
+                "self"
+              ]
+            },
+            {
+              "chunk_id": "5ba0148cf68df3bc",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": "OrderService",
+              "line_range": [
+                9,
+                44
+              ],
+              "chunk_type": "class",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 3
+              },
+              "fused_score": 2.667925,
+              "matched_terms": [
+                "failure",
+                "rollback",
+                "self",
+                "invocation",
+                "transaction",
+                "order",
+                "inner",
+                "method"
+              ]
+            },
+            {
+              "chunk_id": "3cac179d16f35109",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": "createOrderInTransaction",
+              "line_range": [
+                35,
+                43
+              ],
+              "chunk_type": "method",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 4
+              },
+              "fused_score": 2.186294,
+              "matched_terms": [
+                "failure",
+                "rollback",
+                "transaction",
+                "order"
+              ]
+            },
+            {
+              "chunk_id": "5ff3951b55542502",
+              "file": "src/main/java/com/springfix/sample/transaction/Application.java",
+              "symbol_name": "Application",
+              "line_range": [
+                7,
+                17
+              ],
+              "chunk_type": "class",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 5
+              },
+              "fused_score": 0.747689,
+              "matched_terms": [
+                "test",
+                "self",
+                "invocation",
+                "transaction"
+              ]
+            }
+          ],
+          "first_relevant_rank": 0
+        }
+      },
+      "symbol": {
+        "activated": true,
+        "input_symbols": [
+          "TransactionSelfInvocationTest",
+          "shouldRollbackOrderWhenInnerMethodThrows",
+          "AssertionFailedError"
+        ],
+        "hits": 2,
+        "query_ms": 8,
+        "diagnostics": {
+          "top5": [
+            {
+              "chunk_id": "1485f8c3f5e28358",
+              "file": "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+              "symbol_name": "TransactionSelfInvocationTest",
+              "line_range": [
+                22,
+                49
+              ],
+              "chunk_type": "class",
+              "sources": [
+                "symbol"
+              ],
+              "source_ranks": {
+                "symbol": 1
+              },
+              "fused_score": 0.0,
+              "matched_terms": [
+                "TransactionSelfInvocationTest"
+              ]
+            },
+            {
+              "chunk_id": "b6f4db87c0ed4af2",
+              "file": "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+              "symbol_name": "shouldRollbackOrderWhenInnerMethodThrows",
+              "line_range": [
+                31,
+                48
+              ],
+              "chunk_type": "method",
+              "sources": [
+                "symbol"
+              ],
+              "source_ranks": {
+                "symbol": 2
+              },
+              "fused_score": 0.0,
+              "matched_terms": [
+                "shouldRollbackOrderWhenInnerMethodThrows"
+              ]
+            }
+          ],
+          "first_relevant_rank": 0
+        }
+      },
+      "hybrid": {
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0,
+        "mrr@10": 1.0,
+        "query_ms": 20.148,
+        "build_ms": 0.0,
+        "hits": 5,
+        "files": [
+          "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+          "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+          "pom.xml",
+          "src/main/java/com/springfix/sample/transaction/Application.java"
+        ],
+        "diagnostics": {
+          "top5": [
+            {
+              "chunk_id": "4acde4a454782c5c",
+              "file": "src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+              "symbol_name": null,
+              "line_range": [
+                1,
+                46
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "symbol",
+                "baseline",
+                "bm25"
+              ],
+              "source_ranks": {
+                "symbol": 2,
+                "baseline": 1,
+                "bm25": 2
+              },
+              "fused_score": 0.02459,
+              "matched_terms": [
+                "TransactionSelfInvocationTest",
+                "actual",
+                "assert",
+                "assertion",
+                "count",
+                "equals",
+                "expected",
+                "failure",
+                "inner",
+                "invocation"
+              ]
+            },
+            {
+              "chunk_id": "5f624a793a4d0de7",
+              "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+              "symbol_name": null,
+              "line_range": [
+                1,
+                42
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline",
+                "bm25"
+              ],
+              "source_ranks": {
+                "baseline": 2,
+                "bm25": 4
+              },
+              "fused_score": 0.016129,
+              "matched_terms": [
+                "failure",
+                "inner",
+                "invocation",
+                "method",
+                "order",
+                "rollback",
+                "self",
+                "transaction"
+              ]
+            },
+            {
+              "chunk_id": "00606d5aa1404b61",
+              "file": "pom.xml",
+              "symbol_name": null,
+              "line_range": [
+                15,
+                37
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 3
+              },
+              "fused_score": 0.015873,
+              "matched_terms": [
+                "invocation",
+                "self",
+                "test",
+                "transaction"
+              ]
+            },
+            {
+              "chunk_id": "fa54d19e6ecf92d1",
+              "file": "src/main/java/com/springfix/sample/transaction/Application.java",
+              "symbol_name": null,
+              "line_range": [
+                1,
+                9
+              ],
+              "chunk_type": "file_window",
+              "sources": [
+                "baseline"
+              ],
+              "source_ranks": {
+                "baseline": 4
+              },
+              "fused_score": 0.015625,
+              "matched_terms": [
+                "invocation",
+                "self",
+                "test",
+                "transaction"
+              ]
+            },
+            {
+              "chunk_id": "5ff3951b55542502",
+              "file": "src/main/java/com/springfix/sample/transaction/Application.java",
+              "symbol_name": "Application",
+              "line_range": [
+                7,
+                17
+              ],
+              "chunk_type": "class",
+              "sources": [
+                "bm25"
+              ],
+              "source_ranks": {
+                "bm25": 5
+              },
+              "fused_score": 0.015385,
+              "matched_terms": [
+                "invocation",
+                "self",
+                "test",
+                "transaction"
+              ]
+            }
+          ],
+          "first_relevant_rank": 0
+        },
+        "symbol_channel": {
+          "activated": true,
+          "input_symbols": [
+            "TransactionSelfInvocationTest",
+            "shouldRollbackOrderWhenInnerMethodThrows",
+            "AssertionFailedError"
+          ],
+          "symbol_hit_count": 2
+        }
+      }
+    }
+  ],
+  "split_summary": {
+    "development": {
+      "baseline": {
+        "cases_evaluated": 7,
+        "small_sample": true,
+        "recall@1": 0.6429,
+        "recall@3": 0.9286,
+        "recall@5": 0.9286,
+        "mrr@10": 0.8571,
+        "mean_query_ms": 2.857,
+        "p95_query_ms": 6.0,
+        "mean_build_ms": 0
+      },
+      "bm25": {
+        "cases_evaluated": 7,
+        "small_sample": true,
+        "recall@1": 0.6429,
+        "recall@3": 0.7143,
+        "recall@5": 0.7143,
+        "mrr@10": 0.7143,
+        "mean_query_ms": 0.2,
+        "p95_query_ms": 0.499,
+        "mean_build_ms": 18.571
+      },
+      "hybrid": {
+        "cases_evaluated": 7,
+        "small_sample": true,
+        "recall@1": 0.6429,
+        "recall@3": 1.0,
+        "recall@5": 1.0,
+        "mrr@10": 0.8571,
+        "mean_query_ms": 10.52,
+        "p95_query_ms": 17.533,
+        "mean_build_ms": 0.0
+      }
+    },
+    "holdout": {
+      "baseline": {
+        "cases_evaluated": 6,
+        "small_sample": true,
+        "recall@1": 0.8333,
+        "recall@3": 1.0,
+        "recall@5": 1.0,
+        "mrr@10": 0.9167,
+        "mean_query_ms": 3.667,
+        "p95_query_ms": 4.0,
+        "mean_build_ms": 0
+      },
+      "bm25": {
+        "cases_evaluated": 6,
+        "small_sample": true,
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0,
+        "mrr@10": 1.0,
+        "mean_query_ms": 0.149,
+        "p95_query_ms": 0.219,
+        "mean_build_ms": 0.0
+      },
+      "hybrid": {
+        "cases_evaluated": 6,
+        "small_sample": true,
+        "recall@1": 0.8333,
+        "recall@3": 1.0,
+        "recall@5": 1.0,
+        "mrr@10": 0.9167,
+        "mean_query_ms": 14.598,
+        "p95_query_ms": 20.148,
+        "mean_build_ms": 0.0
+      }
+    },
+    "holdout_validated": {
+      "baseline": {
+        "cases_evaluated": 6,
+        "small_sample": true,
+        "recall@1": 0.8333,
+        "recall@3": 1.0,
+        "recall@5": 1.0,
+        "mrr@10": 0.9167,
+        "mean_query_ms": 3.333,
+        "p95_query_ms": 4.0,
+        "mean_build_ms": 0
+      },
+      "bm25": {
+        "cases_evaluated": 6,
+        "small_sample": true,
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0,
+        "mrr@10": 1.0,
+        "mean_query_ms": 0.142,
+        "p95_query_ms": 0.229,
+        "mean_build_ms": 0.0
+      },
+      "hybrid": {
+        "cases_evaluated": 6,
+        "small_sample": true,
+        "recall@1": 0.8333,
+        "recall@3": 1.0,
+        "recall@5": 1.0,
+        "mrr@10": 0.9167,
+        "mean_query_ms": 14.487,
+        "p95_query_ms": 22.753,
+        "mean_build_ms": 0.0
+      }
+    }
+  },
+  "parameter_comparison": {
+    "grid": [
+      {
+        "rrf_k": 10,
+        "symbol_weight": 1.0,
+        "hybrid_r@1": 0.6429,
+        "hybrid_r@3": 1.0,
+        "hybrid_mrr@10": 0.8571,
+        "symbol_activated_cases": 5
+      },
+      {
+        "rrf_k": 10,
+        "symbol_weight": 1.25,
+        "hybrid_r@1": 0.6429,
+        "hybrid_r@3": 1.0,
+        "hybrid_mrr@10": 0.8571,
+        "symbol_activated_cases": 5
+      },
+      {
+        "rrf_k": 10,
+        "symbol_weight": 1.5,
+        "hybrid_r@1": 0.6429,
+        "hybrid_r@3": 1.0,
+        "hybrid_mrr@10": 0.8571,
+        "symbol_activated_cases": 5
+      },
+      {
+        "rrf_k": 20,
+        "symbol_weight": 1.0,
+        "hybrid_r@1": 0.6429,
+        "hybrid_r@3": 1.0,
+        "hybrid_mrr@10": 0.8571,
+        "symbol_activated_cases": 5
+      },
+      {
+        "rrf_k": 20,
+        "symbol_weight": 1.25,
+        "hybrid_r@1": 0.6429,
+        "hybrid_r@3": 1.0,
+        "hybrid_mrr@10": 0.8571,
+        "symbol_activated_cases": 5
+      },
+      {
+        "rrf_k": 20,
+        "symbol_weight": 1.5,
+        "hybrid_r@1": 0.6429,
+        "hybrid_r@3": 1.0,
+        "hybrid_mrr@10": 0.8571,
+        "symbol_activated_cases": 5
+      },
+      {
+        "rrf_k": 40,
+        "symbol_weight": 1.0,
+        "hybrid_r@1": 0.6429,
+        "hybrid_r@3": 1.0,
+        "hybrid_mrr@10": 0.8571,
+        "symbol_activated_cases": 5
+      },
+      {
+        "rrf_k": 40,
+        "symbol_weight": 1.25,
+        "hybrid_r@1": 0.6429,
+        "hybrid_r@3": 1.0,
+        "hybrid_mrr@10": 0.8571,
+        "symbol_activated_cases": 5
+      },
+      {
+        "rrf_k": 40,
+        "symbol_weight": 1.5,
+        "hybrid_r@1": 0.6429,
+        "hybrid_r@3": 1.0,
+        "hybrid_mrr@10": 0.8571,
+        "symbol_activated_cases": 5
+      },
+      {
+        "rrf_k": 60,
+        "symbol_weight": 1.0,
+        "hybrid_r@1": 0.6429,
+        "hybrid_r@3": 1.0,
+        "hybrid_mrr@10": 0.8571,
+        "symbol_activated_cases": 5
+      },
+      {
+        "rrf_k": 60,
+        "symbol_weight": 1.25,
+        "hybrid_r@1": 0.6429,
+        "hybrid_r@3": 1.0,
+        "hybrid_mrr@10": 0.8571,
+        "symbol_activated_cases": 5
+      },
+      {
+        "rrf_k": 60,
+        "symbol_weight": 1.5,
+        "hybrid_r@1": 0.6429,
+        "hybrid_r@3": 1.0,
+        "hybrid_mrr@10": 0.8571,
+        "symbol_activated_cases": 5
+      }
+    ],
+    "best": {
+      "rrf_k": 10,
+      "symbol_weight": 1.0,
+      "hybrid_r@1": 0.6429,
+      "hybrid_r@3": 1.0,
+      "hybrid_mrr@10": 0.8571,
+      "symbol_activated_cases": 5
+    }
+  },
+  "frozen_params": {
+    "rrf_k": 10,
+    "symbol_weight": 1.0
+  },
+  "config": {
+    "top_k": 5,
+    "cases_file": "tests/fixtures/retrieval/benchmark/retrieval_cases.jsonl"
+  }
+}

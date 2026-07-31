@@ -2,9 +2,9 @@
 
 ## 当前状态
 
-- 阶段：M2（LLM 推理节点）已完成
-- 状态：M0 ✅ / M1 ✅ / M1.1 ✅ / M2 ✅
-- 上次更新：2026-07-29
+- 阶段：M3（代码检索增强）已完成
+- 状态：M0 ✅ / M1 ✅ / M1.1 ✅ / M2 ✅ / M3 ✅
+- 上次更新：2026-07-31
 
 ## M0 任务清单（已完成）
 
@@ -81,16 +81,38 @@
 三个 Live Case 只记录一次真实模型回归结果，不代表整体准确率。Prompt Injection
 Case 只验证当前防护设计和一次模型行为，不代表绝对安全。
 
-## M3 任务清单（待启动）
+## M3 任务清单（已完成 — 代码检索增强）
 
-| ID | 任务 |
-|----|------|
-| T3.1 | BM25 实现 |
-| T3.2 | Java 标识符分词 |
-| T3.3 | `find_java_symbol` 优化 |
-| T3.4 | 方法级或代码块级切分 |
-| T3.5 | 简单词法 vs BM25 Recall@K 对比 |
-| T3.6 | AgentState 扩展 M3 字段 |
+| ID | 任务 | 状态 |
+|----|------|------|
+| T3.1 | Java 标识符分词器（`tokenizer.py`） | 完成 |
+| T3.2 | Java 代码块切分（`chunker.py`，regex + brace-depth） | 完成 |
+| T3.3 | BM25Okapi 词法检索（`bm25.py`，rank-bm25） | 完成 |
+| T3.4 | BM25 索引管理（`index.py`，per-task 内存索引） | 完成 |
+| T3.5 | 符号检索（`symbol.py`，封装 find_java_symbol） | 完成 |
+| T3.6 | 查询构建（`query_builder.py`） | 完成 |
+| T3.7 | RRF 融合（`fusion.py`，k=10） | 完成 |
+| T3.8 | Baseline 保留（`baseline.py`，M1 词法评分作为 fallback） | 完成 |
+| T3.9 | 检索领域模型（`models.py`） | 完成 |
+| T3.10 | 检索诊断（`diagnostics.py`） | 完成 |
+| T3.11 | AgentState 扩展：`retrieval_strategy` / `retrieval_query` / `retrieval_diagnostics` | 完成 |
+| T3.12 | 配置扩展：`RETRIEVAL_*` 环境变量 | 完成 |
+| T3.13 | 检索评测：13 case + Recall@K / MRR@10 / P95 | 完成 |
+| T3.14 | 评测脚本 `scripts/run_retrieval_eval.py` | 完成 |
+| T3.15 | 最终验证：263 测试 + ruff + mypy strict + Live 3 case 回归 | 完成 |
+
+M3 关键成果：
+
+- 多通道检索（BM25 + 符号 + baseline + RRF 融合，k=10 三路等权）
+- 不新增 LLM 节点（仍为 3 次调用）
+- 检索评测指标（Recall@K / MRR / P95）不等于 Agent 准确率
+- M1 词法评分保留为 baseline fallback 和评测对照
+- Symbol 通道部分输入来自模拟的 `IssueAnalysis.extracted_symbols`，属于 enriched-query retrieval
+- `expected_symbols` 只作为金标，不进入 `RetrievalQuery`
+- 当前评测主要是相关文件级 Recall/MRR；方法块、行号和证据片段级排序质量尚未被完整量化
+- Hybrid 的定位是提高 Top-K 召回完整性，不代表全面提升 Top-1 排序
+- `k=10`、三路等权是在当前指标全部相同情况下选择的简单配置，不是大规模调优结果
+- 当前 Benchmark 样本规模小（13 case），不代表生产环境召回率或 Agent 根因准确率
 
 ## M4 任务清单（待启动）
 

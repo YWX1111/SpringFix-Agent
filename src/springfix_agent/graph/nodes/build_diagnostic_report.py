@@ -86,6 +86,24 @@ def build_diagnostic_report(state: AgentState) -> dict[str, Any]:
         for lc in state.get("llm_calls", []) or []
     ]
 
+    retrieval_strategy = str(state.get("retrieval_strategy", "") or "")
+    retrieval_diag = dict(state.get("retrieval_diagnostics") or {})
+    retrieval_summary_public: dict[str, object] = {}
+    if retrieval_diag:
+        retrieval_summary_public = {
+            "strategy": retrieval_strategy,
+            "files_scanned": retrieval_diag.get("files_scanned", 0),
+            "chunks_created": retrieval_diag.get("chunks_created", 0),
+            "chunks_indexed": retrieval_diag.get("chunks_indexed", 0),
+            "index_build_duration_ms": retrieval_diag.get("index_build_duration_ms", 0),
+            "baseline_hits": retrieval_diag.get("baseline_hits", 0),
+            "bm25_hits": retrieval_diag.get("bm25_hits", 0),
+            "symbol_hits": retrieval_diag.get("symbol_hits", 0),
+            "fusion_hits": retrieval_diag.get("fusion_hits", 0),
+            "truncated": retrieval_diag.get("truncated", False),
+            "fallback_used": retrieval_diag.get("fallback_used", False),
+        }
+
     json_report: dict[str, Any] = {
         "task_id": state["task_id"],
         "status": state["status"],
@@ -96,6 +114,7 @@ def build_diagnostic_report(state: AgentState) -> dict[str, Any]:
         "extracted_symbols": extracted_symbols,
         "candidate_files": candidate_files,
         "retrieved_snippets": snippets_meta,
+        "retrieval": retrieval_summary_public,
         "root_cause_analysis": rca_public,
         "warnings": warnings,
         "errors": errors,
@@ -262,8 +281,27 @@ def _render_markdown(state: AgentState, status: str, json_report: dict[str, Any]
         md.append("(无警告)")
     md.append("")
 
+    retrieval = json_report.get("retrieval") or {}
+    if retrieval:
+        md.append("## 检索摘要")
+        md.append(f"- strategy: `{retrieval.get('strategy', 'unknown')}`")
+        md.append(f"- files_scanned: {retrieval.get('files_scanned', 0)}")
+        md.append(f"- chunks_indexed: {retrieval.get('chunks_indexed', 0)}")
+        md.append(
+            f"- baseline_hits: {retrieval.get('baseline_hits', 0)}, "
+            f"bm25_hits: {retrieval.get('bm25_hits', 0)}, "
+            f"symbol_hits: {retrieval.get('symbol_hits', 0)}"
+        )
+        md.append(f"- fusion_hits: {retrieval.get('fusion_hits', 0)}")
+        if retrieval.get("fallback_used"):
+            md.append("- ⚠ BM25 降级到 Baseline")
+        if retrieval.get("truncated"):
+            md.append("- ⚠ 仓库规模达到上限，结果可能被截断")
+        md.append("")
+
     md.append("## 后续检查方向")
-    md.append("- 当前检索基于 M1 简单词法评分；M3 将接入 BM25 对比 Recall@K")
+    md.append("- 当前检索使用 BM25 + Baseline + Symbol 三路融合（M3）")
+    md.append("- BM25 是词法检索，不是语义检索；Embedding 留到后续里程碑")
     md.append("- 当前不会修改或执行用户代码；自动修复留到阶段 3+")
     md.append("- 单个 Case 的诊断结果不代表整体准确率；完整评测留到 M4")
     md.append("")

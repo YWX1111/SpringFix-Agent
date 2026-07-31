@@ -1,87 +1,32 @@
-"""retrieve_code node: lexical search and bounded file reads.
+"""retrieve_code node: hybrid multi-channel retrieval (M3).
 
-M2 enhancement: search queries are merged from multiple sources:
-    - state["issue_description"] (original user text)
-    - issue_analysis.search_terms
-    - investigation_plan.steps[].search_terms
-    - issue_analysis.exception_types
-    - exception class names extracted from error_log
+M3 replaces the M1 line-level lexical search with a multi-channel pipeline:
 
-All terms are de-duplicated, capped at MAX_QUERY_TOKENS, then joined
-into a single query string for one search_code call. Results continue
-to use M1's deterministic lexical scoring (no BM25 in M2).
+1. Build RetrievalQuery from state (issue_description, IssueAnalysis, etc.)
+2. Chunk the repository into CodeChunks
+3. Run Baseline (M1 lexical scoring), BM25, and Symbol retrieval
+4. Fuse results via Reciprocal Rank Fusion
+5. Return top-K snippets with real file paths and line numbers
+
+On any channel failure, the pipeline degrades gracefully.
+RootCauseAnalyzer evidence validation rules remain unchanged.
 """
 
 from __future__ import annotations
 
-import re
+import logging
+from pathlib import Path
 from typing import Any
 
 from springfix_agent.graph.state import MAX_SNIPPETS, AgentState, RetrievedSnippet
 from springfix_agent.observability.tracer import Tracer
-from springfix_agent.tools._invoker import invoke_tool
+from springfix_agent.retrieval.diagnostics import diagnostics_to_summary
+from springfix_agent.retrieval.index import run_retrieval
 from springfix_agent.tools.base import ToolContext
-from springfix_agent.tools.read_file import ReadFileTool
-from springfix_agent.tools.search_code import SearchCodeTool
 
-SEARCH_TOP_K = 5
-MAX_HITS_TO_READ = MAX_SNIPPETS
-MAX_QUERY_TOKENS = 20
+_LOGGER = logging.getLogger(__name__)
 
-_EXCEPTION_CLASS_RE = re.compile(r"\b([A-Z][A-Za-z0-9_]*Exception)\b")
-
-
-def _collect_query_terms(state: AgentState) -> list[str]:
-    """Merge search terms from all M2 sources, de-duplicated, capped."""
-    out: list[str] = []
-    seen: set[str] = set()
-
-    def _add(token: str) -> None:
-        trimmed = token.strip()
-        if not trimmed or len(trimmed) < 2 or trimmed in seen:
-            return
-        seen.add(trimmed)
-        out.append(trimmed)
-
-    # 1. Original issue description - extract Java identifiers
-    for tok in re.findall(r"[A-Za-z_][A-Za-z0-9_]*", state["issue_description"]):
-        if len(tok) >= 3:
-            _add(tok)
-
-    # 2. IssueParser search_terms
-    issue_analysis = state.get("issue_analysis") or {}
-    raw_search_terms = issue_analysis.get("search_terms")
-    if isinstance(raw_search_terms, list):
-        for term in raw_search_terms:
-            if isinstance(term, str):
-                _add(term)
-
-    # 3. TaskPlanner search_terms from each step
-    plan = state.get("investigation_plan") or {}
-    raw_steps = plan.get("steps")
-    if isinstance(raw_steps, list):
-        for step in raw_steps:
-            if isinstance(step, dict):
-                raw_step_terms = step.get("search_terms")
-                if isinstance(raw_step_terms, list):
-                    for term in raw_step_terms:
-                        if isinstance(term, str):
-                            _add(term)
-
-    # 4. exception_types from IssueParser
-    raw_exception_types = issue_analysis.get("exception_types")
-    if isinstance(raw_exception_types, list):
-        for et in raw_exception_types:
-            if isinstance(et, str):
-                _add(et)
-
-    # 5. Exception class names from error_log
-    error_log = state.get("error_log")
-    if error_log:
-        for m in _EXCEPTION_CLASS_RE.finditer(error_log):
-            _add(m.group(1))
-
-    return out[:MAX_QUERY_TOKENS]
+SEARCH_TOP_K = MAX_SNIPPETS
 
 
 def retrieve_code(
@@ -89,78 +34,64 @@ def retrieve_code(
     *,
     ctx: ToolContext,
     tracer: Tracer,
-    search_tool: SearchCodeTool,
-    read_tool: ReadFileTool,
+    search_tool: Any = None,
+    read_tool: Any = None,
 ) -> dict[str, Any]:
-    """Run lexical search and read top candidate files as bounded snippets."""
+    """Run hybrid multi-channel retrieval and return bounded snippets.
+
+    The ``search_tool`` and ``read_tool`` parameters are accepted for
+    backward compatibility but are no longer used in the M3 pipeline.
+    """
     if not state["validation_ok"]:
         return {}
 
-    query_terms = _collect_query_terms(state)
-    query = " ".join(query_terms) if query_terms else state["issue_description"]
+    repo_path = Path(ctx["repository_path"])
 
-    search_result = invoke_tool(
-        search_tool,
-        {"query": query, "top_k": SEARCH_TOP_K},
-        ctx,
-        "retrieve_code",
-        tracer,
-    )
-
-    snippets: list[RetrievedSnippet] = []
-    seen_files: set[str] = set()
-    total_hits = 0
-
-    if search_result["status"] == "success":
-        hits_raw = search_result["data"].get("hits", [])
-        hits: list[dict[str, object]] = (
-            [h for h in hits_raw if isinstance(h, dict)] if isinstance(hits_raw, list) else []
+    try:
+        fused_hits, diag, query = run_retrieval(
+            repo_path,
+            dict(state),
+            top_k=SEARCH_TOP_K,
         )
-        total_hits = len(hits)
-        for hit in hits:
-            if len(snippets) >= MAX_HITS_TO_READ:
-                break
-            file_path = str(hit.get("file", ""))
-            if not file_path or file_path in seen_files:
-                continue
-            seen_files.add(file_path)
-            read_result = invoke_tool(
-                read_tool,
-                {"relative_path": file_path},
-                ctx,
-                "retrieve_code",
-                tracer,
-            )
-            if read_result["status"] != "success":
-                continue
-            data = read_result["data"]
-            line_range_raw = data.get("line_range", [1, 1])
-            if isinstance(line_range_raw, list) and len(line_range_raw) >= 2:
-                lr0 = line_range_raw[0]
-                lr1 = line_range_raw[1]
-                line_range_tuple = (
-                    int(lr0) if isinstance(lr0, (int, float)) else 1,
-                    int(lr1) if isinstance(lr1, (int, float)) else 1,
-                )
-            else:
-                line_range_tuple = (1, 1)
-            score_raw = hit.get("score", 0.0)
-            matched_raw = hit.get("matched_terms", [])
-            snippets.append(
-                RetrievedSnippet(
-                    file=file_path,
-                    line_range=line_range_tuple,
-                    content=str(data.get("content", "")),
-                    score=float(score_raw) if isinstance(score_raw, (int, float)) else 0.0,
-                    symbols=[str(t) for t in matched_raw] if isinstance(matched_raw, list) else [],
-                )
-            )
+    except Exception as e:  # noqa: BLE001
+        _LOGGER.warning("retrieve_code pipeline failed: %s", e)
+        return {
+            "retrieved_snippets": [],
+            "retrieval_summary": f"hybrid retrieval failed: {type(e).__name__}: {str(e)[:200]}",
+            "retrieval_strategy": "fallback",
+            "retrieval_query": {},
+            "retrieval_diagnostics": {"error": str(e)[:500]},
+            "warnings": [f"retrieve_code: hybrid retrieval failed: {type(e).__name__}"],
+        }
 
-    summary = (
-        f"search_terms={len(query_terms)}, search_hits={total_hits}, "
-        f"snippets={len(snippets)}"
-    )
+    # Convert RetrievalHits to RetrievedSnippets.
+    snippets: list[RetrievedSnippet] = []
+    for hit in fused_hits:
+        if len(snippets) >= MAX_SNIPPETS:
+            break
+        chunk = hit.chunk
+        snippets.append(RetrievedSnippet(
+            file=chunk.file,
+            line_range=(chunk.start_line, chunk.end_line),
+            content=chunk.content,
+            score=hit.fused_score,
+            symbols=hit.matched_terms[:20],
+        ))
+
+    strategy = "hybrid"
+    if diag.fallback_used:
+        strategy = "fallback"
+    elif not diag.bm25_hits and diag.baseline_hits:
+        strategy = "baseline"
+
+    summary = diagnostics_to_summary(diag)
+    warnings: list[str] = list(diag.warnings)
+
     return {
         "retrieved_snippets": snippets,
         "retrieval_summary": summary,
+        "retrieval_strategy": strategy,
+        "retrieval_query": query.model_dump(),
+        "retrieval_diagnostics": diag.model_dump(),
+        "warnings": warnings,
     }

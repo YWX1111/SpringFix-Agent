@@ -1,4 +1,4 @@
-"""LangGraph builder for M2.
+"""LangGraph builder for M3.
 
 Seven-node static linear graph:
 
@@ -40,8 +40,6 @@ from springfix_agent.observability.tracer import NodeTiming, Tracer
 from springfix_agent.tools.base import ToolContext
 from springfix_agent.tools.find_java_symbol import FindJavaSymbolTool
 from springfix_agent.tools.list_project_tree import ListProjectTreeTool
-from springfix_agent.tools.read_file import ReadFileTool
-from springfix_agent.tools.search_code import SearchCodeTool
 
 NodeFn = Callable[[AgentState], dict[str, Any]]
 
@@ -62,8 +60,6 @@ def build_graph(
     )
 
     list_tree = ListProjectTreeTool()
-    search = SearchCodeTool()
-    read = ReadFileTool()
     find_sym = FindJavaSymbolTool()
 
     def make_node(name: str, fn: Callable[..., dict[str, Any]]) -> NodeFn:
@@ -122,8 +118,6 @@ def build_graph(
             state,
             ctx=ctx,
             tracer=tracer,
-            search_tool=search,
-            read_tool=read,
         )
 
     def _rca(state: AgentState) -> dict[str, Any]:

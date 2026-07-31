@@ -68,7 +68,9 @@ def root_cause_analyzer(
         "tracer": tracer,
     }
 
-    snippet_index = {s["file"]: s for s in snippets}
+    snippet_index: dict[str, list[RetrievedSnippet]] = {}
+    for s in snippets:
+        snippet_index.setdefault(s["file"], []).append(s)
 
     if not snippets:
         return {
@@ -149,9 +151,13 @@ def _render_snippets_block(snippets: list[RetrievedSnippet]) -> str:
 
 def _validate_evidence(
     analysis: RootCauseAnalysis,
-    snippet_index: dict[str, RetrievedSnippet],
+    snippet_index: dict[str, list[RetrievedSnippet]],
 ) -> tuple[RootCauseAnalysis, int, list[dict[str, object]]]:
     """Strip invalid evidence references; return (cleaned, dropped_count, rejections).
+
+    Each evidence reference is checked against **all** snippets for the
+    referenced file.  The reference passes if its line range falls within
+    *any* snippet from that file.
 
     Each rejection record carries:
         - candidate_index
@@ -167,8 +173,8 @@ def _validate_evidence(
     for c_idx, candidate in enumerate(analysis.candidates[:3]):
         kept: list[EvidenceReference] = []
         for e_idx, ref in enumerate(candidate.evidence):
-            snippet = snippet_index.get(ref.file)
-            if snippet is None:
+            file_snippets = snippet_index.get(ref.file)
+            if file_snippets is None:
                 dropped_total += 1
                 rejections.append({
                     "candidate_index": c_idx,
@@ -178,7 +184,6 @@ def _validate_evidence(
                     "referenced_line_range": [ref.start_line, ref.end_line],
                 })
                 continue
-            start, end = snippet["line_range"]
             if ref.start_line > ref.end_line:
                 dropped_total += 1
                 rejections.append({
@@ -189,15 +194,26 @@ def _validate_evidence(
                     "referenced_line_range": [ref.start_line, ref.end_line],
                 })
                 continue
-            if ref.start_line < start or ref.end_line > end:
+            # Check against any snippet for this file.
+            matched = any(
+                ref.start_line >= s["line_range"][0]
+                and ref.end_line <= s["line_range"][1]
+                for s in file_snippets
+            )
+            if not matched:
                 dropped_total += 1
+                # Report the widest snippet range for context.
+                widest = max(
+                    file_snippets,
+                    key=lambda s: s["line_range"][1] - s["line_range"][0],
+                )
                 rejections.append({
                     "candidate_index": c_idx,
                     "evidence_index": e_idx,
                     "rejection_reason": "line_range_outside_snippet",
                     "referenced_file": ref.file,
                     "referenced_line_range": [ref.start_line, ref.end_line],
-                    "snippet_line_range": [start, end],
+                    "snippet_line_range": list(widest["line_range"]),
                 })
                 continue
             kept.append(ref)

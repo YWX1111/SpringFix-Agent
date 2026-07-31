@@ -137,21 +137,39 @@
 
 ---
 
-## M3：代码检索增强
+## M3：代码检索增强（已完成）
 
 ### 范围
 
-- BM25 实现（替换 M1 的简单词法评分）
-- Java 标识符分词
-- `find_java_symbol` 优化分词和切分
-- 方法级或代码块级切分
-- 检索指标对比（M1 简单词法 vs BM25，Recall@K）
-- AgentState 扩展 M3 字段
+- 检索模块 `src/springfix_agent/retrieval/`：models / tokenizer / chunker / baseline / bm25 / symbol / query_builder / fusion / index / diagnostics
+- BM25Okapi 词法检索（rank-bm25 依赖），per-task 内存索引，不持久化
+- Java 标识符分词器：camelCase / PascalCase / snake_case / package paths / annotations / exception classes
+- Java 代码块切分：regex + brace-depth scanning，fallback 固定窗口（NOT Tree-sitter / AST）
+- 符号检索：封装 find_java_symbol
+- Reciprocal Rank Fusion：score = Σ weight_i / (k + rank)，k=10，三路等权
+- Baseline（M1 词法评分）保留为 fallback 和评测对照
+- AgentState 扩展：`retrieval_strategy` / `retrieval_query` / `retrieval_diagnostics`
+- 配置扩展：`RETRIEVAL_MAX_FILES` / `RETRIEVAL_MAX_FILE_BYTES` / `RETRIEVAL_MAX_CHUNKS` / `RETRIEVAL_TOP_K` / `RETRIEVAL_CHUNK_MAX_LINES` / `RETRIEVAL_CHUNK_MAX_CHARS` / `RETRIEVAL_CHUNK_OVERLAP_LINES` / `RETRIEVAL_MAX_QUERY_TERMS`
+- 检索评测：13 个 case（7 Development + 6 Holdout），Recall@1/3/5、MRR@10、P95 query time
+- 评测脚本 `scripts/run_retrieval_eval.py`
 
 ### 不做
 
-- Embedding、FAISS（后续）
+- Embedding、FAISS、向量检索（后续）
 - Tree-sitter AST（后续）
+- 新增 LLM 节点（仍为 3 次 LLM 调用）
+- SQLite 持久化（M4）
+- Agent 准确率评测（M4）
+
+### 验收标准
+
+1. 检索评测脚本可运行并输出 Recall@K / MRR@10 / P95
+2. BM25 索引 per-task 构建，不持久化
+3. Baseline 可切换，用于评测对照
+4. 证据验证规则不变：文件必须在 snippets 中，行号必须在 snippet 范围内
+5. 不新增 LLM 调用（仍为 3 次）
+6. 263 测试通过，ruff clean，mypy strict clean
+7. Live 回归：3 个 case 全部通过
 
 ---
 

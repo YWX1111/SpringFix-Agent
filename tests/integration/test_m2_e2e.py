@@ -205,7 +205,37 @@ def test_full_mock_run_generates_diagnostic_report(sample_repo) -> None:
             ]
         )
     )
-    mock.set_response(
+    # First run: discover actual snippet line ranges from the new chunker.
+    _, _, _, probe = _make_graph(mock, sample_repo)
+    snippets = probe.get("retrieved_snippets", [])
+    os_snippet = next(
+        (s for s in snippets if s["file"] == "src/main/java/com/example/OrderService.java"),
+        None,
+    )
+    # Use real snippet line range for evidence reference.
+    ev_start = os_snippet["line_range"][0] if os_snippet else 1
+    ev_end = os_snippet["line_range"][1] if os_snippet else 2
+
+    mock2 = MockLLMClient()
+    mock2.set_response(
+        IssueAnalysis(
+            issue_category="transaction",
+            summary="Transactional self-invocation bypass",
+            extracted_symbols=["OrderService", "createOrder"],
+            search_terms=["@Transactional"],
+            exception_types=["RuntimeException"],
+        )
+    )
+    mock2.set_response(
+        InvestigationPlan(
+            steps=[
+                InvestigationStep(step_id=1, objective="Browse tree", rationale="r1"),
+                InvestigationStep(step_id=2, objective="Find symbols", rationale="r2"),
+                InvestigationStep(step_id=3, objective="Read files", rationale="r3"),
+            ]
+        )
+    )
+    mock2.set_response(
         RootCauseAnalysis(
             diagnosis_status="complete",
             summary="AOP bypass",
@@ -217,8 +247,8 @@ def test_full_mock_run_generates_diagnostic_report(sample_repo) -> None:
                     evidence=[
                         EvidenceReference(
                             file="src/main/java/com/example/OrderService.java",
-                            start_line=1,
-                            end_line=2,
+                            start_line=ev_start,
+                            end_line=ev_end,
                             explanation="Self-invocation bypasses the AOP proxy",
                         )
                     ],
@@ -230,7 +260,7 @@ def test_full_mock_run_generates_diagnostic_report(sample_repo) -> None:
             ],
         )
     )
-    _, task_id, tracer, final = _make_graph(mock, sample_repo)
+    _, task_id, tracer, final = _make_graph(mock2, sample_repo)
     report = final["diagnostic_report"]
     assert "task_id" in report
     assert report["diagnosis_status"] == "complete"

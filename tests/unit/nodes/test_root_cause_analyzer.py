@@ -113,7 +113,7 @@ def test_root_cause_analyzer_valid_candidates() -> None:
         )
     ]
     analysis = _valid_analysis(snippets)
-    cleaned, dropped, _rej = _validate_evidence(analysis, {s["file"]: s for s in snippets})
+    cleaned, dropped, _rej = _validate_evidence(analysis, {s["file"]: [s] for s in snippets})
     assert dropped == 0
     assert len(cleaned.candidates) == 1
 
@@ -149,7 +149,7 @@ def test_root_cause_analyzer_rejects_unknown_file() -> None:
             )
         ],
     )
-    cleaned, dropped, _rej = _validate_evidence(analysis, {s["file"]: s for s in snippets})
+    cleaned, dropped, _rej = _validate_evidence(analysis, {s["file"]: [s] for s in snippets})
     assert dropped >= 1
     assert len(cleaned.candidates) == 0
 
@@ -185,7 +185,7 @@ def test_root_cause_analyzer_rejects_out_of_range_lines() -> None:
             )
         ],
     )
-    cleaned, dropped, _rej = _validate_evidence(analysis, {s["file"]: s for s in snippets})
+    cleaned, dropped, _rej = _validate_evidence(analysis, {s["file"]: [s] for s in snippets})
     assert dropped >= 1
 
 

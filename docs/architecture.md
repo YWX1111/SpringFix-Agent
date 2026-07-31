@@ -110,7 +110,7 @@ class ToolContext(TypedDict):
 |------|---------|
 | M1 | 输入字段、validate_input 输出、explore_repository 输出、retrieve_code 输出、build_basic_report 输出、tool_calls、node_timings、errors、status、current_node |
 | M2 | `issue_analysis`、`investigation_plan`、`root_cause_analysis`、`diagnostic_report`、`llm_calls`、`warnings` |
-| M3 | 检索评分、代码块、检索元数据 |
+| M3 | `retrieval_strategy`、`retrieval_query`、`retrieval_diagnostics` |
 
 每次新增字段必须有实际节点使用，不创建纯占位字段。
 
@@ -154,9 +154,9 @@ class TaskService:
   4. 没有明确符号时跳过该工具
 - Graph 必须适用于不同仓库和不同方法名
 
-## 7. 检索评分规则（M1 起强制）
+## 7. 检索评分规则（M1 起强制，M3 多通道增强）
 
-M1 `search_code` 实现简单确定性词法评分：
+M1 `search_code` 实现简单确定性词法评分（M3 保留为 baseline fallback）：
 
 | 命中类型 | 权重 |
 |---------|------|
@@ -168,8 +168,28 @@ M1 `search_code` 实现简单确定性词法评分：
 
 - 按总分降序返回 Top K
 - 无任何命中时返回空结果
-- M1 不引入 `rank_bm25`
-- M3 再实现 BM25，并通过同一批 Case 对比简单词法评分和 BM25 的 Recall@K
+
+M3 多通道检索管线（`retrieval/` 模块）：
+
+```
+AgentState (issue_analysis + investigation_plan)
+    │
+    ├─► query_builder.py ──► 构建检索查询
+    │
+    ├─► bm25.py ──► BM25Okapi 词法检索（rank-bm25）    ──┐
+    ├─► symbol.py ──► 符号检索（封装 find_java_symbol） ──┤
+    ├─► baseline.py ──► M1 词法评分（fallback）          ──┤
+    │                                                        │
+    └─► fusion.py ──► Reciprocal Rank Fusion (k=10) ◄─────┘
+         │
+         └─► RetrievalResult (top-K 候选 chunks)
+```
+
+- BM25 是**词法检索**（term matching），不是语义检索（无 Embedding / FAISS）
+- 索引按任务在内存中构建，不持久化
+- Java 标识符分词（`tokenizer.py`）：camelCase / PascalCase / snake_case / package paths / annotations / exception classes
+- 代码块切分（`chunker.py`）：regex + brace-depth scanning，fallback 固定窗口；不使用 Tree-sitter / AST
+- RRF 融合公式：score = Σ weight_i / (k + rank)，k=10，三路等权
 
 ## 8. 示例 Bug 复现方式（M1 起强制）
 
@@ -200,7 +220,7 @@ Java 21、Spring Boot 3、Spring MVC、MyBatis-Plus、MySQL、Redis、Redis Stre
 
 ### Python Agent 服务（M0+）
 
-Python 3.11+、FastAPI、Pydantic、Pydantic-Settings、Uvicorn、LangGraph（M1+）、HTTPX（M2 Live）、BM25（M3+）、FAISS / Tree-sitter / GitPython（后续）、Docker SDK（阶段 3+）
+Python 3.11+、FastAPI、Pydantic、Pydantic-Settings、Uvicorn、LangGraph（M1+）、HTTPX（M2 Live）、rank-bm25（M3+）、FAISS / Tree-sitter / GitPython（后续）、Docker SDK（阶段 3+）
 
 ### 部署（阶段 4+）
 
@@ -298,7 +318,7 @@ Case 只验证当前防护设计和一次模型行为，不代表绝对安全。
 
 ### M2 运行边界
 
-- 检索仍使用 M1 简单词法评分，BM25 在 M3 实现
+- 检索已升级为 M3 多通道（BM25 + 符号 + baseline + RRF）
 - 任务与 Trace 使用 `InMemoryTaskRepository`
 - 后台任务使用进程内 `threading.Thread`
 - Agent 不执行 Maven、不执行用户代码，也不修改代码
@@ -317,3 +337,27 @@ Case 只验证当前防护设计和一次模型行为，不代表绝对安全。
 - MyPy（静态类型检查）
 
 不引入：LangGraph、LangChain、Anthropic SDK、OpenAI SDK、rank_bm25、FAISS、Tree-sitter、SQLAlchemy、Redis、MinIO、Docker SDK。
+
+## 13. M3 阶段代码检索增强（已完成）
+
+M3 新增 `src/springfix_agent/retrieval/` 模块，实现多通道代码检索：
+
+| 文件 | 职责 |
+|------|------|
+| `models.py` | 检索领域模型（Chunk / RetrievalResult / RetrievalDiagnostics） |
+| `tokenizer.py` | Java 标识符分词器 |
+| `chunker.py` | Java 代码块切分（regex + brace-depth） |
+| `baseline.py` | M1 词法评分（fallback + 评测对照） |
+| `bm25.py` | BM25Okapi 词法检索 |
+| `symbol.py` | 符号检索（封装 find_java_symbol） |
+| `query_builder.py` | 从 AgentState 构建查询 |
+| `fusion.py` | Reciprocal Rank Fusion（k=10） |
+| `index.py` | BM25 索引管理 |
+| `diagnostics.py` | 检索诊断信息 |
+
+关键约束：
+
+- BM25 是词法检索，不是语义检索
+- 索引 per-task 内存构建，不持久化
+- 不新增 LLM 节点，不增加 LLM 调用次数
+- 代码块切分使用 regex + brace-depth scanning，不使用 Tree-sitter
