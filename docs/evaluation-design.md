@@ -10,9 +10,9 @@ Agent-facing 输入仅允许 `repository`、`issue_description` 和 `error_log`�
 `evidence_targets` 和 `expected_maven` 只供离线校验使用。
 
 Sample README 与 `benchmark/agent_cases.jsonl` 是 Benchmark 文档/金标准，
-未来 M4C Runner 必须从 Agent repository copy 中排除它们，避免根因泄漏。
+M4C Runner 已从 Agent repository copy 中排除它们，避免根因泄漏。
 
-> 本文档定义评测设计。Agent 评测运行器 `scripts/run_eval.py` 与实际评测结果输出推迟到 M4C。M4A 已完成 SQLite 持久化，为评测提供数据基础。M3 检索评测（Recall@K / MRR / P95）是检索质量指标，不等于 Agent 准确率。
+> 本文档定义评测设计。M4C 实现为 `scripts/run_agent_benchmark.py`。M4A 已完成 SQLite 持久化，但 M4C 结果使用脱敏文件 Artifact，不扩展 SQLite schema。M3 检索评测（Recall@K / MRR / P95）是检索质量指标，不等于 Agent 准确率。
 
 ## 1. 设计原则
 
@@ -140,25 +140,32 @@ M4 评测数据集至少包含 3 个可复现 Spring Boot Bug：
 - sample README 记录 Bug 描述、预期行为、实际行为、根因、复现命令、预期失败测试名称
 - 不使用伪造的复现结果
 
-## 6. 评测脚本设计（M4 实现）
+## 6. M4C 评测脚本
 
-文件：`scripts/run_eval.py`
+文件：`scripts/run_agent_benchmark.py`
 
 接口：
 
 ```bash
-uv run python scripts/run_eval.py --dataset tests/eval/cases.jsonl --output-dir eval_results/
+uv run python scripts/run_agent_benchmark.py --mode mock
+uv run python scripts/run_agent_benchmark.py --mode live
 ```
 
 行为：
 
-1. 加载 `cases.jsonl`
-2. 对每条用例：
-   - 调用 `POST /api/v1/tasks` 提交
-   - 轮询 `GET /api/v1/tasks/{id}` 直到 `status` 为 `completed` 或 `failed`
-   - 获取 `GET /api/v1/tasks/{id}/traces` 和 `/report`
-   - 计算指标
-3. 输出汇总报告到 `eval_results/`
+1. 加载 `benchmark/agent_cases.jsonl`。
+2. 对每条用例创建 sanitized repository copy，执行完整 7 节点 Graph。
+3. 删除临时副本后，由 deterministic evaluator 使用 Gold 比较 Agent 输出。
+4. 输出到 `artifacts/agent-eval/mock/` 或 `artifacts/agent-eval/live/`。
+
+### 6.1 M4C 0.8.0 固化基线
+
+- Mock Benchmark：`sample_size=3`，`3/3`，只验证 Runner/Evaluator/Artifact 链路，不代表模型能力。
+- Live Benchmark：使用 `qwen3.7-plus`，3 个 Case 均满足项目自定义 `case_pass` 工程规则。
+- Agent-facing 输入只有 `repository`、`issue_description`、`error_log`；Gold、Benchmark README/Markdown 和默认 `src/test` 不进入 Agent。
+- Evidence 必须通过 deterministic file/line validator；`rejected_evidence` 只衡量无效 repository evidence reference，不等同于模型全部事实幻觉。
+- Live Artifact 只保留脱敏结构化结果；不保存 API Key、Authorization/Bearer、完整 Base URL、完整 Prompt、raw response 或本机路径。
+- 该基线不代表生产准确率、Spring Bug 总体准确率或统计显著性；Token usage 不等于货币成本，当前没有 LLM Judge。
 
 ## 7. 当前阶段状态
 
@@ -167,7 +174,7 @@ uv run python scripts/run_eval.py --dataset tests/eval/cases.jsonl --output-dir 
 - M2：无评测输出
 - M2 的三个 Live Case 仅用于真实模型回归，不作为准确率或命中率评测
 - M3：检索评测（Recall@1/3/5、MRR@10、P95 query time），不输出 Agent 根因命中率
-- M4：完整评测运行与指标输出
+- M4C：完整评测运行与指标输出（已完成）
 
 **M0-M3 期间禁止输出 Agent 准确率或命中率数据**。M3 检索评测指标是检索质量度量，不等于 Agent 准确率。
 

@@ -219,13 +219,13 @@
 - `scripts/verify_benchmark_samples.py` 统一 Maven/Surefire verifier
 - Sample README 仅作 Benchmark 文档，不作为 Agent 输入
 
-### M4C：完整 Agent 评测（待启动）
+### M4C：完整 Agent 评测（已完成）
 
 #### 范围
 
-- 评测 Runner `scripts/run_eval.py`
-- 评测指标报告输出
-- README 补充实际评测结果
+- 评测 Runner `scripts/run_agent_benchmark.py`
+- Repository sanitizer、Gold isolation 与 Mock/Live 分离
+- 确定性评估指标和脱敏 JSON/Markdown 报告
 
 #### 评测指标
 
@@ -236,6 +236,15 @@
 - `average_duration_ms`
 - `tool_call_count`
 - `llm_call_count`
+
+#### 0.8.0 基线验收
+
+- Mock Benchmark：`3/3`，只验证 Runner/Evaluator/Artifact 链路，不代表模型能力
+- Live Benchmark：3 个 Case，模型 `qwen3.7-plus`，`sample_size=3`，均满足项目自定义 `case_pass` 规则
+- Gold、Benchmark README/Markdown 和默认 `src/test` 不进入 Agent
+- Evidence 经过 deterministic file/line validator；rejected evidence 只衡量无效 repository evidence reference
+- 结果不代表生产准确率、Spring Bug 总体准确率或统计显著性；当前没有 LLM Judge
+- Token usage 不等于货币成本
 
 #### 不做
 

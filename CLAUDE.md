@@ -4,7 +4,7 @@
 
 ## 阶段定位
 
-当前阶段：**M4B 多 Bug Benchmark（已完成）**；M4C 完整 Agent 评测尚未开始。
+当前阶段：**M4C 完整 Agent Benchmark（已完成）**；版本 0.8.0。
 
 M4A 在 M3 基础上新增 SQLite 持久化层：
 
@@ -119,6 +119,21 @@ M1.1 基线固化（M2 保留）：
 - 多 Agent / 循环 / Reflection → 推迟到阶段 3+
 - 任何 `raise NotImplementedError` 的占位实现文件
 
+## M4C Benchmark 约束
+
+- `benchmark/repository_view.py` 在每个 Case 前创建临时安全副本；原 Sample 不传入 Graph。
+- Agent 输入严格只有 `repository`、`issue_description`、`error_log`；Gold 字段只能在 evaluator 中使用。
+- 默认排除 README/Markdown、target、.git、benchmark、artifacts 和 `src/test`；`--include-tests` 仅是单独实验模式。
+- Runner 不修改 Sample，不执行 Maven，不执行自动修复，不扩展 Graph/Prompt/SQLite schema。
+- Mock 与 Live artifact 分目录；Live 只保存脱敏结构化结果，不保存 raw response、完整 Prompt、API Key 或绝对路径。
+- `case_pass` 是项目工作流验收规则，不称为生产准确率；3 个 Case 必须标记 `sample_size=3`。
+- Token usage 只接受 provider 返回值；缺失时写 `null`，不估算成本。
+
+M4C 0.8.0 已固化：Mock `3/3`；Live 使用 `qwen3.7-plus`，三个 Case 均满足
+项目自定义 `case_pass` 规则。该结果不代表生产准确率或统计显著性；当前没有
+LLM Judge。`rejected_evidence` 仅衡量被确定性文件/行号校验拒绝的 repository
+evidence reference，不描述模型全部事实幻觉；Token usage 不等于货币成本。
+
 ## 代码规范
 
 - Python 3.11+ 语法（本地开发环境为 3.13，CI 需兼容 3.11）
@@ -218,7 +233,7 @@ M3 多通道检索（`retrieval/` 模块）：
 - `tool_call_count`
 - `llm_call_count`
 
-M1-M3 期间不输出 Agent 准确率或命中率。M3 检索评测（Recall@K / MRR / P95）是检索质量指标，不等于 Agent 准确率。Agent 评测脚本 `scripts/run_eval.py` 推迟到 M4。
+M1-M3 期间不输出 Agent 准确率或命中率。M3 检索评测（Recall@K / MRR / P95）是检索质量指标，不等于 Agent 准确率。M4C Agent 评测脚本为 `scripts/run_agent_benchmark.py`。
 
 ## Git 策略
 

@@ -5,6 +5,7 @@ manifest contains gold labels for verification, while the agent only receives
 the repository path, issue description, and error log.
 """
 
+from springfix_agent.benchmark.evaluator import aggregate_metrics, evaluate_case
 from springfix_agent.benchmark.loader import (
     BenchmarkManifestError,
     load_benchmark_cases,
@@ -17,6 +18,7 @@ from springfix_agent.benchmark.models import (
     EvidenceTarget,
     ExpectedMavenResult,
 )
+from springfix_agent.benchmark.runner import BenchmarkRunner, run_benchmark
 
 __all__ = [
     "BenchmarkCase",
@@ -27,4 +29,8 @@ __all__ = [
     "load_cases",
     "load_jsonl",
     "load_manifest",
+    "BenchmarkRunner",
+    "aggregate_metrics",
+    "evaluate_case",
+    "run_benchmark",
 ]

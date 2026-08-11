@@ -37,7 +37,7 @@ def app() -> object:
 @pytest.fixture
 def client(allow_root: Path, mock_llm: LLMClient) -> TestClient:
     """TestClient wired to a fresh TaskService + MockLLMClient."""
-    app = FastAPI(title="SpringFix Agent", version="0.7.0")
+    app = FastAPI(title="SpringFix Agent", version="0.8.0")
     repository = InMemoryTaskRepository()
     app.state.task_service = TaskService(
         repository=repository,

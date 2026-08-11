@@ -83,6 +83,11 @@ samples/**/.gradle/
 artifacts/live-validation/*
 !artifacts/live-validation/README.md
 
+# M4C benchmark artifacts (case outputs are intentionally local by default)
+artifacts/agent-eval/mock/*
+artifacts/agent-eval/live/*
+!artifacts/agent-eval/README.md
+
 # SQLite database files (M4A)
 data/*.db
 data/*.db-wal

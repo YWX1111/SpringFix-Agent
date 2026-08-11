@@ -327,6 +327,20 @@ Case 只验证当前防护设计和一次模型行为，不代表绝对安全。
 - M4A 新增 SQLite 持久化，重启后历史可查，执行中任务标记中断
 - Agent 不执行 Maven、不执行用户代码，也不修改代码
 
+## M4C 基线（0.8.0）
+
+M4C 的 Benchmark Runner 在每个 Case 前创建临时 Repository View，默认排除
+README/Markdown、`src/test`、`target`、`.git`、`benchmark` 和 `artifacts`，并在
+评估完成后清理临时目录。Agent-facing 输入严格限定为 `repository`、
+`issue_description` 和 `error_log`；Gold 只由执行后的 deterministic evaluator 使用。
+
+Mock Benchmark 固定为 3 个 Case，验收结果为 `3/3`，只验证 Runner/Evaluator/Artifact
+链路，不代表模型能力。0.8.0 Live 基线使用 `qwen3.7-plus`，`sample_size=3`，三个
+Case 均满足项目自定义 `case_pass` 工程规则。Evidence 必须通过确定性文件/行号
+校验；rejected evidence 只表示无效 repository evidence reference，不等同于全部
+事实幻觉。Live 只保存脱敏结构化结果，不保存 API Key、完整 Prompt、raw response
+或本机路径；当前没有 LLM Judge，Token usage 也不等于货币成本。
+
 ## 14. M4A 阶段 SQLite 持久化（已完成）
 
 M4A 新增 SQLite 存储层：

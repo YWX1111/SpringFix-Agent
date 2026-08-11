@@ -2,9 +2,9 @@
 
 ## 当前状态
 
-- 阶段：M4A（SQLite 持久化）已完成
-- 状态：M0 ✅ / M1 ✅ / M1.1 ✅ / M2 ✅ / M3 ✅ / M4A ✅
-- 上次更新：2026-07-31
+- 阶段：M4C（完整 Agent Benchmark）已完成
+- 状态：M0 ✅ / M1 ✅ / M1.1 ✅ / M2 ✅ / M3 ✅ / M4A ✅ / M4B ✅ / M4C ✅
+- 上次更新：2026-08-11
 
 ## M0 任务清单（已完成）
 
@@ -137,13 +137,16 @@ M3 关键成果：
 | T4B.2 | Benchmark Manifest、Gold 校验和统一 Maven verifier | 完成 |
 | T4B.3 | CI 接入三个 Sample，保留原事务 verifier 兼容性 | 完成 |
 
-### M4C（待启动 — 完整 Agent 评测）
+### M4C（已完成 — 完整 Agent 评测）
 
 | ID | 任务 |
 |----|------|
-| T4C.1 | 评测 Runner `scripts/run_eval.py` |
-| T4C.2 | 评测指标报告输出 |
-| T4C.3 | README 补充实际评测结果 |
+| T4C.1 | Repository sanitizer 与 Gold isolation |
+| T4C.2 | Mock/Live Runner 与 deterministic evaluator |
+| T4C.3 | 脱敏 JSON/Markdown artifact 与指标报告 |
+| T4C.4 | Mock 3 Case 回归与 Python quality gates |
+| T4C.5 | Live 3 Case 基线验收（qwen3.7-plus，sample_size=3） |
+| T4C.6 | 0.8.0 基线固化：Gold isolation、脱敏 Artifact、回归与发布 tag |
 
 ## 阶段切换准则
 

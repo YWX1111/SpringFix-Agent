@@ -6,7 +6,7 @@
 
 ## 当前阶段
 
-**M4B（多 Bug Benchmark）** 已完成。M4A 的 SQLite 持久化与任务重启语义保持不变，本轮新增三个故意失败的 Spring Boot Sample、Manifest 金标准和离线 Maven/Surefire verifier。
+**M4C（完整 Agent Benchmark Runner）** 已完成。M4A 的 SQLite 持久化和 M4B 的三个故意失败 Sample 保持不变，本轮新增隔离型 Repository View、Mock/Live Runner、确定性 evaluator/metrics 和脱敏报告。
 
 M4A 产出：
 
@@ -25,7 +25,7 @@ M4A 产出：
 - 当前没有 LangGraph Checkpoint，执行中的 Graph 不能续跑
 - 当前没有 Redis Stream，仍为进程内后台线程
 - M4B 已增加三个故意失败的 Bug Benchmark Sample；M4C 才进行完整 Agent 评测
-- M4C 才进行完整 Agent 评测
+- M4C Runner 默认使用 Mock，Live 模式必须显式配置 OpenAI-compatible provider
 
 M3 产出（M4A 保留）：
 
@@ -102,7 +102,31 @@ uv run python scripts/verify_sample_bug.py
 uv run python scripts/verify_benchmark_samples.py
 uv run python scripts/validate_agent_benchmark.py
 uv run python scripts/run_retrieval_eval.py  # M3 检索评测
+uv run python scripts/run_agent_benchmark.py --mode mock
 ```
+
+### M4C Agent Benchmark
+
+```powershell
+uv run python scripts/run_agent_benchmark.py --mode mock
+uv run python scripts/run_agent_benchmark.py --mode live
+uv run python scripts/run_agent_benchmark.py --mode mock --case transaction-self-invocation
+uv run python scripts/run_agent_benchmark.py --mode mock --include-tests
+```
+
+Runner 默认将 Sample 复制到临时目录，仅保留 Agent 所需的生产代码和配置；
+README/Markdown、target、.git、benchmark、artifacts 和默认的 `src/test` 会被排除，
+运行结束后临时目录会清理。产物分开写入 `artifacts/agent-eval/mock/` 或
+`artifacts/agent-eval/live/`。Live 产物不保存完整 Prompt、raw response、API Key
+或本地绝对路径。Mock 结果只验证 Runner/Evaluator/Artifact 框架，不代表模型能力。
+
+M4C 0.8.0 固化基线：Mock Benchmark 为 `3/3`；Live Benchmark 使用
+`qwen3.7-plus`，`sample_size=3`，三个 Case 均满足本项目自定义的
+`case_pass` 工程验收规则。该结果不代表 Spring Bug 准确率、生产准确率或统计显著性。
+Gold、Benchmark README/Markdown 和默认 `src/test` 不进入 Agent；Evidence 必须经过
+deterministic file/line validator。`rejected_evidence` 只表示被确定性校验拒绝的
+repository evidence reference，不等同于模型全部事实幻觉；Token usage 不等于货币成本，
+当前没有 LLM Judge。
 
 ## API 使用
 
@@ -268,7 +292,7 @@ CI 不依赖任何 LLM API Key。Mock 模式跑全部测试。
 | M3 | 代码检索增强：BM25 + Java 标识符分词 + RRF 融合 + Recall@K 评测 | ✅ 完成 |
 | M4A | SQLite 持久化：任务/Trace/Report 重启可查 + 遗留任务中断处理 | ✅ 完成 |
 | M4B | 三个多 Bug Benchmark Sample + Manifest/Surefire verifier | ✅ 完成 |
-| M4C | 完整 Agent 评测 | 待启动 |
+| M4C | 完整 Agent 评测 | ✅ 完成 |
 
 ## 关键约束
 
@@ -292,6 +316,6 @@ CI 不依赖任何 LLM API Key。Mock 模式跑全部测试。
 
 ## 状态
 
-- 版本：0.7.0
-- 阶段：M4B 完成（多 Bug Sample、Manifest 与 Maven/Surefire verifier）
-- 上次更新：2026-07-31
+- 版本：0.8.0
+- 阶段：M4C 完成（隔离型 Agent Benchmark Runner、Mock/Live evaluator 与脱敏报告）
+- 上次更新：2026-08-11

@@ -123,6 +123,7 @@ class BenchmarkCase(BaseModel):
         "complete", "partial", "insufficient_evidence"
     ]
     expected_root_cause_keywords: list[str] = Field(default_factory=list)
+    keyword_groups: list[list[str]] | None = None
     expected_files: list[str] = Field(min_length=1)
     expected_symbols: list[str] = Field(min_length=1)
     evidence_targets: list[EvidenceTarget] = Field(min_length=1)
@@ -158,6 +159,22 @@ class BenchmarkCase(BaseModel):
             result.append(item.strip())
         return result
 
+    @field_validator("keyword_groups", mode="before")
+    @classmethod
+    def _validate_keyword_groups(cls, value: object) -> list[list[str]] | None:
+        """Normalize optional keyword aliases without exposing them to the agent."""
+        if value is None:
+            return None
+        if not isinstance(value, list):
+            raise ValueError("keyword_groups must be a list")
+        groups: list[list[str]] = []
+        for group in value:
+            if not isinstance(group, list) or not group:
+                raise ValueError("keyword_groups must contain non-empty lists")
+            terms = _non_empty_strings(group, field_name="keyword_groups entry")
+            groups.append(terms)
+        return groups
+
     @field_validator("expected_files", "expected_symbols", mode="before")
     @classmethod
     def _validate_gold_lists(cls, value: object, info: ValidationInfo) -> list[str]:
@@ -185,6 +202,7 @@ class BenchmarkCase(BaseModel):
             "expected_issue_category": self.expected_issue_category,
             "expected_diagnosis_status": self.expected_diagnosis_status,
             "expected_root_cause_keywords": self.expected_root_cause_keywords,
+            "keyword_groups": self.keyword_groups,
             "expected_files": self.expected_files,
             "expected_symbols": self.expected_symbols,
             "evidence_targets": [target.model_dump() for target in self.evidence_targets],
