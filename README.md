@@ -316,6 +316,21 @@ CI 不依赖任何 LLM API Key。Mock 模式跑全部测试。
 
 ## 状态
 
-- 版本：0.8.0
-- 阶段：M4C 完成（隔离型 Agent Benchmark Runner、Mock/Live evaluator 与脱敏报告）
+- 版本：0.9.0
+- 阶段：M5A 完成（结构化 Patch Proposal、Evidence Gate、确定性 Validator）
 - 上次更新：2026-08-11
+## M5A Patch Proposal
+
+M5A is a review-only repair stage after the unchanged seven-node diagnostic
+Graph. It consumes validated RootCauseAnalysis, deterministic evidence, and
+real production-code snippets, then makes one independent Patch LLM call.
+
+```powershell
+uv run python scripts/run_patch_proposal.py --mode mock
+uv run python scripts/run_patch_proposal.py --mode live
+```
+
+It writes redacted `proposal.json` and `proposal.md` artifacts under
+`artifacts/repair-proposals/{mock|live}/`. M5A never applies a patch, modifies
+a sample repository, runs Maven, executes shell commands, or claims Repair
+Success. M5B Sandbox and M5C Maven verification remain out of scope.

@@ -250,3 +250,10 @@
 
 - 伪造准确率或命中率数据
 - LangSmith / Langfuse 上传
+## M5A scope
+
+M5A produces structured Patch Proposals from validated diagnosis evidence. It
+supports Mock/Live CLI execution and redacted JSON/Markdown artifacts. It does
+not mutate repositories, execute Maven or shell commands, apply patches, or
+define Repair Success. Patch Proposal Validation is the highest repair-stage
+metric until M5C adds isolated Maven verification.

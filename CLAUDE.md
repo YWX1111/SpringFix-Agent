@@ -4,7 +4,7 @@
 
 ## 阶段定位
 
-当前阶段：**M4C 完整 Agent Benchmark（已完成）**；版本 0.8.0。
+当前阶段：**M5A 结构化 Patch Proposal（已完成）**；版本 0.9.0。
 
 M4A 在 M3 基础上新增 SQLite 持久化层：
 
@@ -246,3 +246,15 @@ M1-M3 期间不输出 Agent 准确率或命中率。M3 检索评测（Recall@K /
 1. 当前里程碑所有验收标准通过（ruff + mypy strict + pytest + 实际启动验证 + 示例 Bug Maven 预期失败验证 + verify_sample_bug.py 通过）
 2. 没有创建任何下一里程碑的提前实现文件
 3. 用户明确确认"进入下一里程碑"
+## M5A Patch Proposal boundary
+
+Version `0.9.0` adds an independent `repair/` stage after the unchanged
+diagnostic Graph. The three diagnostic LLM calls remain unchanged; M5A adds
+one Patch LLM call only after validated RootCauseAnalysis and deterministic
+file/line evidence are available.
+
+The service and CLI create review artifacts only. They never modify samples,
+run Maven, execute shell commands, apply a proposal, or add a SQLite schema.
+The validator checks production paths, evidence overlap, true `old_code`,
+dangerous `new_code`, duplicate edits, and conflicts. M5B Sandbox and M5C
+Maven verification remain later milestones.

@@ -88,6 +88,11 @@ artifacts/agent-eval/mock/*
 artifacts/agent-eval/live/*
 !artifacts/agent-eval/README.md
 
+# M5A Patch Proposal artifacts (generated, redacted, and reproducible)
+artifacts/repair-proposals/mock/*
+artifacts/repair-proposals/live/*
+!artifacts/repair-proposals/README.md
+
 # SQLite database files (M4A)
 data/*.db
 data/*.db-wal

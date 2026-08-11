@@ -216,3 +216,17 @@ uv run python scripts/run_retrieval_eval.py
 - `k=10`、三路等权是在当前指标全部相同情况下选择的简单配置，不是大规模调优结果
 - BM25 是词法检索，不是语义检索
 - 当前 Benchmark 样本规模小（13 case），不代表生产环境召回率或 Agent 根因准确率
+## M5A Repair Proposal metrics
+
+M5A is evaluated separately from the M4C diagnostic benchmark. Each case
+records proposal status, edit counts, validated and rejected edits, valid edit
+rate, allowed-file rate, evidence-supported edit rate, real `old_code` match
+rate, acceptable-change concept hit, forbidden-file edits, diagnostic versus
+patch LLM calls, HTTP attempts, token usage, and latency.
+
+Aggregate output uses `sample_size`, `proposal_generation_rate`,
+`proposal_validation_rate`, `mean_valid_edit_rate`,
+`evidence_supported_edit_rate`, `acceptable_change_concept_hit_rate`, and
+`unsafe_proposal_rate`. These are proposal-stage metrics only and do not claim
+Repair Success. Gold is loaded only by the deterministic evaluator and never
+enters the Patch Prompt.

@@ -400,3 +400,18 @@ M3 新增 `src/springfix_agent/retrieval/` 模块，实现多通道代码检索�
 - 索引 per-task 内存构建，不持久化
 - 不新增 LLM 节点，不增加 LLM 调用次数
 - 代码块切分使用 regex + brace-depth scanning，不使用 Tree-sitter
+## M5A Repair Proposal layer
+
+```text
+completed diagnostic task
+  -> validated RootCauseAnalysis
+  -> deterministic validated evidence + real source ranges
+  -> PatchProposalGenerator (one independent LLM call)
+  -> PatchProposalValidator
+  -> review-only proposal artifact
+```
+
+The layer is outside the seven-node Graph. It enforces production path
+allowlisting, evidence overlap, real `old_code` matching, dangerous-code
+checks, duplicate/conflict checks, and rejected-edit auditing. It never writes
+repository files or executes Maven.

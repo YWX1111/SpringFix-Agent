@@ -163,3 +163,10 @@ M3 关键成果：
 | 阶段 2 | Vue 前端、Spring Boot 后端、MySQL/Redis/MinIO、SSE |
 | 阶段 3 | Docker 沙箱、Maven 测试、自动代码修改、反思修正、HITL |
 | 阶段 4 | MCP、Nginx、Docker Compose 生产部署 |
+## M5A (0.9.0) - Patch Proposal
+
+Completed: standalone repair models, one-call Patch Proposal generation,
+validated-evidence gate, deterministic validator, rejected-edit audit,
+Mock/Live CLI, three-case Repair Gold/evaluator, and redacted artifacts.
+
+Deferred: M5B Sandbox application and M5C Maven verification.

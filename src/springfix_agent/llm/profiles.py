@@ -43,6 +43,7 @@ from springfix_agent.llm.schemas import (
     RootCauseCandidate,
 )
 from springfix_agent.llm.trace import LLMCall
+from springfix_agent.repair.models import PatchEdit, PatchProposal
 
 ProfileName = str
 
@@ -421,6 +422,77 @@ def _benchmark_config_rca() -> RootCauseAnalysis:
     )
 
 
+def _benchmark_transaction_patch() -> PatchProposal:
+    return PatchProposal(
+        status="proposed",
+        summary="Route the public entry point through the Spring proxy by making its transaction boundary explicit.",
+        root_cause_reference="candidate:0",
+        edits=[
+            PatchEdit(
+                file="src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+                start_line=31,
+                end_line=31,
+                old_code="    public void createOrder() {",
+                new_code="    @Transactional\n    public void createOrder() {",
+                rationale="An external call now enters the service through a proxy-managed transaction boundary instead of relying on self-invocation.",
+            )
+        ],
+        verification_steps=["Later M5C verification should exercise rollback through the public service method."],
+        risks=["The transaction boundary now covers the public entry point and its downstream work."],
+        assumptions=["Callers obtain OrderService from Spring rather than constructing it directly."],
+    )
+
+
+def _benchmark_bean_patch() -> PatchProposal:
+    return PatchProposal(
+        status="proposed",
+        summary="Select the Stripe gateway explicitly for CheckoutService.",
+        root_cause_reference="candidate:0",
+        edits=[
+            PatchEdit(
+                file="src/main/java/com/springfix/sample/beans/service/CheckoutService.java",
+                start_line=4,
+                end_line=4,
+                old_code="import org.springframework.stereotype.Service;",
+                new_code="import org.springframework.beans.factory.annotation.Qualifier;\nimport org.springframework.stereotype.Service;",
+                rationale="Import the Spring qualifier used to disambiguate the constructor dependency.",
+            ),
+            PatchEdit(
+                file="src/main/java/com/springfix/sample/beans/service/CheckoutService.java",
+                start_line=12,
+                end_line=12,
+                old_code="    public CheckoutService(PaymentGateway paymentGateway) {",
+                new_code='    public CheckoutService(@Qualifier("stripePaymentGateway") PaymentGateway paymentGateway) {',
+                rationale="Choose one of the two PaymentGateway beans at the injection point.",
+            ),
+        ],
+        verification_steps=["Later M5C verification should start the context and inspect the selected gateway."],
+        risks=["The selected gateway is now an explicit application policy."],
+        assumptions=["The Stripe implementation bean name remains stripePaymentGateway."],
+    )
+
+
+def _benchmark_config_patch() -> PatchProposal:
+    return PatchProposal(
+        status="proposed",
+        summary="Align the YAML hierarchy with the validated ConfigurationProperties prefix.",
+        root_cause_reference="candidate:0",
+        edits=[
+            PatchEdit(
+                file="src/main/resources/application.yml",
+                start_line=2,
+                end_line=2,
+                old_code="  email:",
+                new_code="  mail:",
+                rationale="Use springfix.mail so the YAML path matches @ConfigurationProperties(prefix = \"springfix.mail\").",
+            )
+        ],
+        verification_steps=["Later M5C verification should bind timeoutSeconds and inspect its value."],
+        risks=["Existing deployments using the old email key must migrate their configuration."],
+        assumptions=["The Java prefix is the intended stable configuration contract."],
+    )
+
+
 _RESPONSE_FACTORIES: dict[ProfileName, dict[type[BaseModel], Callable[[], BaseModel]]] = {
     "happy_path": {
         IssueAnalysis: _happy_path_issue,
@@ -441,16 +513,19 @@ _RESPONSE_FACTORIES: dict[ProfileName, dict[type[BaseModel], Callable[[], BaseMo
         IssueAnalysis: _benchmark_transaction_issue,
         InvestigationPlan: _benchmark_transaction_plan,
         RootCauseAnalysis: _benchmark_transaction_rca,
+        PatchProposal: _benchmark_transaction_patch,
     },
     "benchmark_no_unique_bean": {
         IssueAnalysis: _benchmark_bean_issue,
         InvestigationPlan: _benchmark_bean_plan,
         RootCauseAnalysis: _benchmark_bean_rca,
+        PatchProposal: _benchmark_bean_patch,
     },
     "benchmark_config_prefix": {
         IssueAnalysis: _benchmark_config_issue,
         InvestigationPlan: _benchmark_config_plan,
         RootCauseAnalysis: _benchmark_config_rca,
+        PatchProposal: _benchmark_config_patch,
     },
 }
 

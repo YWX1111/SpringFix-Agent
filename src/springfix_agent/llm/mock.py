@@ -36,6 +36,7 @@ from springfix_agent.llm.schemas import (
     RootCauseAnalysis,
 )
 from springfix_agent.llm.trace import LLMCall
+from springfix_agent.repair.models import PatchProposal
 
 Behavior = Literal["ok", "timeout", "connection", "rate_limit", "auth", "invalid_json", "schema_error"]
 
@@ -56,6 +57,13 @@ _SAFE_DEFAULTS: dict[type[BaseModel], BaseModel] = {
         summary="Mock default — no evidence configured.",
     ),
 }
+
+
+_SAFE_DEFAULTS[PatchProposal] = PatchProposal(
+    status="insufficient_evidence",
+    summary="Mock default - no patch response configured.",
+    root_cause_reference="none",
+)
 
 
 class MockLLMClient:
