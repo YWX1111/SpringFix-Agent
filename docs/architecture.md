@@ -56,7 +56,7 @@ class TaskRepository(Protocol):
     def get_report(self, task_id: str) -> Report | None: ...
 ```
 
-实现：M1 `InMemoryTaskRepository`，M4 `SqliteTaskRepository`。
+实现：M1 `InMemoryTaskRepository`，M4A `SqliteTaskRepository`。
 
 ### 2.3 Tracer Protocol
 
@@ -139,8 +139,9 @@ class TaskService:
 架构约束（必须在 API 文档和 README 中明示）：
 
 - 这是 MVP 临时方案
-- 服务重启会丢失正在运行的任务
+- 服务重启会丢失正在运行的任务（M4A 新增中断标记，但不续跑）
 - 不支持多实例协调
+- M4A 新增 SQLite 持久化，历史任务和报告可在重启后查询
 - 后续由 Redis Stream 或任务队列替换
 
 ## 6. 工具调用规则（M1 起强制）
@@ -220,7 +221,7 @@ Java 21、Spring Boot 3、Spring MVC、MyBatis-Plus、MySQL、Redis、Redis Stre
 
 ### Python Agent 服务（M0+）
 
-Python 3.11+、FastAPI、Pydantic、Pydantic-Settings、Uvicorn、LangGraph（M1+）、HTTPX（M2 Live）、rank-bm25（M3+）、FAISS / Tree-sitter / GitPython（后续）、Docker SDK（阶段 3+）
+Python 3.11+、FastAPI、Pydantic、Pydantic-Settings、Uvicorn、LangGraph（M1+）、HTTPX（M2 Live）、rank-bm25（M3+）、SQLite 标准库（M4A+）、FAISS / Tree-sitter / GitPython（后续）、Docker SDK（阶段 3+）
 
 ### 部署（阶段 4+）
 
@@ -319,9 +320,31 @@ Case 只验证当前防护设计和一次模型行为，不代表绝对安全。
 ### M2 运行边界
 
 - 检索已升级为 M3 多通道（BM25 + 符号 + baseline + RRF）
-- 任务与 Trace 使用 `InMemoryTaskRepository`
+- 任务与 Trace 使用 `SqliteTaskRepository`（默认）或 `InMemoryTaskRepository`
 - 后台任务使用进程内 `threading.Thread`
+- M4A 新增 SQLite 持久化，重启后历史可查，执行中任务标记中断
 - Agent 不执行 Maven、不执行用户代码，也不修改代码
+
+## 14. M4A 阶段 SQLite 持久化（已完成）
+
+M4A 新增 SQLite 存储层：
+
+| 文件 | 职责 |
+|------|------|
+| `storage/sqlite_repository.py` | SQLite 实现 `TaskRepository` Protocol |
+| `storage/migration.py` | 最小迁移系统（幂等、事务、版本记录） |
+| `storage/migrations/001_initial.sql` | 初始 Schema（四张表） |
+
+关键约束：
+
+- 使用 Python 标准库 `sqlite3`，不引入 SQLAlchemy / Alembic
+- WAL 模式 + busy_timeout 支持并发读和串行写
+- 每个操作开独立连接，不跨线程复用
+- foreign_keys 强制开启
+- 参数化 SQL，禁止字符串拼接
+- 重启遗留任务处理：pending/running → failed + `interrupted_by_service_restart`
+- 不实现 LangGraph Checkpoint，不恢复执行中 Graph
+- SQLite 适用于本地单机 MVP，不代表生产数据库方案
 
 ## 12. M0 阶段技术栈（精简）
 

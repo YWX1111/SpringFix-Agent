@@ -47,9 +47,19 @@ class Settings(BaseSettings):
     retrieval_chunk_overlap_lines: int = Field(default=5)
     retrieval_max_query_terms: int = Field(default=50)
 
+    # M4A persistence configuration
+    task_repository: str = Field(default="sqlite")
+    sqlite_path: str = Field(default="./data/springfix.db")
+    sqlite_busy_timeout_ms: int = Field(default=5000)
+    sqlite_wal_enabled: bool = Field(default=True)
+
     def resolved_allow_root(self) -> Path:
         """Return allow_root as an absolute, canonicalized path."""
         return self.allow_root.resolve()
+
+    def resolved_sqlite_path(self) -> Path:
+        """Return sqlite_path as an absolute, canonicalized path."""
+        return Path(self.sqlite_path).resolve()
 
 
 @lru_cache(maxsize=1)

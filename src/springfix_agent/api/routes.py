@@ -96,8 +96,8 @@ def get_task(task_id: str, request: Request) -> TaskStatusResponse:
     task = service.get_task(task_id)
     if task is None:
         raise _not_found(task_id)
-    error_message: str | None = None
-    if task.status == "failed":
+    error_message: str | None = task.error_message
+    if task.status == "failed" and not error_message:
         traces = service.get_traces(task_id)
         errs = [
             str(t.payload.get("error"))

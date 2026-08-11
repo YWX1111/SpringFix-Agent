@@ -41,8 +41,9 @@ class TaskRepository(Protocol):
         task_id: str,
         status: TaskStatus,
         current_node: str | None = None,
+        error_message: str | None = None,
     ) -> None:
-        """Update a task's status and optionally its current_node."""
+        """Update a task's status and optionally its current_node / error_message."""
         ...
 
     def save_trace(self, task_id: str, trace: Trace) -> None:

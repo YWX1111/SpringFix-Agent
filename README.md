@@ -6,9 +6,28 @@
 
 ## 当前阶段
 
-**M3（代码检索增强）** 已完成。M2 Agent 工作流基础上新增多通道代码检索模块，提升候选文件召回质量。
+**M4A（SQLite 持久化与任务重启语义）** 已完成。将存储层从纯内存升级为可配置 Repository（InMemory / SQLite），支持任务、Trace、报告的持久化以及服务重启后的历史查询。
 
-M2 产出：
+M4A 产出：
+
+- `SqliteTaskRepository` 实现 `TaskRepository` Protocol
+- SQLite Schema 与迁移系统（`migrations/001_initial.sql`）
+- 四张表：`schema_migrations`、`tasks`、`traces`、`reports`
+- WAL 模式 + busy_timeout 支持并发读和串行写
+- 重启遗留任务处理：pending/running 标记为 `interrupted_by_service_restart`
+- 历史任务和结果可在重启后查询，但执行中的任务不能续跑
+- 配置：`TASK_REPOSITORY=sqlite|memory`，默认 SQLite
+- 数据文件：`data/springfix.db`，已被 `.gitignore` 排除
+- 311 测试通过（+48），ruff clean，mypy strict clean
+
+**M4A 边界说明**：
+- SQLite 适用于本地单机 MVP，不代表生产数据库方案
+- 当前没有 LangGraph Checkpoint，执行中的 Graph 不能续跑
+- 当前没有 Redis Stream，仍为进程内后台线程
+- M4B 才增加多个 Bug Benchmark
+- M4C 才进行完整 Agent 评测
+
+M3 产出（M4A 保留）：
 
 - 7 节点 LangGraph：`validate_input → issue_parser → task_planner → explore_repository → retrieve_code → root_cause_analyzer → build_diagnostic_report`
 - 3 个 LLM 节点（IssueParser / TaskPlanner / RootCauseAnalyzer）
@@ -245,7 +264,9 @@ CI 不依赖任何 LLM API Key。Mock 模式跑全部测试。
 | M1.1 | 基线固化：结构化错误 + verify_sample_bug + CI | ✅ 完成 |
 | M2 | LLM 推理节点：IssueParser / TaskPlanner / RootCauseAnalyzer | ✅ 完成 |
 | M3 | 代码检索增强：BM25 + Java 标识符分词 + RRF 融合 + Recall@K 评测 | ✅ 完成 |
-| M4 | 持久化与评测：SQLite + 3 个 Bug + 评测 Runner | 待启动 |
+| M4A | SQLite 持久化：任务/Trace/Report 重启可查 + 遗留任务中断处理 | ✅ 完成 |
+| M4B | 多 Bug Benchmark + 评测 Runner | 待启动 |
+| M4C | 完整 Agent 评测 | 待启动 |
 
 ## 关键约束
 
@@ -260,15 +281,15 @@ CI 不依赖任何 LLM API Key。Mock 模式跑全部测试。
 
 ## 已知限制
 
-1. **后台任务不可靠**：进程内 threading.Thread，重启丢失在途任务
+1. **后台任务不可靠**：进程内 threading.Thread，重启丢失在途任务。M4A 新增遗留任务中断标记，但执行中的 Graph 不能续跑
 2. **检索已升级为多通道**：M3 新增 BM25 词法检索 + 符号检索 + RRF 融合（k=10，三路等权），M1 词法评分保留为 baseline
-3. **InMemory 存储**：重启丢失所有任务和 Trace
+3. **SQLite 持久化**：M4A 新增 SQLite 存储，支持重启后历史查询。InMemory 仍可用于测试。SQLite 适用于本地单机 MVP
 4. **Agent 不执行 Maven**：示例 Bug 可 `mvn test` 复现，但 Agent 不执行 Maven
 5. **Live 模式需手动启用**：默认 Mock，不调真实模型
 6. **符号链接测试平台差异**：Windows 跳过，Linux CI 必须执行
 
 ## 状态
 
-- 版本：0.5.0
-- 阶段：M3 完成（代码检索增强）
+- 版本：0.6.0
+- 阶段：M4A 完成（SQLite 持久化与任务重启语义）
 - 上次更新：2026-07-31

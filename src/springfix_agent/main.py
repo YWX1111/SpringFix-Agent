@@ -21,6 +21,7 @@ from springfix_agent.llm.client import LLMClient
 from springfix_agent.llm.mock import MockLLMClient
 from springfix_agent.service.task_service import TaskService
 from springfix_agent.storage.in_memory import InMemoryTaskRepository
+from springfix_agent.storage.repository import TaskRepository
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -51,14 +52,50 @@ def _build_llm_client(settings: Settings) -> LLMClient:
     return MockLLMClient()
 
 
+def _build_repository(settings: Settings) -> TaskRepository:
+    """Construct the TaskRepository based on TASK_REPOSITORY setting.
+
+    - ``memory`` → InMemoryTaskRepository
+    - ``sqlite`` → SqliteTaskRepository (runs migration + restart recovery)
+    """
+    if settings.task_repository == "memory":
+        _LOGGER.info("using InMemoryTaskRepository")
+        return InMemoryTaskRepository()
+    if settings.task_repository == "sqlite":
+        from springfix_agent.storage.migration import migrate
+        from springfix_agent.storage.sqlite_repository import SqliteTaskRepository
+
+        db_path = settings.resolved_sqlite_path()
+        _LOGGER.info("using SqliteTaskRepository at %s", db_path)
+        migrate(
+            db_path,
+            wal_enabled=settings.sqlite_wal_enabled,
+            busy_timeout_ms=settings.sqlite_busy_timeout_ms,
+        )
+        repo = SqliteTaskRepository(
+            db_path,
+            wal_enabled=settings.sqlite_wal_enabled,
+            busy_timeout_ms=settings.sqlite_busy_timeout_ms,
+        )
+        interrupted = repo.mark_interrupted_tasks()
+        if interrupted:
+            _LOGGER.info("marked %d interrupted task(s) as failed on startup", interrupted)
+        return repo
+    _LOGGER.warning(
+        "unknown TASK_REPOSITORY %r, falling back to memory",
+        settings.task_repository,
+    )
+    return InMemoryTaskRepository()
+
+
 def create_app(settings: Settings | None = None) -> FastAPI:
-    """Build the FastAPI application instance with M2 task routes wired up."""
+    """Build the FastAPI application instance with M4A task routes wired up."""
     resolved = settings if settings is not None else get_settings()
     app = FastAPI(
         title="SpringFix Agent",
         description=(
             "Intelligent diagnosis and repair platform for Java/Spring Boot projects. "
-            "M2 stage: LLM-assisted diagnostic graph (mock by default)."
+            "M4A stage: SQLite persistence with restart recovery."
         ),
         version=__version__,
         docs_url="/docs",
@@ -67,7 +104,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     )
     app.state.settings = resolved
 
-    repository = InMemoryTaskRepository()
+    repository = _build_repository(resolved)
     llm = _build_llm_client(resolved)
     app.state.task_service = TaskService(
         repository=repository,

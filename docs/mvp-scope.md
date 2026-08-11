@@ -175,16 +175,55 @@
 
 ## M4：持久化与评测
 
-### 范围
+### M4A：SQLite 持久化与任务重启语义（已完成）
+
+#### 范围
 
 - `SqliteTaskRepository` 实现 `TaskRepository` Protocol
-- SQLite Schema 与迁移
+- SQLite Schema：`schema_migrations`、`tasks`、`traces`、`reports`
+- 迁移系统：`migrations/001_initial.sql`，幂等、事务、版本记录
+- WAL 模式 + busy_timeout 支持并发读和串行写
+- 重启遗留任务处理：pending/running 标记为 `interrupted_by_service_restart`
+- 配置：`TASK_REPOSITORY=sqlite|memory`，默认 SQLite
+- 数据文件：`data/springfix.db`，已被 `.gitignore` 排除
+- 48 个新测试覆盖迁移/CRUD/Trace/Report/持久化/并发/重启
+- API 路径和 M3 Agent Graph 不变
+
+#### 不做
+
+- LangGraph Checkpoint
+- 恢复执行中 Graph
+- Redis Stream / Docker 沙箱
+- 新 Bug Benchmark（M4B）
+- Agent 评测 Runner（M4C）
+- 修改 Graph / LLM / Prompt / 检索算法
+
+#### 验收标准
+
+1. SQLite Repository 实现 Protocol 全部方法
+2. 迁移幂等、版本记录、失败回滚
+3. 重启后历史任务/Trace/报告可查询
+4. pending/running 任务重启后标记为 interrupted failure
+5. WAL + busy_timeout 支持并发读写
+6. 311 测试通过，ruff clean，mypy strict clean
+7. API 路径和响应格式不变
+
+### M4B：多 Bug Benchmark（待启动）
+
+#### 范围
+
 - 至少 3 个可复现 Spring Boot Bug 样本
+- Benchmark 数据集扩展
+
+### M4C：完整 Agent 评测（待启动）
+
+#### 范围
+
 - 评测 Runner `scripts/run_eval.py`
 - 评测指标报告输出
 - README 补充实际评测结果
 
-### 评测指标
+#### 评测指标
 
 - `issue_category_accuracy`
 - `key_file_recall@5`
@@ -194,7 +233,7 @@
 - `tool_call_count`
 - `llm_call_count`
 
-### 不做
+#### 不做
 
 - 伪造准确率或命中率数据
 - LangSmith / Langfuse 上传

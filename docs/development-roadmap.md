@@ -2,8 +2,8 @@
 
 ## 当前状态
 
-- 阶段：M3（代码检索增强）已完成
-- 状态：M0 ✅ / M1 ✅ / M1.1 ✅ / M2 ✅ / M3 ✅
+- 阶段：M4A（SQLite 持久化）已完成
+- 状态：M0 ✅ / M1 ✅ / M1.1 ✅ / M2 ✅ / M3 ✅ / M4A ✅
 - 上次更新：2026-07-31
 
 ## M0 任务清单（已完成）
@@ -114,16 +114,35 @@ M3 关键成果：
 - `k=10`、三路等权是在当前指标全部相同情况下选择的简单配置，不是大规模调优结果
 - 当前 Benchmark 样本规模小（13 case），不代表生产环境召回率或 Agent 根因准确率
 
-## M4 任务清单（待启动）
+## M4 任务清单
+
+### M4A（已完成 — SQLite 持久化与任务重启语义）
+
+| ID | 任务 | 状态 |
+|----|------|------|
+| T4A.1 | `SqliteTaskRepository` 实现 | 完成 |
+| T4A.2 | SQLite Schema 与迁移系统 | 完成 |
+| T4A.3 | 配置扩展：`TASK_REPOSITORY` / `SQLITE_PATH` / `SQLITE_BUSY_TIMEOUT_MS` / `SQLITE_WAL_ENABLED` | 完成 |
+| T4A.4 | 重启遗留任务处理（pending/running → interrupted failure） | 完成 |
+| T4A.5 | `main.py` 依赖注入（根据配置选择 Repository） | 完成 |
+| T4A.6 | 测试：48 个新测试覆盖迁移/CRUD/Trace/Report/持久化/并发/重启 | 完成 |
+| T4A.7 | 手动重启验证 + 性能记录 | 完成 |
+| T4A.8 | 文档更新 + 最终验证：311 测试 + ruff + mypy strict | 完成 |
+
+### M4B（待启动 — 多 Bug Benchmark）
 
 | ID | 任务 |
 |----|------|
-| T4.1 | `SqliteTaskRepository` 实现 |
-| T4.2 | SQLite Schema 与迁移 |
-| T4.3 | 创建 2 个新 Bug 样本（共 3 个） |
-| T4.4 | 评测 Runner `scripts/run_eval.py` |
-| T4.5 | 评测指标报告输出 |
-| T4.6 | README 补充实际评测结果 |
+| T4B.1 | 创建 2 个新 Bug 样本（共 3 个） |
+| T4B.2 | Benchmark 数据集扩展 |
+
+### M4C（待启动 — 完整 Agent 评测）
+
+| ID | 任务 |
+|----|------|
+| T4C.1 | 评测 Runner `scripts/run_eval.py` |
+| T4C.2 | 评测指标报告输出 |
+| T4C.3 | README 补充实际评测结果 |
 
 ## 阶段切换准则
 

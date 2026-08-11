@@ -40,6 +40,9 @@ class Task(BaseModel):
     current_node: str | None = Field(
         default=None, description="Most recent node name during execution."
     )
+    error_message: str | None = Field(
+        default=None, description="Failure reason, e.g. interrupted_by_service_restart."
+    )
 
 
 class Trace(BaseModel):
@@ -53,7 +56,7 @@ class Trace(BaseModel):
     """
 
     task_id: str
-    kind: Literal["tool_call", "node_timing", "llm_call"]
+    kind: Literal["tool_call", "node_timing", "llm_call", "system_recovery"]
     recorded_at: datetime = Field(default_factory=_utc_now)
     payload: dict[str, object] = Field(
         description="Typed payload; structure depends on ``kind``.",

@@ -123,8 +123,8 @@
         "recall@3": 0.0,
         "recall@5": 0.0,
         "mrr@10": 0.0,
-        "query_ms": 0.499,
-        "build_ms": 130.0,
+        "query_ms": 0.552,
+        "build_ms": 135.0,
         "hits": 0,
         "files": [],
         "diagnostics": {
@@ -147,7 +147,7 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "mrr@10": 0.5,
-        "query_ms": 12.428,
+        "query_ms": 12.403,
         "build_ms": 0.0,
         "hits": 4,
         "files": [
@@ -340,7 +340,7 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "mrr@10": 1.0,
-        "query_ms": 0.316,
+        "query_ms": 0.37,
         "build_ms": 0.0,
         "hits": 5,
         "files": [
@@ -474,7 +474,7 @@
           "JdbcTemplate"
         ],
         "hits": 1,
-        "query_ms": 6,
+        "query_ms": 7,
         "diagnostics": {
           "top5": [
             {
@@ -506,7 +506,7 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "mrr@10": 1.0,
-        "query_ms": 16.852,
+        "query_ms": 19.119,
         "build_ms": 0.0,
         "hits": 5,
         "files": [
@@ -785,7 +785,7 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "mrr@10": 1.0,
-        "query_ms": 0.103,
+        "query_ms": 0.142,
         "build_ms": 0.0,
         "hits": 5,
         "files": [
@@ -917,7 +917,7 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "mrr@10": 0.5,
-        "query_ms": 9.726,
+        "query_ms": 13.167,
         "build_ms": 0.0,
         "hits": 5,
         "files": [
@@ -1069,7 +1069,7 @@
         "recall@3": 0.5,
         "recall@5": 0.5,
         "mrr@10": 1.0,
-        "query_ms": 3.0,
+        "query_ms": 4.0,
         "hits": 2,
         "files": [
           "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
@@ -1130,7 +1130,7 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "mrr@10": 1.0,
-        "query_ms": 0.218,
+        "query_ms": 0.207,
         "build_ms": 0.0,
         "hits": 5,
         "files": [
@@ -1277,7 +1277,7 @@
           "createOrderInTransaction"
         ],
         "hits": 1,
-        "query_ms": 6,
+        "query_ms": 7,
         "diagnostics": {
           "top5": [
             {
@@ -1309,7 +1309,7 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "mrr@10": 1.0,
-        "query_ms": 17.533,
+        "query_ms": 20.144,
         "build_ms": 0.0,
         "hits": 5,
         "files": [
@@ -1492,7 +1492,7 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "mrr@10": 1.0,
-        "query_ms": 0.0,
+        "query_ms": 16.0,
         "hits": 1,
         "files": [
           "UserCacheService.java"
@@ -1530,7 +1530,7 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "mrr@10": 1.0,
-        "query_ms": 0.118,
+        "query_ms": 0.253,
         "build_ms": 0.0,
         "hits": 3,
         "files": [
@@ -1695,7 +1695,7 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "mrr@10": 1.0,
-        "query_ms": 2.599,
+        "query_ms": 2.964,
         "build_ms": 0.0,
         "hits": 1,
         "files": [
@@ -1813,7 +1813,7 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "mrr@10": 1.0,
-        "query_ms": 0.097,
+        "query_ms": 0.121,
         "build_ms": 0.0,
         "hits": 1,
         "files": [
@@ -1858,7 +1858,7 @@
           "reduceStock"
         ],
         "hits": 2,
-        "query_ms": 0,
+        "query_ms": 1,
         "diagnostics": {
           "top5": [
             {
@@ -1910,7 +1910,7 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "mrr@10": 1.0,
-        "query_ms": 2.164,
+        "query_ms": 2.77,
         "build_ms": 0.0,
         "hits": 1,
         "files": [
@@ -1978,7 +1978,7 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "mrr@10": 1.0,
-        "query_ms": 3.0,
+        "query_ms": 4.0,
         "hits": 2,
         "files": [
           "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
@@ -2035,7 +2035,7 @@
         "recall@3": 0.0,
         "recall@5": 0.0,
         "mrr@10": 0.0,
-        "query_ms": 0.05,
+        "query_ms": 0.066,
         "build_ms": 0.0,
         "hits": 0,
         "files": [],
@@ -2050,7 +2050,7 @@
           "createOrder"
         ],
         "hits": 1,
-        "query_ms": 3,
+        "query_ms": 4,
         "diagnostics": {
           "top5": [
             {
@@ -2082,7 +2082,7 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "mrr@10": 1.0,
-        "query_ms": 12.336,
+        "query_ms": 14.443,
         "build_ms": 0.0,
         "hits": 2,
         "files": [
@@ -2274,7 +2274,7 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "mrr@10": 1.0,
-        "query_ms": 0.143,
+        "query_ms": 0.175,
         "build_ms": 0.0,
         "hits": 5,
         "files": [
@@ -2427,7 +2427,7 @@
           "createOrderInTransaction"
         ],
         "hits": 1,
-        "query_ms": 6,
+        "query_ms": 7,
         "diagnostics": {
           "top5": [
             {
@@ -2459,7 +2459,7 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "mrr@10": 1.0,
-        "query_ms": 17.465,
+        "query_ms": 20.898,
         "build_ms": 0.0,
         "hits": 5,
         "files": [
@@ -2732,7 +2732,7 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "mrr@10": 1.0,
-        "query_ms": 0.105,
+        "query_ms": 0.123,
         "build_ms": 0.0,
         "hits": 4,
         "files": [
@@ -2870,7 +2870,7 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "mrr@10": 1.0,
-        "query_ms": 13.718,
+        "query_ms": 16.087,
         "build_ms": 0.0,
         "hits": 4,
         "files": [
@@ -3001,7 +3001,7 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "mrr@10": 1.0,
-        "query_ms": 3.0,
+        "query_ms": 4.0,
         "hits": 2,
         "files": [
           "src/main/java/com/springfix/sample/transaction/Application.java",
@@ -3062,7 +3062,7 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "mrr@10": 1.0,
-        "query_ms": 0.112,
+        "query_ms": 0.14,
         "build_ms": 0.0,
         "hits": 5,
         "files": [
@@ -3201,7 +3201,7 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "mrr@10": 0.5,
-        "query_ms": 10.754,
+        "query_ms": 12.822,
         "build_ms": 0.0,
         "hits": 5,
         "files": [
@@ -3358,7 +3358,7 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "mrr@10": 1.0,
-        "query_ms": 4.0,
+        "query_ms": 5.0,
         "hits": 2,
         "files": [
           "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
@@ -3418,7 +3418,7 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "mrr@10": 1.0,
-        "query_ms": 0.13,
+        "query_ms": 0.148,
         "build_ms": 0.0,
         "hits": 5,
         "files": [
@@ -3562,7 +3562,7 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "mrr@10": 1.0,
-        "query_ms": 14.189,
+        "query_ms": 15.693,
         "build_ms": 0.0,
         "hits": 5,
         "files": [
@@ -3824,7 +3824,7 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "mrr@10": 1.0,
-        "query_ms": 0.183,
+        "query_ms": 0.16,
         "build_ms": 0.0,
         "hits": 5,
         "files": [
@@ -3955,7 +3955,7 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "mrr@10": 1.0,
-        "query_ms": 11.317,
+        "query_ms": 13.293,
         "build_ms": 0.0,
         "hits": 5,
         "files": [
@@ -4181,7 +4181,7 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "mrr@10": 1.0,
-        "query_ms": 0.219,
+        "query_ms": 0.228,
         "build_ms": 0.0,
         "hits": 5,
         "files": [
@@ -4334,7 +4334,7 @@
           "AssertionFailedError"
         ],
         "hits": 2,
-        "query_ms": 8,
+        "query_ms": 10,
         "diagnostics": {
           "top5": [
             {
@@ -4386,7 +4386,7 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "mrr@10": 1.0,
-        "query_ms": 20.148,
+        "query_ms": 23.606,
         "build_ms": 0.0,
         "hits": 5,
         "files": [
@@ -4552,8 +4552,8 @@
         "recall@3": 0.9286,
         "recall@5": 0.9286,
         "mrr@10": 0.8571,
-        "mean_query_ms": 2.857,
-        "p95_query_ms": 6.0,
+        "mean_query_ms": 5.429,
+        "p95_query_ms": 16.0,
         "mean_build_ms": 0
       },
       "bm25": {
@@ -4563,9 +4563,9 @@
         "recall@3": 0.7143,
         "recall@5": 0.7143,
         "mrr@10": 0.7143,
-        "mean_query_ms": 0.2,
-        "p95_query_ms": 0.499,
-        "mean_build_ms": 18.571
+        "mean_query_ms": 0.244,
+        "p95_query_ms": 0.552,
+        "mean_build_ms": 19.286
       },
       "hybrid": {
         "cases_evaluated": 7,
@@ -4574,8 +4574,8 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "mrr@10": 0.8571,
-        "mean_query_ms": 10.52,
-        "p95_query_ms": 17.533,
+        "mean_query_ms": 12.144,
+        "p95_query_ms": 20.144,
         "mean_build_ms": 0.0
       }
     },
@@ -4587,8 +4587,8 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "mrr@10": 0.9167,
-        "mean_query_ms": 3.667,
-        "p95_query_ms": 4.0,
+        "mean_query_ms": 4.0,
+        "p95_query_ms": 5.0,
         "mean_build_ms": 0
       },
       "bm25": {
@@ -4598,8 +4598,8 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "mrr@10": 1.0,
-        "mean_query_ms": 0.149,
-        "p95_query_ms": 0.219,
+        "mean_query_ms": 0.162,
+        "p95_query_ms": 0.228,
         "mean_build_ms": 0.0
       },
       "hybrid": {
@@ -4609,8 +4609,8 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "mrr@10": 0.9167,
-        "mean_query_ms": 14.598,
-        "p95_query_ms": 20.148,
+        "mean_query_ms": 17.067,
+        "p95_query_ms": 23.606,
         "mean_build_ms": 0.0
       }
     },
@@ -4622,8 +4622,8 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "mrr@10": 0.9167,
-        "mean_query_ms": 3.333,
-        "p95_query_ms": 4.0,
+        "mean_query_ms": 3.667,
+        "p95_query_ms": 5.0,
         "mean_build_ms": 0
       },
       "bm25": {
@@ -4633,8 +4633,8 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "mrr@10": 1.0,
-        "mean_query_ms": 0.142,
-        "p95_query_ms": 0.229,
+        "mean_query_ms": 0.141,
+        "p95_query_ms": 0.225,
         "mean_build_ms": 0.0
       },
       "hybrid": {
@@ -4644,8 +4644,8 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "mrr@10": 0.9167,
-        "mean_query_ms": 14.487,
-        "p95_query_ms": 22.753,
+        "mean_query_ms": 14.712,
+        "p95_query_ms": 22.138,
         "mean_build_ms": 0.0
       }
     }

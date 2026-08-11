@@ -4,11 +4,29 @@
 
 ## 阶段定位
 
-当前阶段：**M3 代码检索增强（已完成）**。
+当前阶段：**M4A SQLite 持久化与任务重启语义（已完成）**。
 
-M3 在 M2 Agent 工作流基础上新增多通道代码检索模块（`retrieval/`），引入 BM25 词法检索、Java 标识符分词、代码块切分、符号检索和 Reciprocal Rank Fusion，提升候选文件召回质量。**不新增 LLM 节点**（仍为 3 次 LLM 调用），不引入 Embedding / FAISS / Tree-sitter。
+M4A 在 M3 基础上新增 SQLite 持久化层：
 
-M3 范围内已完成：
+- `SqliteTaskRepository` 实现 `TaskRepository` Protocol
+- SQLite Schema：`schema_migrations`、`tasks`、`traces`、`reports` 四张表
+- 迁移系统：`migrations/001_initial.sql`，幂等、事务、版本记录
+- WAL 模式 + busy_timeout 支持并发读和串行写
+- 重启遗留任务处理：pending/running 标记为 `interrupted_by_service_restart`
+- 配置：`TASK_REPOSITORY=sqlite|memory`，默认 SQLite
+- `InMemoryTaskRepository` 继续保留
+- API 路径和 M3 Agent Graph 不变
+- 不实现 LangGraph Checkpoint，不恢复执行中 Graph
+- SQLite 适用于本地单机 MVP，不代表生产数据库方案
+- 311 测试通过（+48），ruff clean，mypy strict clean
+
+M4A 不包含：
+- M4B 多 Bug Benchmark
+- M4C 完整 Agent 评测
+- Redis Stream / Docker 沙箱
+- 修改七节点 Graph / LLM / Prompt / 检索算法
+
+M3 范围内已完成（M4A 保留）：
 
 - 检索模块（`retrieval/`）：
   - `models.py`（检索领域模型：Chunk / RetrievalResult / RetrievalDiagnostics 等）
@@ -27,6 +45,7 @@ M3 范围内已完成：
 - 评测指标：Recall@1/3/5、MRR@10、P95 query time（检索指标，非 Agent 准确率）
 - 263 测试通过，ruff clean，mypy strict clean
 - Live 回归：3 个 case 全部通过，每个 3 次 LLM 调用
+- M4A 新增 48 个测试，共 311 个
 
 **检索评测说明**：
 - Symbol 通道的部分输入来自模拟的 `IssueAnalysis.extracted_symbols`，属于 enriched-query retrieval
@@ -86,14 +105,16 @@ M1.1 基线固化（M2 保留）：
 - LangGraph type ignore：7 处 `# type: ignore[call-overload]` 保留并加说明
 - 符号链接测试说明：Windows 本地跳过；Linux CI 必须执行
 
-## M3 禁止创建（M3 已实现 BM25 和检索评测）
+## M4A 禁止创建（M4A 已实现 SQLite 持久化）
 
+- 新 Bug Benchmark → 推迟到 M4B
+- Agent 评测 Runner → 推迟到 M4C
 - Embedding / FAISS / 向量检索 → 推迟到后续里程碑
-- Tree-sitter AST → 推迟到后续里程碑（M3 使用 regex + brace-depth scanning）
-- SQLite 实现 → 推迟到 M4
+- Tree-sitter AST → 推迟到后续里程碑
+- LangGraph Checkpoint → 推迟到后续里程碑
+- Redis Stream → 推迟到后续里程碑
 - Vue 前端 / Spring Boot 后端 / MySQL / Redis / MinIO → 推迟到阶段 2+
 - Docker 沙箱 / Maven 测试执行 / 自动代码修改 → 推迟到阶段 3+
-- Agent 评测运行器 → 推迟到 M4
 - 多 Agent / 循环 / Reflection → 推迟到阶段 3+
 - 任何 `raise NotImplementedError` 的占位实现文件
 
@@ -200,7 +221,7 @@ M1-M3 期间不输出 Agent 准确率或命中率。M3 检索评测（Recall@K /
 
 ## Git 策略
 
-- M0/M1/M1.1/M2/M3 已完成基线固化并提交 Git
+- M0/M1/M1.1/M2/M3/M4A 已完成基线固化并提交 Git
 
 ## 阶段切换准则
 

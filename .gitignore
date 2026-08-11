@@ -82,3 +82,9 @@ samples/**/.gradle/
 # Stable, redacted reports can be force-added if needed.
 artifacts/live-validation/*
 !artifacts/live-validation/README.md
+
+# SQLite database files (M4A)
+data/*.db
+data/*.db-wal
+data/*.db-shm
+!data/.gitkeep

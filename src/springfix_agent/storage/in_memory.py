@@ -76,6 +76,7 @@ class InMemoryTaskRepository:
         task_id: str,
         status: TaskStatus,
         current_node: str | None = None,
+        error_message: str | None = None,
     ) -> None:
         with self._lock:
             task = self._tasks.get(task_id)
@@ -88,6 +89,8 @@ class InMemoryTaskRepository:
                 update_data["finished_at"] = datetime.now(tz=UTC)
             if current_node is not None:
                 update_data["current_node"] = current_node
+            if error_message is not None:
+                update_data["error_message"] = error_message
             updated = task.model_copy(update=update_data)
             self._tasks[task_id] = updated
 

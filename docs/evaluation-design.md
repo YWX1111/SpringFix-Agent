@@ -1,6 +1,6 @@
 # 评测设计（Evaluation Design）
 
-> 本文档定义评测设计。Agent 评测运行器 `scripts/run_eval.py` 与实际评测结果输出推迟到 M4。M3 检索评测（Recall@K / MRR / P95）是检索质量指标，不等于 Agent 准确率。
+> 本文档定义评测设计。Agent 评测运行器 `scripts/run_eval.py` 与实际评测结果输出推迟到 M4C。M4A 已完成 SQLite 持久化，为评测提供数据基础。M3 检索评测（Recall@K / MRR / P95）是检索质量指标，不等于 Agent 准确率。
 
 ## 1. 设计原则
 
