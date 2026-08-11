@@ -6,7 +6,7 @@
 
 ## 当前阶段
 
-**M4A（SQLite 持久化与任务重启语义）** 已完成。将存储层从纯内存升级为可配置 Repository（InMemory / SQLite），支持任务、Trace、报告的持久化以及服务重启后的历史查询。
+**M4B（多 Bug Benchmark）** 已完成。M4A 的 SQLite 持久化与任务重启语义保持不变，本轮新增三个故意失败的 Spring Boot Sample、Manifest 金标准和离线 Maven/Surefire verifier。
 
 M4A 产出：
 
@@ -24,7 +24,7 @@ M4A 产出：
 - SQLite 适用于本地单机 MVP，不代表生产数据库方案
 - 当前没有 LangGraph Checkpoint，执行中的 Graph 不能续跑
 - 当前没有 Redis Stream，仍为进程内后台线程
-- M4B 才增加多个 Bug Benchmark
+- M4B 已增加三个故意失败的 Bug Benchmark Sample；M4C 才进行完整 Agent 评测
 - M4C 才进行完整 Agent 评测
 
 M3 产出（M4A 保留）：
@@ -99,6 +99,8 @@ uv run ruff check src/ tests/ scripts/
 uv run mypy --strict src/
 uv run pytest tests/ -v
 uv run python scripts/verify_sample_bug.py
+uv run python scripts/verify_benchmark_samples.py
+uv run python scripts/validate_agent_benchmark.py
 uv run python scripts/run_retrieval_eval.py  # M3 检索评测
 ```
 
@@ -251,7 +253,7 @@ RootCauseAnalyzer 的二次业务校验记录每个被拒绝的 evidence：
 `.github/workflows/ci.yml` 两个独立 Job：
 
 - **python-quality**：Python 3.11 + uv → ruff + mypy + pytest
-- **sample-bug-verification**：Python 3.11 + Java 21 + Maven → `scripts/verify_sample_bug.py`
+- **sample-bug-verification**：Python 3.11 + Java 21 + Maven → `scripts/verify_benchmark_samples.py`
 
 CI 不依赖任何 LLM API Key。Mock 模式跑全部测试。
 
@@ -265,7 +267,7 @@ CI 不依赖任何 LLM API Key。Mock 模式跑全部测试。
 | M2 | LLM 推理节点：IssueParser / TaskPlanner / RootCauseAnalyzer | ✅ 完成 |
 | M3 | 代码检索增强：BM25 + Java 标识符分词 + RRF 融合 + Recall@K 评测 | ✅ 完成 |
 | M4A | SQLite 持久化：任务/Trace/Report 重启可查 + 遗留任务中断处理 | ✅ 完成 |
-| M4B | 多 Bug Benchmark + 评测 Runner | 待启动 |
+| M4B | 三个多 Bug Benchmark Sample + Manifest/Surefire verifier | ✅ 完成 |
 | M4C | 完整 Agent 评测 | 待启动 |
 
 ## 关键约束
@@ -290,6 +292,6 @@ CI 不依赖任何 LLM API Key。Mock 模式跑全部测试。
 
 ## 状态
 
-- 版本：0.6.0
-- 阶段：M4A 完成（SQLite 持久化与任务重启语义）
+- 版本：0.7.0
+- 阶段：M4B 完成（多 Bug Sample、Manifest 与 Maven/Surefire verifier）
 - 上次更新：2026-07-31

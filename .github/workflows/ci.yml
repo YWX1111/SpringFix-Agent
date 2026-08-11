@@ -2,8 +2,8 @@
 #
 # Two independent jobs:
 #   - python-quality: Python 3.11 static analysis + unit/integration tests
-#   - sample-bug-verification: Java 21 + Maven reproduction of the
-#     @Transactional self-invocation bug via scripts/verify_sample_bug.py
+#   - sample-bug-verification: Java 21 + Maven verification of all M4B
+#     benchmark samples via scripts/verify_benchmark_samples.py
 #
 # Neither job calls any external LLM API. Neither job uploads secrets.
 
@@ -58,7 +58,7 @@ jobs:
         run: uv run pytest tests/ -v --tb=short
 
   sample-bug-verification:
-    name: Sample Bug verification (Java 21 + Maven)
+    name: Benchmark sample verification (Java 21 + Maven)
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -89,5 +89,8 @@ jobs:
       - name: Sync dependencies
         run: uv sync --extra dev
 
-      - name: Run sample bug verification
-        run: uv run python scripts/verify_sample_bug.py
+      - name: Validate benchmark manifest
+        run: uv run python scripts/validate_agent_benchmark.py
+
+      - name: Run benchmark sample verification
+        run: uv run python scripts/verify_benchmark_samples.py

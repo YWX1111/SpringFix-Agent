@@ -1,5 +1,17 @@
 # 评测设计（Evaluation Design）
 
+## M4B Benchmark 边界
+
+M4B 只验证三个故意失败的 Spring Boot Sample、Manifest 金标准和
+Surefire 结果，不运行完整 Agent，也不调用真实 LLM，不计算 Agent 或根因准确率。
+
+Agent-facing 输入仅允许 `repository`、`issue_description` 和 `error_log`。
+`expected_root_cause_keywords`、`expected_files`、`expected_symbols`、
+`evidence_targets` 和 `expected_maven` 只供离线校验使用。
+
+Sample README 与 `benchmark/agent_cases.jsonl` 是 Benchmark 文档/金标准，
+未来 M4C Runner 必须从 Agent repository copy 中排除它们，避免根因泄漏。
+
 > 本文档定义评测设计。Agent 评测运行器 `scripts/run_eval.py` 与实际评测结果输出推迟到 M4C。M4A 已完成 SQLite 持久化，为评测提供数据基础。M3 检索评测（Recall@K / MRR / P95）是检索质量指标，不等于 Agent 准确率。
 
 ## 1. 设计原则

@@ -208,12 +208,16 @@
 6. 311 测试通过，ruff clean，mypy strict clean
 7. API 路径和响应格式不变
 
-### M4B：多 Bug Benchmark（待启动）
+### M4B：多 Bug Benchmark（已完成）
 
 #### 范围
 
 - 至少 3 个可复现 Spring Boot Bug 样本
-- Benchmark 数据集扩展
+- 三个最小 Spring Boot Bug Sample：事务自调用、Bean 歧义、ConfigurationProperties prefix mismatch
+- `benchmark/agent_cases.jsonl` 金标准 Manifest
+- `scripts/validate_agent_benchmark.py` Manifest/Gold 校验
+- `scripts/verify_benchmark_samples.py` 统一 Maven/Surefire verifier
+- Sample README 仅作 Benchmark 文档，不作为 Agent 输入
 
 ### M4C：完整 Agent 评测（待启动）
 

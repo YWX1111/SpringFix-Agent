@@ -234,8 +234,10 @@ M1.1 不新增任何 Agent 能力，仅处理质量、CI 和可复现性：
 | 项 | 实现 |
 |----|------|
 | 统一请求校验错误 | `RequestValidationError` handler 返回 `{error: "request_validation_error", message, details[{field, reason}]}` |
-| 示例 Bug 验证脚本 | `scripts/verify_sample_bug.py` 跨平台执行 `mvn test`，断言目标失败签名，返回 0/1/2 |
-| GitHub Actions | `.github/workflows/ci.yml`：`python-quality`（Python 3.11 + uv）+ `sample-bug-verification`（Java 21 + Maven） |
+| 示例 Bug 验证脚本 | `scripts/verify_sample_bug.py` 跨平台执行 `mvn test`，断言事务目标失败签名，保持兼容 |
+| M4B Sample 验证 | `scripts/verify_benchmark_samples.py` 读取 Manifest，执行三个 Maven Sample 并校验 Surefire 金标准 |
+| Manifest 校验 | `scripts/validate_agent_benchmark.py` 校验相对路径、文件、符号、Evidence 行号和测试名 |
+| GitHub Actions | `.github/workflows/ci.yml`：`python-quality`（Python 3.11 + uv）+ benchmark sample verification（Java 21 + Maven） |
 | Warning 过滤 | StarletteDeprecationWarning 用 message 正则限定，而非整个类别 |
 | LangGraph type ignore | 4 处 `# type: ignore[call-overload]` 保留并加说明（langgraph 0.2 类型签名未稳定） |
 | 符号链接测试 | Windows 本地跳过；Linux CI 必须执行，被跳过视为配置问题 |

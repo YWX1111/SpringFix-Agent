@@ -89,13 +89,13 @@ def _build_repository(settings: Settings) -> TaskRepository:
 
 
 def create_app(settings: Settings | None = None) -> FastAPI:
-    """Build the FastAPI application instance with M4A task routes wired up."""
+    """Build the FastAPI application instance with M4B-compatible routes wired up."""
     resolved = settings if settings is not None else get_settings()
     app = FastAPI(
         title="SpringFix Agent",
         description=(
             "Intelligent diagnosis and repair platform for Java/Spring Boot projects. "
-            "M4A stage: SQLite persistence with restart recovery."
+            "M4B stage: SQLite persistence plus offline bug benchmark samples."
         ),
         version=__version__,
         docs_url="/docs",

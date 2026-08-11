@@ -4,7 +4,7 @@
 
 ## 阶段定位
 
-当前阶段：**M4A SQLite 持久化与任务重启语义（已完成）**。
+当前阶段：**M4B 多 Bug Benchmark（已完成）**；M4C 完整 Agent 评测尚未开始。
 
 M4A 在 M3 基础上新增 SQLite 持久化层：
 
@@ -21,7 +21,6 @@ M4A 在 M3 基础上新增 SQLite 持久化层：
 - 311 测试通过（+48），ruff clean，mypy strict clean
 
 M4A 不包含：
-- M4B 多 Bug Benchmark
 - M4C 完整 Agent 评测
 - Redis Stream / Docker 沙箱
 - 修改七节点 Graph / LLM / Prompt / 检索算法
@@ -99,8 +98,10 @@ M1 范围内已完成（M2 保留）：
 M1.1 基线固化（M2 保留）：
 
 - 统一请求校验错误：`RequestValidationError` 返回结构化 JSON
-- 示例 Bug 验证脚本：`scripts/verify_sample_bug.py`
-- GitHub Actions：`.github/workflows/ci.yml`（python-quality + sample-bug-verification）
+- 示例 Bug 验证脚本：`scripts/verify_sample_bug.py`（保持兼容）
+- M4B 统一 Sample 验证：`scripts/verify_benchmark_samples.py`
+- Benchmark Manifest 校验：`scripts/validate_agent_benchmark.py`
+- GitHub Actions：`.github/workflows/ci.yml`（python-quality + benchmark sample verification）
 - Warning 过滤收窄：StarletteDeprecationWarning 用 message 限定
 - LangGraph type ignore：7 处 `# type: ignore[call-overload]` 保留并加说明
 - 符号链接测试说明：Windows 本地跳过；Linux CI 必须执行

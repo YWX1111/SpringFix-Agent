@@ -30,7 +30,7 @@ from springfix_agent.storage.sqlite_repository import SqliteTaskRepository
 
 def _build_app(repo: object, allow_root: Path) -> FastAPI:
     """Build a minimal FastAPI app wired to the given repository."""
-    app = FastAPI(title="SpringFix Agent", version="0.6.0")
+    app = FastAPI(title="SpringFix Agent", version="0.7.0")
     mock_llm = MockLLMClient()
     app.state.task_service = TaskService(
         repository=repo,  # type: ignore[arg-type]
@@ -231,10 +231,10 @@ class TestCompatibility:
     def test_health_version(
         self, allow_root: Path
     ) -> None:
-        """Health endpoint returns version 0.6.0."""
+        """Health endpoint returns version 0.7.0."""
         repo = InMemoryTaskRepository()
         app = _build_app(repo, allow_root)
         client = TestClient(app)
         resp = client.get("/api/v1/health")
         assert resp.status_code == 200
-        assert resp.json()["version"] == "0.6.0"
+        assert resp.json()["version"] == "0.7.0"

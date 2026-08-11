@@ -129,12 +129,13 @@ M3 关键成果：
 | T4A.7 | 手动重启验证 + 性能记录 | 完成 |
 | T4A.8 | 文档更新 + 最终验证：311 测试 + ruff + mypy strict | 完成 |
 
-### M4B（待启动 — 多 Bug Benchmark）
+### M4B（已完成 — 多 Bug Benchmark）
 
 | ID | 任务 |
 |----|------|
-| T4B.1 | 创建 2 个新 Bug 样本（共 3 个） |
-| T4B.2 | Benchmark 数据集扩展 |
+| T4B.1 | 创建 2 个新 Bug 样本（共 3 个） | 完成 |
+| T4B.2 | Benchmark Manifest、Gold 校验和统一 Maven verifier | 完成 |
+| T4B.3 | CI 接入三个 Sample，保留原事务 verifier 兼容性 | 完成 |
 
 ### M4C（待启动 — 完整 Agent 评测）
 
