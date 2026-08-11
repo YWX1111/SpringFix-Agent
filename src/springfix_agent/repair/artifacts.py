@@ -5,6 +5,11 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from springfix_agent.repair.application_models import (
+    PatchApplicationResult,
+    PatchApplicationRunResult,
+)
+from springfix_agent.repair.diff import sha256_text
 from springfix_agent.repair.evaluator import RepairBenchmarkRunResult
 
 
@@ -43,7 +48,7 @@ def render_repair_report(result: RepairBenchmarkRunResult) -> str:
             "",
             "- Diagnostic LLM calls and Patch LLM calls are recorded separately.",
             "- Gold, full prompts, raw responses, API keys, and absolute repository paths are not saved.",
-            "- M5B Sandbox and M5C Maven verification are out of scope.",
+            "- M5B isolated application and M5C Maven verification are separate stages.",
             "",
         ]
     )
@@ -129,3 +134,40 @@ def write_repair_artifacts(result: RepairBenchmarkRunResult, output_dir: Path) -
         encoding="utf-8",
     )
     (output_dir / "report.md").write_text(render_repair_report(result), encoding="utf-8")
+
+
+def write_patch_application_artifacts(
+    result: PatchApplicationRunResult,
+    applications: dict[str, PatchApplicationResult],
+    output_dir: Path,
+) -> None:
+    """Write M5B application records without temporary paths or raw prompts."""
+    output_dir.mkdir(parents=True, exist_ok=True)
+    for case in result.cases:
+        application = applications[case.case_id]
+        case_dir = output_dir / case.case_id
+        case_dir.mkdir(exist_ok=True)
+        payload = application.model_dump()
+        payload.pop("unified_diff", None)
+        payload.update(
+            {
+                "case_id": case.case_id,
+                "diff_sha256": sha256_text(application.unified_diff),
+                "metrics": case.model_dump(),
+            }
+        )
+        (case_dir / "application.json").write_text(
+            json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+        (case_dir / "patch.diff").write_text(application.unified_diff, encoding="utf-8")
+
+    summary = {
+        "mode": result.mode,
+        "aggregate": result.aggregate.model_dump(),
+        "cases": [case.model_dump() for case in result.cases],
+    }
+    (output_dir / "summary.json").write_text(
+        json.dumps(summary, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )

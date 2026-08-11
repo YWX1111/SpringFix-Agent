@@ -93,6 +93,11 @@ artifacts/repair-proposals/mock/*
 artifacts/repair-proposals/live/*
 !artifacts/repair-proposals/README.md
 
+# M5B Patch Application artifacts (generated and redacted; force-add only if needed)
+artifacts/patch-applications/mock/*
+artifacts/patch-applications/live/*
+!artifacts/patch-applications/README.md
+
 # SQLite database files (M4A)
 data/*.db
 data/*.db-wal

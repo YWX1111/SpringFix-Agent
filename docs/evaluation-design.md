@@ -230,3 +230,25 @@ Aggregate output uses `sample_size`, `proposal_generation_rate`,
 `unsafe_proposal_rate`. These are proposal-stage metrics only and do not claim
 Repair Success. Gold is loaded only by the deterministic evaluator and never
 enters the Patch Prompt.
+
+## M5B Patch Application metrics
+
+M5B is evaluated after M5A validation and uses deterministic Mock proposals.
+Each case records:
+
+- `proposal_valid` and `proposal_status`
+- requested/applied/rejected edit counts
+- `all_edits_applied`
+- `original_repository_unchanged`
+- changed-file count and post-application acceptable-file hit
+- `diff_generated` and `diff_non_empty`
+- `workspace_cleanup_success`
+- `application_duration_ms`
+
+Aggregate metrics are `proposal_validation_rate`, `application_success_rate`,
+`all_edits_applied_rate`, `original_repository_integrity_rate`,
+`diff_generation_rate`, and `workspace_cleanup_rate`. The correct label is
+Patch Application Success Rate; these metrics are not Repair Success Rate.
+Repair Gold is used only after application to inspect changed-file membership,
+never to tell the Applier which file to edit. M5B does not execute Maven;
+M5C owns verification of the patched copy.

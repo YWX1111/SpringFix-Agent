@@ -415,3 +415,36 @@ The layer is outside the seven-node Graph. It enforces production path
 allowlisting, evidence overlap, real `old_code` matching, dangerous-code
 checks, duplicate/conflict checks, and rejected-edit auditing. It never writes
 repository files or executes Maven.
+
+## M5B Isolated Patch Application layer
+
+M5B remains outside the seven-node Diagnostic Graph:
+
+```text
+validated PatchProposal
+  -> IsolatedPatchWorkspace (source copy + SHA-256 manifest)
+  -> PatchApplier (full preflight, then deterministic writes)
+  -> Python unified diff
+  -> PatchApplicationResult
+```
+
+`IsolatedPatchWorkspace` copies the Maven project structure, including
+`pom.xml`, `src/main`, `src/test`, resources, and configuration files. It
+excludes `.git`, `target`, `build`, `node_modules`, `artifacts`, `benchmark`,
+`__pycache__`, compiled/archive/log files, `.env`, and Markdown/README files.
+The source manifest is computed before the copy and after application; a
+changed, added, or deleted copied-range file fails the application integrity
+result. The context manager cleans the temporary directory in `finally`.
+
+`PatchApplier` accepts only a `PatchValidationResult` that passed M5A. It
+re-reads the temporary file, checks allowed production paths, exact original
+line ranges, old-code freshness, UTF-8/BOM encoding, duplicate/overlap
+conflicts, and non-empty changes before writing anything. The default policy is
+all-or-nothing. Same-file edits are applied from the highest original line to
+the lowest so earlier edits cannot shift later ranges. `src/test/**` is copied
+for later M5C use but is never an allowed application target.
+
+Diffs use Python `difflib.unified_diff` with repository-relative `a/` and `b/`
+paths. M5B records Patch Application Success metrics only; it does not run
+Maven and does not claim Repair Success. M5C is the later Maven verification
+stage.

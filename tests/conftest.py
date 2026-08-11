@@ -10,6 +10,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from fastapi.testclient import TestClient
 
+from springfix_agent import __version__
 from springfix_agent.api.routes import (
     ApiError,
     api_error_to_json_response,
@@ -37,7 +38,7 @@ def app() -> object:
 @pytest.fixture
 def client(allow_root: Path, mock_llm: LLMClient) -> TestClient:
     """TestClient wired to a fresh TaskService + MockLLMClient."""
-    app = FastAPI(title="SpringFix Agent", version="0.9.0")
+    app = FastAPI(title="SpringFix Agent", version=__version__)
     repository = InMemoryTaskRepository()
     app.state.task_service = TaskService(
         repository=repository,

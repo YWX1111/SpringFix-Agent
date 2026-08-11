@@ -257,3 +257,26 @@ supports Mock/Live CLI execution and redacted JSON/Markdown artifacts. It does
 not mutate repositories, execute Maven or shell commands, apply patches, or
 define Repair Success. Patch Proposal Validation is the highest repair-stage
 metric until M5C adds isolated Maven verification.
+
+## M5B scope（0.10.0）
+
+M5B adds `IsolatedPatchWorkspace`、`PatchApplier`、deterministic unified diff
+and `PatchApplicationResult`。流程固定为：
+
+```text
+source repository -> temporary copy -> full preflight -> apply -> diff -> cleanup
+```
+
+M5B 只允许修改已有的 `src/main/java/**` 和 `src/main/resources/**` 文件；禁止新建、
+删除或修改 `src/test/**`。复制时保留 `pom.xml`、main code、resources、tests 和配置，
+排除 Git metadata、build output、Benchmark/Artifact、Markdown、`.env` 及编译产物。
+每次应用前后计算源仓库 allowlist 的 SHA-256 manifest，原仓库新增/删除/修改都会使
+`original_repository_unchanged=false`。
+
+所有 Edit 先完成全量 preflight，任何一项失败则整个 Proposal 不写入；同文件 Edit 按
+原始行号降序应用，重读临时文件校验 `old_code`，只支持 UTF-8/已有 UTF-8 BOM，保留
+newline 和 trailing newline，并通过 sibling temp + flush + `os.replace` 写入。Diff
+使用 Python 标准库生成，不调用 `git diff`。
+
+M5B Mock 指标名称是 Patch Application Success，不是 Repair Success。M5B 不执行 Maven、
+Gradle、Docker、shell 或网络操作；M5C 才负责隔离副本的 Maven 验证。

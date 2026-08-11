@@ -24,9 +24,9 @@ def test_health_response_shape(client: TestClient) -> None:
     assert body["version"] == __version__
 
 
-def test_m5a_version_is_0_9_0() -> None:
-    """M5A release metadata is aligned across package and health response."""
-    assert __version__ == "0.9.0"
+def test_m5b_version_is_0_10_0() -> None:
+    """M5B release metadata is aligned across package and health response."""
+    assert __version__ == "0.10.0"
 
 
 def test_openapi_docs_available(client: TestClient) -> None:

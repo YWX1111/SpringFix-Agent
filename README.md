@@ -293,6 +293,8 @@ CI 不依赖任何 LLM API Key。Mock 模式跑全部测试。
 | M4A | SQLite 持久化：任务/Trace/Report 重启可查 + 遗留任务中断处理 | ✅ 完成 |
 | M4B | 三个多 Bug Benchmark Sample + Manifest/Surefire verifier | ✅ 完成 |
 | M4C | 完整 Agent 评测 | ✅ 完成 |
+| M5A | 结构化 Patch Proposal + Evidence Gate + Validator | ✅ 完成 |
+| M5B | 临时隔离副本 Patch Application + Deterministic Diff | ✅ 完成 |
 
 ## 关键约束
 
@@ -316,9 +318,29 @@ CI 不依赖任何 LLM API Key。Mock 模式跑全部测试。
 
 ## 状态
 
-- 版本：0.9.0
-- 阶段：M5A 完成（结构化 Patch Proposal、Evidence Gate、确定性 Validator）
+- 版本：0.10.0
+- 阶段：M5B 完成（仅对临时隔离副本应用 validated proposal，并生成确定性 diff）
 - 上次更新：2026-08-11
+
+## M5A / M5B / M5C 边界
+
+- **M5A = propose only**：生成并验证结构化 Patch Proposal，不写任何仓库文件。
+- **M5B = apply only to temporary isolated copy**：复制允许内容到临时目录，先全量
+  preflight，再按同文件降序行号应用；生成 Python `difflib` unified diff，并用 SHA-256
+  manifest 证明原仓库未变化。
+- **M5C = execute Maven verification**：后续阶段才在隔离副本执行 Maven 验证。
+
+M5B 不证明 Repair Success，只证明 validated proposal 可以被确定性、安全地应用到
+隔离仓库副本。M5B 不运行 Maven/Gradle/Docker，不执行 shell，不访问网络，不修改 Sample
+或用户仓库。运行 Mock Application：
+
+```powershell
+uv run python scripts/run_patch_application.py --mode mock
+uv run python scripts/run_patch_application.py --mode mock --case transaction-self-invocation
+```
+
+产物写入 `artifacts/patch-applications/mock/`，只包含应用审计、diff 和脱敏指标，不包含
+临时绝对路径、Prompt、raw response、API Key 或 Benchmark Gold。
 ## M5A Patch Proposal
 
 M5A is a review-only repair stage after the unchanged seven-node diagnostic
@@ -333,4 +355,5 @@ uv run python scripts/run_patch_proposal.py --mode live
 It writes redacted `proposal.json` and `proposal.md` artifacts under
 `artifacts/repair-proposals/{mock|live}/`. M5A never applies a patch, modifies
 a sample repository, runs Maven, executes shell commands, or claims Repair
-Success. M5B Sandbox and M5C Maven verification remain out of scope.
+Success. M5B consumes the validated proposal only after copying the repository
+to an isolated temporary workspace; M5C Maven verification remains out of scope.

@@ -4,7 +4,7 @@
 
 ## 阶段定位
 
-当前阶段：**M5A 结构化 Patch Proposal（已完成）**；版本 0.9.0。
+当前阶段：**M5B 隔离副本 Patch Application（已完成）**；版本 0.10.0。
 
 M4A 在 M3 基础上新增 SQLite 持久化层：
 
@@ -246,15 +246,22 @@ M1-M3 期间不输出 Agent 准确率或命中率。M3 检索评测（Recall@K /
 1. 当前里程碑所有验收标准通过（ruff + mypy strict + pytest + 实际启动验证 + 示例 Bug Maven 预期失败验证 + verify_sample_bug.py 通过）
 2. 没有创建任何下一里程碑的提前实现文件
 3. 用户明确确认"进入下一里程碑"
-## M5A Patch Proposal boundary
+## M5A / M5B / M5C repair boundary
 
-Version `0.9.0` adds an independent `repair/` stage after the unchanged
-diagnostic Graph. The three diagnostic LLM calls remain unchanged; M5A adds
-one Patch LLM call only after validated RootCauseAnalysis and deterministic
-file/line evidence are available.
+Version `0.10.0` keeps the independent `repair/` stage after the unchanged
+diagnostic Graph. M5A proposes and validates; M5B applies only to a temporary
+isolated copy and creates a deterministic diff; M5C will execute Maven
+verification later. The three diagnostic LLM calls remain unchanged.
 
-The service and CLI create review artifacts only. They never modify samples,
-run Maven, execute shell commands, apply a proposal, or add a SQLite schema.
-The validator checks production paths, evidence overlap, true `old_code`,
-dangerous `new_code`, duplicate edits, and conflicts. M5B Sandbox and M5C
-Maven verification remain later milestones.
+M5B creates a SHA-256 manifest of the source's copied allowlist before the
+workspace is created and compares it after application. Preflight validates
+all edits before any write; same-file edits are applied in descending original
+line order. Only UTF-8 and existing UTF-8 BOM files are supported, newline and
+trailing-newline state are preserved, and writes use a flushed sibling temp
+file followed by `os.replace`.
+
+The service and CLI never modify samples, run Maven/Gradle/Docker, execute
+shell commands, access the network, or add a SQLite schema. They never log
+temporary absolute paths, prompts, raw responses, API keys, or Benchmark Gold.
+M5B is Patch Application, not Repair Success; M5C Maven verification remains
+out of scope.

@@ -118,12 +118,16 @@ def _overlaps(start: int, end: int, other_start: int, other_end: int) -> bool:
 
 def _read_code_range(path: Path, start_line: int, end_line: int) -> str:
     raw = path.read_bytes().decode("utf-8")
+    if raw.startswith("\ufeff"):
+        raw = raw[1:]
     lines = _normalise_newlines(raw).split("\n")
     return "\n".join(lines[start_line - 1 : end_line])
 
 
 def _code_lines(path: Path) -> list[str]:
     raw = path.read_bytes().decode("utf-8")
+    if raw.startswith("\ufeff"):
+        raw = raw[1:]
     return _normalise_newlines(raw).split("\n")
 
 

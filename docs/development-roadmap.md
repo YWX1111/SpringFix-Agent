@@ -170,3 +170,15 @@ validated-evidence gate, deterministic validator, rejected-edit audit,
 Mock/Live CLI, three-case Repair Gold/evaluator, and redacted artifacts.
 
 Deferred: M5B Sandbox application and M5C Maven verification.
+
+## M5B (0.10.0) - Isolated Patch Application
+
+Completed: isolated repository workspace, copied-range SHA-256 integrity
+manifest, all-or-nothing preflight, stale `old_code` revalidation, conflict
+detection, descending same-file edit application, UTF-8/BOM and newline
+preservation, atomic temporary writes, deterministic Python unified diff,
+redacted application artifacts, and deterministic Mock application metrics.
+
+M5A remains propose-only. M5B applies only to a temporary copy and does not
+run Maven or claim Repair Success. M5C is reserved for Maven verification on
+the patched temporary copy.
