@@ -4,7 +4,7 @@
 
 ## 阶段定位
 
-当前阶段：**M5C 隔离副本 Maven Repair Verification（已完成）**；版本 0.11.0。
+当前阶段：**M5D Single-shot End-to-End Repair Benchmark（已完成）**；版本 0.12.0。
 
 M4A 在 M3 基础上新增 SQLite 持久化层：
 
@@ -246,9 +246,9 @@ M1-M3 期间不输出 Agent 准确率或命中率。M3 检索评测（Recall@K /
 1. 当前里程碑所有验收标准通过（ruff + mypy strict + pytest + 实际启动验证 + 示例 Bug Maven 预期失败验证 + verify_sample_bug.py 通过）
 2. 没有创建任何下一里程碑的提前实现文件
 3. 用户明确确认"进入下一里程碑"
-## M5A / M5B / M5C repair boundary
+## M5A / M5B / M5C / M5D repair boundary
 
-Version `0.11.0` keeps the independent `repair/` stage after the unchanged
+Version `0.12.0` keeps the independent `repair/` stage after the unchanged
 diagnostic Graph. M5A proposes and validates; M5B applies only to a temporary
 isolated copy and creates a deterministic diff; M5C executes deterministic
 Maven verification in that patched copy. The three diagnostic LLM calls remain
@@ -270,3 +270,13 @@ M5B is Patch Application, not Repair Success; M5C is process-restricted Maven
 verification. It uses a fixed `shell=False` command, trusted manifest target,
 workspace-only cwd, restricted child environment, timeout, Surefire XML, and
 source/test/pom integrity gates. It is not an OS/container/network sandbox.
+
+M5D is the composition and measurement layer over these unchanged stages. One
+Run freezes the Live provider/model/config and shares it across all three cases.
+Each case runs baseline verification, sanitized M4C diagnosis, deterministic
+diagnosis evaluation, M5A proposal generation/validation, M5B isolated apply,
+and M5C Maven/Surefire verification. Gold is benchmark infrastructure only and
+never enters Agent, Retrieval, Patch Prompt, or Applier input. M5D records
+stage statuses, failure attribution, diagnosis versus repair metrics, logical
+calls versus HTTP attempts, nullable provider token usage, latency, funnel
+counts, and redacted run-scoped artifacts. It has no automatic repair retry.

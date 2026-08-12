@@ -195,3 +195,14 @@ bug reproduction, test/pom/source integrity checks, structured failure reasons,
 sanitized artifacts, and deterministic three-case Mock metrics. M5C is
 process-restricted verification; OS/container/network sandboxing and automatic
 repair retries remain future hardening work.
+
+## M5D (0.12.0) - Single-shot End-to-End Repair Benchmark
+
+Completed: one Run composes the existing M4C diagnostic Graph, M5A proposal
+generation/validation, M5B isolated application, and M5C Maven/Surefire
+verification. The runner freezes one Live model configuration per Run,
+short-circuits failed cases, records stage metrics, logical calls versus HTTP
+attempts, nullable provider tokens, latency, failure attribution, funnel
+counts, and redacted run-scoped artifacts. Mock CI uses Mock diagnosis/proposal
+with real isolated application and Maven/Surefire verification. No iterative
+repair retry, prompt/Gold/sample changes, or stronger sandbox is included.

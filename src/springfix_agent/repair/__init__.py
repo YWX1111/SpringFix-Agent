@@ -14,6 +14,11 @@ from springfix_agent.repair.application_models import (
     RejectedApplicationEdit,
 )
 from springfix_agent.repair.applier import PatchApplier
+from springfix_agent.repair.e2e_models import (
+    EndToEndAggregateMetrics,
+    EndToEndCaseResult,
+    EndToEndRunResult,
+)
 from springfix_agent.repair.generator import (
     PatchGenerationResult,
     PatchProposalGenerator,
@@ -77,4 +82,7 @@ __all__ = [
     "compute_repository_manifest",
     "create_isolated_patch_workspace",
     "validate_patch_proposal",
+    "EndToEndAggregateMetrics",
+    "EndToEndCaseResult",
+    "EndToEndRunResult",
 ]

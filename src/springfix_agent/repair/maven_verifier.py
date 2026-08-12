@@ -589,7 +589,8 @@ class MavenRepairVerifier:
         expectation: MavenExpectation,
         process: _ProcessResult,
     ) -> MavenTestResult:
-        suites = parse_surefire_xml(find_surefire_xml(workspace)) if process.executed else []
+        report_files = find_surefire_xml(workspace) if process.executed else []
+        suites = parse_surefire_xml(report_files)
         found, tests, failures, errors, skipped, _failure_text = _target_summary(
             suites,
             expectation.test_name,
@@ -603,6 +604,7 @@ class MavenRepairVerifier:
             errors=errors,
             skipped=skipped,
             target_test_found=found,
+            surefire_report_found=bool(report_files),
             duration_ms=process.duration_ms,
             stdout_tail=tail_output(process.stdout),
             stderr_tail=tail_output(process.stderr),

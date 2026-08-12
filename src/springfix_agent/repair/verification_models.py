@@ -22,6 +22,7 @@ class MavenTestResult(BaseModel):
     errors: int = Field(default=0, ge=0)
     skipped: int = Field(default=0, ge=0)
     target_test_found: bool = False
+    surefire_report_found: bool = False
     duration_ms: int = Field(default=0, ge=0)
     stdout_tail: str = Field(default="", max_length=4096)
     stderr_tail: str = Field(default="", max_length=4096)

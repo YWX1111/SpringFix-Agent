@@ -290,3 +290,52 @@ exited `0`, and Surefire reports `tests>0` with zero failures, errors, or
 skips. This is **Repair Success Rate on the current 3-case controlled
 benchmark**, not a production or whole-project repair rate. M5C does not call a
 Live LLM or retry failed repairs.
+
+## M5D End-to-End Evaluation
+
+M5D is a single-shot composition layer over M4C, M5A, M5B, and M5C for the
+controlled three-case sample (`sample_size=3`). Its order is baseline
+reproduction, sanitized diagnosis, deterministic diagnosis evaluation, Patch
+Proposal, deterministic validation, isolated application, integrity checks,
+restricted Maven target-test execution, Surefire parsing, and Run aggregation.
+
+Gold is benchmark infrastructure only: Maven Gold is used by baseline and
+post-run verification, diagnosis Gold by the deterministic M4C evaluator, and
+Repair Gold by post-generation/application evaluators. None is included in
+Agent input, prompts, retrieval queries, evidence snippets, or patch-generator
+input. The Agent view excludes README/Markdown, tests by default,
+target/.git/benchmark/artifacts, and `.env`.
+
+Per case, M5D records stage status, failed stage/reason, diagnosis/proposal/
+application/verification metrics, tri-state `compile_success`, nullable
+provider token usage, logical LLM calls, HTTP attempts, and stage/pipeline
+latency. Diagnosis benchmark pass is independent from
+`end_to_end_repair_success`. Failures remain in every denominator and are not
+automatically retried. The report includes the eight-stage funnel and mean,
+p50, and max pipeline latency; it explicitly states the tiny controlled sample,
+lack of statistical significance, model/configuration dependence, no production
+accuracy claim, and process-restricted rather than sandboxed Maven.
+
+## Formal M5D Live baseline
+
+The accepted formal Live Run is `20260812T040246Z-b5818c80`, with one frozen
+`openai_compatible` / `qwen3.7-plus` configuration and `sample_size=3`:
+
+| Stage | Passed | Rate |
+|---|---:|---:|
+| Baseline Reproduced | 3/3 | 100.0% |
+| Diagnosis Completed | 3/3 | 100.0% |
+| Diagnosis Benchmark Passed | 3/3 | 100.0% |
+| Proposal Generated | 2/3 | 66.7% |
+| Proposal Validated | 2/3 | 66.7% |
+| Patch Applied | 2/3 | 66.7% |
+| Target Test Executed | 1/3 | 33.3% |
+| Repair Successful | 1/3 | 33.3% |
+
+Usage was 12 logical calls, 12 HTTP attempts, 18,800 input tokens, 25,563
+output tokens, and 44,363 total tokens. Mean/p50/max pipeline latency was
+107,469.667/104,964/114,797 ms; P95 is intentionally omitted. The transaction
+case failed at proposal, the bean ambiguity case reached application but Maven
+failed before a valid target Surefire result was produced, and the config-prefix
+case was the only Repair Success. Diagnosis Benchmark Pass was 3/3 while Repair
+Success was 1/3; neither metric is rewritten to hide the other.

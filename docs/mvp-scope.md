@@ -291,3 +291,20 @@ Maven arguments, workspace-only cwd, restricted child environment, timeout,
 test/pom/source integrity, original-repository integrity, cleanup, and bounded
 sanitized artifacts. It has no arbitrary command or argument passthrough, Live
 LLM call, automatic repair retry, or OS/container/network sandbox.
+
+## M5D scope (0.12.0)
+
+M5D is the complete single-shot benchmark composition:
+
+```text
+baseline -> sanitized diagnosis -> deterministic diagnosis evaluation
+-> proposal -> deterministic validation -> isolated apply
+-> restricted Maven/Surefire verification -> funnel and aggregate
+```
+
+Mock M5D keeps diagnosis and proposal deterministic while executing real M5B
+application and real M5C Maven/Surefire verification. Live M5D runs all three
+controlled cases in one Run with one frozen provider/model/config. It records
+stage short-circuit outcomes, failure attribution, nullable provider usage,
+latency, and redacted artifacts without changing prompts, retrieval, Gold,
+sample cases, validators, or the Repair Success definition.

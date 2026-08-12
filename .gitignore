@@ -98,6 +98,11 @@ artifacts/patch-applications/mock/*
 artifacts/patch-applications/live/*
 !artifacts/patch-applications/README.md
 
+# M5D end-to-end benchmark artifacts (each Run is local and redacted)
+artifacts/end-to-end-repair/mock/*
+artifacts/end-to-end-repair/live/*
+!artifacts/end-to-end-repair/README.md
+
 # SQLite database files (M4A)
 data/*.db
 data/*.db-wal

@@ -296,6 +296,7 @@ CI 不依赖任何 LLM API Key。Mock 模式跑全部测试。
 | M5A | 结构化 Patch Proposal + Evidence Gate + Validator | ✅ 完成 |
 | M5B | 临时隔离副本 Patch Application + Deterministic Diff | ✅ 完成 |
 | M5C | 隔离副本固定 Maven Target Test Verification + Surefire Oracle | ✅ 完成 |
+| M5D | Single-shot End-to-End Repair Benchmark（M4C→M5A→M5B→M5C） | ✅ 完成 |
 
 ## 关键约束
 
@@ -319,11 +320,11 @@ CI 不依赖任何 LLM API Key。Mock 模式跑全部测试。
 
 ## 状态
 
-- 版本：0.11.0
-- 阶段：M5C 完成（基于 M5A/M5B 的隔离副本 Maven Repair Verification）
-- 上次更新：2026-08-11
+- 版本：0.12.0
+- 阶段：M5D 完成（基于 M4C/M5A/M5B/M5C 的 single-shot End-to-End Repair Benchmark）
+- 上次更新：2026-08-12
 
-## M5A / M5B / M5C 边界
+## M5A / M5B / M5C / M5D 边界
 
 - **M5A = propose only**：生成并验证结构化 Patch Proposal，不写任何仓库文件。
 - **M5B = apply only to temporary isolated copy**：复制允许内容到临时目录，先全量
@@ -365,9 +366,71 @@ to an isolated temporary workspace. M5C verifies the patched copy with a fixed
 Maven target test and Surefire XML; it does not invoke a Live LLM or run an
 automatic repair loop.
 
+## M5D Single-shot End-to-End Repair Benchmark
+
+M5D composes the existing M4C diagnostic Graph, M5A Patch Proposal
+Generator/Validator, M5B isolated workspace/applier, and M5C restricted
+Maven/Surefire verifier into one fresh Run. It adds no reasoning node, prompt,
+retrieval, Gold, validator, or iterative repair loop.
+
+```powershell
+uv run python scripts/run_end_to_end_repair_benchmark.py --mode mock
+uv run python scripts/run_end_to_end_repair_benchmark.py --mode live
+```
+
+Each Run writes redacted artifacts under
+`artifacts/end-to-end-repair/{mock|live}/<run-id>/`, including metadata,
+summary, report, and per-case results. Metadata records version, Git identity,
+frozen provider/model/config summary, Java/Maven versions, sample size, and
+`include_tests=false`; it never stores API keys, full URLs, prompts, raw
+responses, `.env`, or absolute temporary paths.
+
+The case flow is baseline gate -> sanitized Agent diagnosis -> deterministic
+diagnosis evaluation -> Patch Proposal -> deterministic validation -> isolated
+application -> Maven/Surefire verification. It short-circuits each case at the
+first failure and records stage statuses, failure attribution, diagnosis/
+proposal/application/verification metrics, logical LLM calls versus HTTP
+attempts, provider-reported tokens, and latency. Mock uses Mock Diagnosis and
+Mock Proposal but real isolated application and real Maven/Surefire.
+
+The controlled three-case sample is expected to produce `sample_size=3`,
+pipeline completed `3`, and repair success `3` when Java/Maven are available.
+This is not a production accuracy claim, has no statistical significance, and
+does not include automatic repair retry or OS/container/network sandboxing.
+
+### Formal Live baseline
+
+The formal single-shot Live Run is `20260812T040246Z-b5818c80` using one
+frozen `openai_compatible` / `qwen3.7-plus` configuration across the controlled
+three-case sample. The result is retained exactly as observed:
+
+| Stage | Passed | Rate |
+|---|---:|---:|
+| Baseline Reproduced | 3/3 | 100.0% |
+| Diagnosis Completed | 3/3 | 100.0% |
+| Diagnosis Benchmark Passed | 3/3 | 100.0% |
+| Proposal Generated | 2/3 | 66.7% |
+| Proposal Validated | 2/3 | 66.7% |
+| Patch Applied | 2/3 | 66.7% |
+| Target Test Executed | 1/3 | 33.3% |
+| Repair Successful | 1/3 | 33.3% |
+
+The Run recorded 12 logical LLM calls, 12 HTTP attempts, 18,800 input
+tokens, 25,563 output tokens, and 44,363 total tokens. Mean/p50/max pipeline
+latency was 107,469.667/104,964/114,797 ms; no P95 is reported for a three-case
+sample. This is a single-shot result on the current controlled benchmark, not
+an AI accuracy, production repair rate, or overall Spring bug repair rate.
+
+`transaction-self-invocation` stopped at proposal with no application or
+verification. `no-unique-bean-definition` reached application but Maven failed
+before a valid target Surefire result was produced. The
+`configuration-properties-prefix-mismatch` target test passed and produced the
+only Repair Success. Diagnosis Benchmark Pass and Repair Success remain
+independent metrics.
+
 ## M5C Isolated Maven Repair Verification
 
-Current stage: M5C complete, version `0.11.0`.
+Current stage: M5D complete, version `0.12.0`.
 
 M5C is the deterministic verification stage after M5A proposal validation and
 M5B isolated application:

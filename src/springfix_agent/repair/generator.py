@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import time
 from collections.abc import Sequence
 from dataclasses import dataclass
 from importlib import resources
@@ -71,6 +72,8 @@ class PatchGenerationResult:
     evidence: tuple[EvidenceSnippet, ...]
     generation_error: str | None
     patch_llm_calls: int
+    patch_generation_duration_ms: int = 0
+    patch_validation_duration_ms: int = 0
 
     @property
     def proposal(self) -> PatchProposal:
@@ -147,19 +150,25 @@ class PatchProposalService:
             root_cause_analysis,
             retrieved_snippets,
         )
+        generation_started = time.monotonic()
         proposal = self._generator.generate(
             root_cause_analysis=root_cause_analysis,
             validated_evidence=evidence,
             task_id=task_id,
             tracer=tracer,
         )
+        generation_duration_ms = max(0, int((time.monotonic() - generation_started) * 1000))
+        validation_started = time.monotonic()
         validation = validate_patch_proposal(proposal, repository_root, evidence)
+        validation_duration_ms = max(0, int((time.monotonic() - validation_started) * 1000))
         patch_calls = 1 if evidence else 0
         return PatchGenerationResult(
             validation=validation,
             evidence=tuple(evidence),
             generation_error=None if proposal.status != "insufficient_evidence" else proposal.summary,
             patch_llm_calls=patch_calls,
+            patch_generation_duration_ms=generation_duration_ms,
+            patch_validation_duration_ms=validation_duration_ms,
         )
 
     generate = propose

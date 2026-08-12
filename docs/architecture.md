@@ -478,3 +478,24 @@ validated/all-edits-applied patch, source/test/pom and source-repository
 integrity, target execution, Maven exit `0`, `tests>0`, and zero failures,
 errors, or skips. M5C is process-restricted verification, not an OS,
 container, or network sandbox.
+
+## M5D Single-shot End-to-End Benchmark layer
+
+```text
+M4C Diagnostic Graph -> M4C evaluator -> M5A proposal/validator
+-> M5B isolated applier -> M5C Maven/Surefire verifier
+-> per-case attribution + Run funnel/aggregate
+```
+
+M5D is orchestration and measurement, not new intelligence. Baseline Maven
+Gold gates each case before model calls. The Agent receives only the sanitized
+repository and the existing three-field input. Repair Gold is loaded only
+after model outputs for deterministic post-run evaluation. One Live Run uses
+one frozen provider/model/config across all cases. Failures stop that case,
+remain in aggregate denominators, and are never automatically repaired again.
+
+The formal M5D Live baseline is Run `20260812T040246Z-b5818c80`: diagnosis
+completed and passed 3/3, proposal and application reached 2/3, target tests
+executed 1/3, and single-shot Repair Success was 1/3. The bean ambiguity case
+failed before a valid target Surefire result was produced; the config-prefix
+case passed; no result was retried or optimized after the Run.
