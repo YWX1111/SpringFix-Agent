@@ -24,7 +24,7 @@
 └─────────────────────────────────────────────────────────────┘
                               │
 ┌─────────────────────────────────────────────────────────────┐
-│              沙箱层 (Docker SDK + Maven 测试)                │ 阶段 3+
+│      验证/沙箱层 (M5C 受限 Maven；Docker Sandbox 后续)       │ M5C / M6+
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -206,8 +206,8 @@ AgentState (issue_analysis + investigation_plan)
   4. 由于自调用绕过代理，预期的事务没有生效
   5. 测试通过数据库记录数量证明数据未按预期回滚
 - sample README 必须记录：Bug 描述、预期行为、实际行为、根因、复现命令、预期失败测试名称
-- Agent 不执行 Maven，测试仅用于人工验证样例 Bug 真实存在
-- 自动执行 Maven 留到 Docker 沙箱阶段
+- 诊断 Agent 不执行 Maven；M4B/M5C 只由固定脚本执行受限的基准验证
+- M5C 在临时隔离副本中运行固定 target test，不提供 Docker/OS/network sandbox
 
 ## 9. 最终技术栈
 
@@ -446,5 +446,35 @@ for later M5C use but is never an allowed application target.
 
 Diffs use Python `difflib.unified_diff` with repository-relative `a/` and `b/`
 paths. M5B records Patch Application Success metrics only; it does not run
-Maven and does not claim Repair Success. M5C is the later Maven verification
-stage.
+Maven and does not claim Repair Success. M5C is the deterministic Maven
+verification stage on the patched copy.
+
+## M5C Isolated Maven Repair Verification layer
+
+```text
+benchmark baseline Gold
+  -> validated M5A Mock proposal
+  -> M5B temporary workspace + deterministic application
+  -> test/pom/source integrity checks
+  -> fixed Maven target selector with shell=False
+  -> Surefire XML target-test oracle
+  -> structured RepairVerificationResult + sanitized artifact
+```
+
+`MavenRepairVerifier` owns JDK/Maven discovery, the trusted target selector,
+restricted subprocess environment, timeout and bounded output tails. It never
+accepts a user command or arbitrary argument list. The patched Maven cwd must
+be the active temporary workspace and never the source repository. The child
+environment keeps only launch/runtime fields needed by Maven/JDK and removes
+LLM credentials, API keys, tokens, secrets, authorization, and inherited Maven
+injection options.
+
+Before the patched invocation, M5C verifies the original bug against the
+manifest-declared failure counts and terms. It then checks that `src/test/**`,
+`pom.xml`, and all non-proposal source files are unchanged. After Maven,
+Surefire XML reports for the exact target test are selected; unrelated test
+reports cannot make a case pass. Repair Success requires baseline reproduction,
+validated/all-edits-applied patch, source/test/pom and source-repository
+integrity, target execution, Maven exit `0`, `tests>0`, and zero failures,
+errors, or skips. M5C is process-restricted verification, not an OS,
+container, or network sandbox.

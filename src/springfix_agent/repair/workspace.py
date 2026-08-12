@@ -89,6 +89,57 @@ def compute_sha256_manifest(repository_root: Path) -> dict[str, str]:
     return dict(sorted(manifest.items()))
 
 
+def compute_repository_manifest(repository_root: Path) -> dict[str, str]:
+    """Hash repository files while excluding only generated/cache content.
+
+    This broader manifest is used by M5C after Maven.  Unlike the M5B copy
+    manifest it includes documentation, but still excludes build output and
+    credentials so a Maven run cannot make generated ``target/`` files look
+    like a source mutation.
+    """
+    root = repository_root.resolve()
+    if not root.is_dir():
+        raise ValueError(f"repository root is not a directory: {root}")
+    excluded_directories = _EXCLUDED_DIRECTORIES | {".venv", ".mypy_cache", ".pytest_cache", ".ruff_cache"}
+    result: dict[str, str] = {}
+    for current, dir_names, file_names in os.walk(root, followlinks=False):
+        current_path = Path(current)
+        relative_dir = current_path.relative_to(root)
+        if relative_dir != Path(".") and any(
+            part.casefold() in excluded_directories for part in relative_dir.parts
+        ):
+            dir_names[:] = []
+            continue
+        kept_dirs: list[str] = []
+        for dirname in sorted(dir_names):
+            candidate = current_path / dirname
+            relative = candidate.relative_to(root)
+            if candidate.is_symlink() or any(
+                part.casefold() in excluded_directories for part in relative.parts
+            ):
+                continue
+            kept_dirs.append(dirname)
+        dir_names[:] = kept_dirs
+        for filename in sorted(file_names):
+            candidate = current_path / filename
+            relative = candidate.relative_to(root)
+            lowered_name = filename.casefold()
+            if (
+                candidate.is_symlink()
+                or not candidate.is_file()
+                or lowered_name == ".env"
+                or lowered_name.startswith(".env.")
+                or candidate.suffix.casefold() in _EXCLUDED_SUFFIXES
+            ):
+                continue
+            digest = hashlib.sha256()
+            with candidate.open("rb") as stream:
+                for block in iter(lambda: stream.read(1024 * 1024), b""):
+                    digest.update(block)
+            result[relative.as_posix()] = digest.hexdigest()
+    return dict(sorted(result.items()))
+
+
 class IsolatedPatchWorkspace:
     """Context manager that copies a repository into a disposable workspace."""
 
@@ -157,6 +208,7 @@ def create_isolated_patch_workspace(repository_root: Path) -> IsolatedPatchWorks
 
 __all__ = [
     "IsolatedPatchWorkspace",
+    "compute_repository_manifest",
     "compute_sha256_manifest",
     "create_isolated_patch_workspace",
 ]

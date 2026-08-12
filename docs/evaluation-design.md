@@ -252,3 +252,41 @@ Patch Application Success Rate; these metrics are not Repair Success Rate.
 Repair Gold is used only after application to inspect changed-file membership,
 never to tell the Applier which file to edit. M5B does not execute Maven;
 M5C owns verification of the patched copy.
+
+## M5C Isolated Maven Repair Verification metrics
+
+M5C runs the current three-case controlled benchmark in `mock` mode. It first
+verifies that each original sample reproduces its manifest-declared Maven Gold
+failure, then obtains the validated M5A Mock proposal, applies it through the
+M5B deterministic applier, and runs only the trusted target test in the
+temporary workspace.
+
+The Maven command is constructed internally and always uses `shell=False`.
+The runner does not accept `--command` or arbitrary subprocess arguments. It
+uses a workspace-only cwd, a minimal child environment with LLM credentials
+removed, a configurable timeout, and Surefire XML rather than console text as
+the test-result oracle. Before Maven it verifies that `src/test/**` and
+`pom.xml` are unchanged; after Maven it ignores only generated `target/` output
+for source-integrity comparison. The original repository is never the patch
+write target.
+
+Per-case M5C results record baseline reproduction, proposal validation, patch
+application, repository/test/pom integrity, Maven execution and exit code,
+target-test detection, Surefire `tests/failures/errors/skipped`, deterministic
+failure reason, duration, and cleanup. Aggregate metrics are:
+
+- `baseline_reproduction_rate`
+- `patch_application_rate`
+- `maven_execution_rate`
+- `target_test_execution_rate`
+- `repair_success_rate`
+- `workspace_integrity_rate`
+- `workspace_cleanup_rate`
+- mean, p50, and maximum verification duration
+
+Repair Success is true only when the baseline bug was reproduced, all Patch
+Application and integrity gates passed, the exact target test executed, Maven
+exited `0`, and Surefire reports `tests>0` with zero failures, errors, or
+skips. This is **Repair Success Rate on the current 3-case controlled
+benchmark**, not a production or whole-project repair rate. M5C does not call a
+Live LLM or retry failed repairs.

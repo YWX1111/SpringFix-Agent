@@ -295,6 +295,7 @@ CI 不依赖任何 LLM API Key。Mock 模式跑全部测试。
 | M4C | 完整 Agent 评测 | ✅ 完成 |
 | M5A | 结构化 Patch Proposal + Evidence Gate + Validator | ✅ 完成 |
 | M5B | 临时隔离副本 Patch Application + Deterministic Diff | ✅ 完成 |
+| M5C | 隔离副本固定 Maven Target Test Verification + Surefire Oracle | ✅ 完成 |
 
 ## 关键约束
 
@@ -312,14 +313,14 @@ CI 不依赖任何 LLM API Key。Mock 模式跑全部测试。
 1. **后台任务不可靠**：进程内 threading.Thread，重启丢失在途任务。M4A 新增遗留任务中断标记，但执行中的 Graph 不能续跑
 2. **检索已升级为多通道**：M3 新增 BM25 词法检索 + 符号检索 + RRF 融合（k=10，三路等权），M1 词法评分保留为 baseline
 3. **SQLite 持久化**：M4A 新增 SQLite 存储，支持重启后历史查询。InMemory 仍可用于测试。SQLite 适用于本地单机 MVP
-4. **Agent 不执行 Maven**：示例 Bug 可 `mvn test` 复现，但 Agent 不执行 Maven
+4. **诊断 Agent 不执行任意 Maven**：M5C 仅在受限临时副本中执行固定目标测试
 5. **Live 模式需手动启用**：默认 Mock，不调真实模型
 6. **符号链接测试平台差异**：Windows 跳过，Linux CI 必须执行
 
 ## 状态
 
-- 版本：0.10.0
-- 阶段：M5B 完成（仅对临时隔离副本应用 validated proposal，并生成确定性 diff）
+- 版本：0.11.0
+- 阶段：M5C 完成（基于 M5A/M5B 的隔离副本 Maven Repair Verification）
 - 上次更新：2026-08-11
 
 ## M5A / M5B / M5C 边界
@@ -328,7 +329,11 @@ CI 不依赖任何 LLM API Key。Mock 模式跑全部测试。
 - **M5B = apply only to temporary isolated copy**：复制允许内容到临时目录，先全量
   preflight，再按同文件降序行号应用；生成 Python `difflib` unified diff，并用 SHA-256
   manifest 证明原仓库未变化。
-- **M5C = execute Maven verification**：后续阶段才在隔离副本执行 Maven 验证。
+- **M5C = execute Maven verification**：当前仅在隔离副本执行固定 Maven 验证。
+
+M5C 已完成：仅在临时隔离副本中运行固定 target test，使用 Surefire XML
+作为结果 Oracle，并执行 baseline、Patch、test/pom/source integrity、超时、
+workspace cleanup 和 Repair Success 判定。
 
 M5B 不证明 Repair Success，只证明 validated proposal 可以被确定性、安全地应用到
 隔离仓库副本。M5B 不运行 Maven/Gradle/Docker，不执行 shell，不访问网络，不修改 Sample
@@ -356,4 +361,36 @@ It writes redacted `proposal.json` and `proposal.md` artifacts under
 `artifacts/repair-proposals/{mock|live}/`. M5A never applies a patch, modifies
 a sample repository, runs Maven, executes shell commands, or claims Repair
 Success. M5B consumes the validated proposal only after copying the repository
-to an isolated temporary workspace; M5C Maven verification remains out of scope.
+to an isolated temporary workspace. M5C verifies the patched copy with a fixed
+Maven target test and Surefire XML; it does not invoke a Live LLM or run an
+automatic repair loop.
+
+## M5C Isolated Maven Repair Verification
+
+Current stage: M5C complete, version `0.11.0`.
+
+M5C is the deterministic verification stage after M5A proposal validation and
+M5B isolated application:
+
+```powershell
+uv run python scripts/run_repair_verification.py --mode mock
+uv run python scripts/run_repair_verification.py --mode mock --case transaction-self-invocation
+```
+
+The runner first reproduces the original bug against the benchmark Maven Gold,
+then applies the validated M5A Mock proposal to a disposable workspace. It
+constructs the Maven invocation internally with `shell=False`, a trusted
+manifest test selector, a workspace-only cwd, a restricted child environment,
+and `REPAIR_MAVEN_TIMEOUT_SECONDS` (default `120`). Surefire XML is the oracle
+for exact target-test execution and counts; console text is never used to claim
+success.
+
+`repair_success=true` requires all of the following: baseline bug reproduced,
+proposal validated, every edit applied, original repository unchanged, test and
+`pom.xml` integrity preserved, target test executed, Maven exit code `0`,
+`tests>0`, and zero failures/errors/skips. Results are written under
+`artifacts/repair-verification/mock/` with bounded sanitized output tails and
+without temporary paths, `.env`, credentials, prompts, or Gold payloads.
+
+M5C is process-restricted Maven verification, not an OS/container/network
+sandbox. Stronger isolation is a later hardening stage.

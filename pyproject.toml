@@ -1,6 +1,6 @@
 [project]
 name = "springfix-agent"
-version = "0.10.0"
+version = "0.11.0"
 description = "SpringFix Agent — intelligent diagnosis and repair platform for Java/Spring Boot projects"
 readme = "README.md"
 requires-python = ">=3.11"

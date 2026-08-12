@@ -1,7 +1,8 @@
-"""Repair proposal generation, validation, and isolated patch application.
+"""Repair proposal generation, isolated application, and M5C verification.
 
-M5A proposes and validates.  M5B applies only to a disposable repository copy;
-it never writes the source repository or executes Maven.
+M5A proposes and validates. M5B applies only to a disposable repository copy.
+M5C runs one fixed Maven target test in that patched copy and never invokes a
+live LLM or accepts an arbitrary command.
 """
 
 from springfix_agent.repair.application_models import (
@@ -18,6 +19,7 @@ from springfix_agent.repair.generator import (
     PatchProposalGenerator,
     PatchProposalService,
 )
+from springfix_agent.repair.maven_verifier import MavenRepairVerifier
 from springfix_agent.repair.models import (
     EvidenceSnippet,
     PatchEdit,
@@ -30,8 +32,17 @@ from springfix_agent.repair.validator import (
     collect_validated_evidence,
     validate_patch_proposal,
 )
+from springfix_agent.repair.verification_models import (
+    BaselineVerificationResult,
+    MavenTestResult,
+    RepairAggregateMetrics,
+    RepairCaseMetrics,
+    RepairVerificationResult,
+    RepairVerificationRunResult,
+)
 from springfix_agent.repair.workspace import (
     IsolatedPatchWorkspace,
+    compute_repository_manifest,
     compute_sha256_manifest,
     create_isolated_patch_workspace,
 )
@@ -47,6 +58,7 @@ __all__ = [
     "PatchProposalService",
     "PatchProposalValidator",
     "PatchApplier",
+    "MavenRepairVerifier",
     "PatchApplicationAggregateMetrics",
     "PatchApplicationCaseMetrics",
     "PatchApplicationResult",
@@ -54,8 +66,15 @@ __all__ = [
     "PatchValidationResult",
     "RejectedApplicationEdit",
     "RejectedPatchEdit",
+    "BaselineVerificationResult",
+    "MavenTestResult",
+    "RepairAggregateMetrics",
+    "RepairCaseMetrics",
+    "RepairVerificationResult",
+    "RepairVerificationRunResult",
     "collect_validated_evidence",
     "compute_sha256_manifest",
+    "compute_repository_manifest",
     "create_isolated_patch_workspace",
     "validate_patch_proposal",
 ]

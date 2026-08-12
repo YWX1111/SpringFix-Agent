@@ -1,0 +1,87 @@
+{
+  "application": {
+    "application_error": null,
+    "applied_edits": [
+      {
+        "edit_index": 0,
+        "file": "src/main/java/com/springfix/sample/beans/service/CheckoutService.java",
+        "new_code_sha256": "1b679fa67ef21d0ce1bd4a40c0eb8c91978e0ab952742d5693003b7df5212f88",
+        "old_code_sha256": "4b180c1eb268379c2a3d9b342e3a78eb46b808b6784f1ff165ce7814b8991b2c",
+        "original_end_line": 4,
+        "original_start_line": 4
+      },
+      {
+        "edit_index": 1,
+        "file": "src/main/java/com/springfix/sample/beans/service/CheckoutService.java",
+        "new_code_sha256": "d45f6b1292354753bd107c2f1de7b47fe7441a056eb4c31ce685ab69c982b805",
+        "old_code_sha256": "ba9d08834627647e6cdb09d13c6b13d4c3373664d543ed8833e0723e22850af5",
+        "original_end_line": 12,
+        "original_start_line": 12
+      }
+    ],
+    "changed_files": [
+      "src/main/java/com/springfix/sample/beans/service/CheckoutService.java"
+    ],
+    "edits_applied": 2,
+    "edits_rejected": 0,
+    "edits_requested": 2,
+    "original_repository_unchanged": true,
+    "proposal_status": "proposed",
+    "rejected_edits": [],
+    "status": "applied",
+    "workspace_cleaned": true,
+    "workspace_integrity": "verified"
+  },
+  "baseline": {
+    "failure_reason": null,
+    "maven_result": {
+      "duration_ms": 3509,
+      "errors": 0,
+      "executed": true,
+      "exit_code": 1,
+      "failures": 1,
+      "skipped": 0,
+      "stderr_tail": "",
+      "stdout_tail": "t.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)\n\tat org.junit.jupiter.api.AssertNull.failNotNull(AssertNull.java:50)\n\tat org.junit.jupiter.api.AssertNull.assertNull(AssertNull.java:35)\n\tat org.junit.jupiter.api.Assertions.assertNull(Assertions.java:287)\n\tat com.springfix.sample.beans.NoUniqueBeanDefinitionTest.lambda$contextShouldStartWithSinglePaymentGateway$0(NoUniqueBeanDefinitionTest.java:21)\n\tat org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.accept(AbstractApplicationContextRunner.java:434)\n\tat org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.consumeAssertableContext(AbstractApplicationContextRunner.java:363)\n\tat org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.lambda$run$0(AbstractApplicationContextRunner.java:341)\n\tat org.springframework.boot.test.util.TestPropertyValues.lambda$applyToSystemProperties$1(TestPropertyValues.java:174)\n\tat org.springframework.boot.test.util.TestPropertyValues.applyToSystemProperties(TestPropertyValues.java:188)\n\tat org.springframework.boot.test.util.TestPropertyValues.applyToSystemProperties(TestPropertyValues.java:173)\n\tat org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.lambda$run$1(AbstractApplicationContextRunner.java:341)\n\tat org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.withContextClassLoader(AbstractApplicationContextRunner.java:369)\n\tat org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.run(AbstractApplicationContextRunner.java:340)\n\tat com.springfix.sample.beans.NoUniqueBeanDefinitionTest.contextShouldStartWithSinglePaymentGateway(NoUniqueBeanDefinitionTest.java:19)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:568)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1511)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1511)\n\n[INFO] \n[INFO] Results:\n[INFO] \n[ERROR] Failures: \n[ERROR]   NoUniqueBeanDefinitionTest.contextShouldStartWithSinglePaymentGateway:19->lambda$contextShouldStartWithSinglePaymentGateway$0:21 Expected startupFailure == null, but got NoUniqueBeanDefinitionException for PaymentGateway: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'checkoutService' defined in file [<path> Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'com.springfix.sample.beans.gateway.PaymentGateway' available: expected single matching bean but found 2: paypalPaymentGateway,stripePaymentGateway ==> expected: <null> but was: <org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'checkoutService' defined in file [<path> Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'com.springfix.sample.beans.gateway.PaymentGateway' available: expected single matching bean but found 2: paypalPaymentGateway,stripePaymentGateway>\n[INFO] \n[ERROR] Tests run: 1, Failures: 1, Errors: 0, Skipped: 0\n[INFO] \n[INFO] ------------------------------------------------------------------------\n[INFO] BUILD FAILURE\n[INFO] ------------------------------------------------------------------------\n[INFO] Total time:  2.470 s\n[INFO] Finished at: 2026-08-12T08:55:19+08:00\n[INFO] ------------------------------------------------------------------------\n[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.1.2:test (default-test) on project no-unique-bean-definition: There are test failures.\n[ERROR] \n[ERROR] Please refer to <path> for the individual test results.\n[ERROR] Please refer to dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.\n[ERROR] -> [Help 1]\n[ERROR] \n[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.\n[ERROR] Re-run Maven using the -X switch to enable full debug logging.\n[ERROR] \n[ERROR] For more information about the errors and possible solutions, please read the following articles:\n[ERROR] [Help 1] htt<path>",
+      "target_test_found": true,
+      "tests": 1,
+      "timed_out": false
+    },
+    "verified": true
+  },
+  "case_id": "no-unique-bean-definition",
+  "maven": {
+    "duration_ms": 4365,
+    "errors": 0,
+    "executed": true,
+    "exit_code": 0,
+    "failures": 0,
+    "skipped": 0,
+    "stderr_tail": "",
+    "stdout_tail": "",
+    "target_test_found": true,
+    "tests": 1,
+    "timed_out": false
+  },
+  "metrics": {
+    "all_edits_applied": true,
+    "baseline_verified": true,
+    "case_id": "no-unique-bean-definition",
+    "errors": 0,
+    "failure_reason": null,
+    "failures": 0,
+    "maven_executed": true,
+    "maven_exit_code": 0,
+    "maven_timed_out": false,
+    "original_repository_unchanged": true,
+    "patch_applied": true,
+    "proposal_valid": true,
+    "repair_success": true,
+    "skipped": 0,
+    "target_test_found": true,
+    "tests": 1,
+    "verification_duration_ms": 8885,
+    "verification_status": "success",
+    "workspace_cleanup_success": true
+  }
+}

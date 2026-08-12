@@ -169,7 +169,8 @@ Completed: standalone repair models, one-call Patch Proposal generation,
 validated-evidence gate, deterministic validator, rejected-edit audit,
 Mock/Live CLI, three-case Repair Gold/evaluator, and redacted artifacts.
 
-Deferred: M5B Sandbox application and M5C Maven verification.
+M5B isolated application and M5C Maven verification are complete; stronger
+OS/container/network sandboxing and automatic repair retries remain deferred.
 
 ## M5B (0.10.0) - Isolated Patch Application
 
@@ -180,5 +181,17 @@ preservation, atomic temporary writes, deterministic Python unified diff,
 redacted application artifacts, and deterministic Mock application metrics.
 
 M5A remains propose-only. M5B applies only to a temporary copy and does not
-run Maven or claim Repair Success. M5C is reserved for Maven verification on
-the patched temporary copy.
+run Maven or claim Repair Success. M5C now performs deterministic Maven
+verification on the patched temporary copy and reports Repair Success only
+when the baseline, patch, integrity, target-test, Maven, and Surefire gates all
+pass.
+
+## M5C (0.11.0) - Isolated Maven Repair Verification
+
+Completed: fixed Maven command construction with `shell=False`, temporary
+workspace cwd enforcement, restricted subprocess environment, JDK/Maven
+discovery, timeout classification, Surefire target-test selection, baseline
+bug reproduction, test/pom/source integrity checks, structured failure reasons,
+sanitized artifacts, and deterministic three-case Mock metrics. M5C is
+process-restricted verification; OS/container/network sandboxing and automatic
+repair retries remain future hardening work.

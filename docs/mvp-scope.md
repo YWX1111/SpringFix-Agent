@@ -133,7 +133,8 @@
 - Prompt Injection Case 不代表绝对安全
 - 检索仍为 M1 简单词法评分；BM25 在 M3 实现
 - 当前使用 InMemory 存储和进程内后台线程
-- Agent 不执行 Maven、不执行用户代码，也不修改代码
+- 诊断 Agent 不执行任意 Maven、不执行用户代码，也不修改代码；M5C 只在临时副本
+  中运行固定 target test 并由 Surefire XML 判定结果
 
 ---
 
@@ -255,8 +256,8 @@
 M5A produces structured Patch Proposals from validated diagnosis evidence. It
 supports Mock/Live CLI execution and redacted JSON/Markdown artifacts. It does
 not mutate repositories, execute Maven or shell commands, apply patches, or
-define Repair Success. Patch Proposal Validation is the highest repair-stage
-metric until M5C adds isolated Maven verification.
+define Repair Success. Patch Proposal Validation remains an M5A metric; M5C
+owns isolated Maven verification and Repair Success.
 
 ## M5B scope（0.10.0）
 
@@ -280,3 +281,13 @@ newline 和 trailing newline，并通过 sibling temp + flush + `os.replace` 写
 
 M5B Mock 指标名称是 Patch Application Success，不是 Repair Success。M5B 不执行 Maven、
 Gradle、Docker、shell 或网络操作；M5C 才负责隔离副本的 Maven 验证。
+## M5C scope (0.11.0)
+
+M5C runs only the fixed-scope `scripts/run_repair_verification.py --mode mock`
+flow. It verifies the original Maven Gold failure, reapplies the validated M5A
+Mock proposal through M5B, runs the trusted target test in the temporary copy,
+and parses Surefire XML for the target counts. It enforces `shell=False`, fixed
+Maven arguments, workspace-only cwd, restricted child environment, timeout,
+test/pom/source integrity, original-repository integrity, cleanup, and bounded
+sanitized artifacts. It has no arbitrary command or argument passthrough, Live
+LLM call, automatic repair retry, or OS/container/network sandbox.

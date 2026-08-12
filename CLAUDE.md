@@ -4,7 +4,7 @@
 
 ## 阶段定位
 
-当前阶段：**M5B 隔离副本 Patch Application（已完成）**；版本 0.10.0。
+当前阶段：**M5C 隔离副本 Maven Repair Verification（已完成）**；版本 0.11.0。
 
 M4A 在 M3 基础上新增 SQLite 持久化层：
 
@@ -248,10 +248,11 @@ M1-M3 期间不输出 Agent 准确率或命中率。M3 检索评测（Recall@K /
 3. 用户明确确认"进入下一里程碑"
 ## M5A / M5B / M5C repair boundary
 
-Version `0.10.0` keeps the independent `repair/` stage after the unchanged
+Version `0.11.0` keeps the independent `repair/` stage after the unchanged
 diagnostic Graph. M5A proposes and validates; M5B applies only to a temporary
-isolated copy and creates a deterministic diff; M5C will execute Maven
-verification later. The three diagnostic LLM calls remain unchanged.
+isolated copy and creates a deterministic diff; M5C executes deterministic
+Maven verification in that patched copy. The three diagnostic LLM calls remain
+unchanged, and M5C does not call a Live LLM or retry repairs.
 
 M5B creates a SHA-256 manifest of the source's copied allowlist before the
 workspace is created and compares it after application. Preflight validates
@@ -260,8 +261,12 @@ line order. Only UTF-8 and existing UTF-8 BOM files are supported, newline and
 trailing-newline state are preserved, and writes use a flushed sibling temp
 file followed by `os.replace`.
 
-The service and CLI never modify samples, run Maven/Gradle/Docker, execute
-shell commands, access the network, or add a SQLite schema. They never log
-temporary absolute paths, prompts, raw responses, API keys, or Benchmark Gold.
-M5B is Patch Application, not Repair Success; M5C Maven verification remains
-out of scope.
+The diagnostic service and M5A/M5B CLI never modify samples, run arbitrary
+Maven/Gradle/Docker commands, execute shell commands, access the network, or
+add a SQLite schema. The dedicated M5C CLI runs only its fixed Maven target in
+a temporary workspace. All stages never log temporary absolute paths, prompts,
+raw responses, API keys, or Benchmark Gold.
+M5B is Patch Application, not Repair Success; M5C is process-restricted Maven
+verification. It uses a fixed `shell=False` command, trusted manifest target,
+workspace-only cwd, restricted child environment, timeout, Surefire XML, and
+source/test/pom integrity gates. It is not an OS/container/network sandbox.

@@ -1,0 +1,79 @@
+{
+  "application": {
+    "application_error": null,
+    "applied_edits": [
+      {
+        "edit_index": 0,
+        "file": "src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+        "new_code_sha256": "a05a57fa51d561c3e425195c3c5bce34a3faaf290dcc76193b6032fcb30be8c6",
+        "old_code_sha256": "ab01102df5bfd34a370bb4120c11d9bd0d8b10e12ce4b39b7b6f11bb0137c1c9",
+        "original_end_line": 31,
+        "original_start_line": 31
+      }
+    ],
+    "changed_files": [
+      "src/main/java/com/springfix/sample/transaction/service/OrderService.java"
+    ],
+    "edits_applied": 1,
+    "edits_rejected": 0,
+    "edits_requested": 1,
+    "original_repository_unchanged": true,
+    "proposal_status": "proposed",
+    "rejected_edits": [],
+    "status": "applied",
+    "workspace_cleaned": true,
+    "workspace_integrity": "verified"
+  },
+  "baseline": {
+    "failure_reason": null,
+    "maven_result": {
+      "duration_ms": 6883,
+      "errors": 0,
+      "executed": true,
+      "exit_code": 1,
+      "failures": 1,
+      "skipped": 0,
+      "stderr_tail": "Java HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended",
+      "stdout_tail": "test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.springfix.sample.transaction.Application for test class com.springfix.sample.transaction.TransactionSelfInvocationTest\n\n  .   ____          _            __ _ _\n /\\\\ / ___'_ __ _ _(_)_ __  __ _ \\ \\ \\ \\\n( ( )\\___ | '_ | '_| | '_ \\/ _` | \\ \\ \\ \\\n \\\\/  ___)| |_)| | | | | || (_| |  ) ) ) )\n  '  |____| .__|_| |_|_| |_\\__, | / / / /\n =========|_|==============|___/=/_/_/_/\n :: Spring Boot ::                (v3.2.0)\n\n2026-08-12T08:55:05.537+08:00  INFO 26988 --- [           main] c.s.s.t.TransactionSelfInvocationTest    : Starting TransactionSelfInvocationTest using Java 17.0.12 with PID 26988 (started by Administrator in <path>\n2026-08-12T08:55:05.537+08:00  INFO 26988 --- [           main] c.s.s.t.TransactionSelfInvocationTest    : No active profile set, falling back to 1 default profile: \"default\"\n2026-08-12T08:55:06.017+08:00  INFO 26988 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...\n2026-08-12T08:55:06.211+08:00  INFO 26988 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:testdb user=SA\n2026-08-12T08:55:06.212+08:00  INFO 26988 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.\n2026-08-12T08:55:06.334+08:00  INFO 26988 --- [           main] c.s.s.t.TransactionSelfInvocationTest    : Started TransactionSelfInvocationTest in 0.992 seconds (process running for 1.772)\n[ERROR] Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 3.062 s <<< FAILURE! -- in com.springfix.sample.transaction.TransactionSelfInvocationTest\n[ERROR] com.springfix.sample.transaction.TransactionSelfInvocationTest.shouldRollbackOrderWhenInnerMethodThrows -- Time elapsed: 1.696 s <<< FAILURE!\norg.opentest4j.AssertionFailedError: Expected rollback but data was persisted; self-invocation bypassed the @Transactional AOP proxy ==> expected: <0> but was: <1>\n\tat org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)\n\tat org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)\n\tat org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)\n\tat org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:182)\n\tat org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:571)\n\tat com.springfix.sample.transaction.TransactionSelfInvocationTest.shouldRollbackOrderWhenInnerMethodThrows(TransactionSelfInvocationTest.java:42)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:568)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1511)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1511)\n\n[INFO] \n[INFO] Results:\n[INFO] \n[ERROR] Failures: \n[ERROR]   TransactionSelfInvocationTest.shouldRollbackOrderWhenInnerMethodThrows:42 Expected rollback but data was persisted; self-invocation bypassed the @Transactional AOP proxy ==> expected: <0> but was: <1>\n[INFO] \n[ERROR] Tests run: 1, Failures: 1, Errors: 0, Skipped: 0\n[INFO] \n[INFO] ------------------------------------------------------------------------\n[INFO] BUILD FAILURE\n[INFO] ------------------------------------------------------------------------\n[INFO] Total time:  5.406 s\n[INFO] Finished at: 2026-08-12T08:55:08+08:00\n[INFO] ------------------------------------------------------------------------\n[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.1.2:test (default-test) on project transaction-self-invocation: There are test failures.\n[ERROR] \n[ERROR] Please refer to <path> for the individual test results.\n[ERROR] Please refer to dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.\n[ERROR] -> [Help 1]\n[ERROR] \n[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.\n[ERROR] Re-run Maven using the -X switch to enable full debug logging.\n[ERROR] \n[ERROR] For more information about the errors and possible solutions, please read the following articles:\n[ERROR] [Help 1] htt<path>",
+      "target_test_found": true,
+      "tests": 1,
+      "timed_out": false
+    },
+    "verified": true
+  },
+  "case_id": "transaction-self-invocation",
+  "maven": {
+    "duration_ms": 6815,
+    "errors": 0,
+    "executed": true,
+    "exit_code": 0,
+    "failures": 0,
+    "skipped": 0,
+    "stderr_tail": "Java HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended",
+    "stdout_tail": "08:55:12.814 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.springfix.sample.transaction.TransactionSelfInvocationTest]: TransactionSelfInvocationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.\n08:55:12.886 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.springfix.sample.transaction.Application for test class com.springfix.sample.transaction.TransactionSelfInvocationTest\n\n  .   ____          _            __ _ _\n /\\\\ / ___'_ __ _ _(_)_ __  __ _ \\ \\ \\ \\\n( ( )\\___ | '_ | '_| | '_ \\/ _` | \\ \\ \\ \\\n \\\\/  ___)| |_)| | | | | || (_| |  ) ) ) )\n  '  |____| .__|_| |_|_| |_\\__, | / / / /\n =========|_|==============|___/=/_/_/_/\n :: Spring Boot ::                (v3.2.0)\n\n2026-08-12T08:55:13.189+08:00  INFO 51472 --- [           main] c.s.s.t.TransactionSelfInvocationTest    : Starting TransactionSelfInvocationTest using Java 17.0.12 with PID 51472 (started by Administrator in <path>\n2026-08-12T08:55:13.190+08:00  INFO 51472 --- [           main] c.s.s.t.TransactionSelfInvocationTest    : No active profile set, falling back to 1 default profile: \"default\"\n2026-08-12T08:55:13.648+08:00  INFO 51472 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...\n2026-08-12T08:55:13.807+08:00  INFO 51472 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:testdb user=SA\n2026-08-12T08:55:13.808+08:00  INFO 51472 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.\n2026-08-12T08:55:13.938+08:00  INFO 51472 --- [           main] c.s.s.t.TransactionSelfInvocationTest    : Started TransactionSelfInvocationTest in 0.934 seconds (process running for 1.608)",
+    "target_test_found": true,
+    "tests": 1,
+    "timed_out": false
+  },
+  "metrics": {
+    "all_edits_applied": true,
+    "baseline_verified": true,
+    "case_id": "transaction-self-invocation",
+    "errors": 0,
+    "failure_reason": null,
+    "failures": 0,
+    "maven_executed": true,
+    "maven_exit_code": 0,
+    "maven_timed_out": false,
+    "original_repository_unchanged": true,
+    "patch_applied": true,
+    "proposal_valid": true,
+    "repair_success": true,
+    "skipped": 0,
+    "target_test_found": true,
+    "tests": 1,
+    "verification_duration_ms": 14890,
+    "verification_status": "success",
+    "workspace_cleanup_success": true
+  }
+}
