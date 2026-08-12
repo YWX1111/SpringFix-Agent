@@ -320,8 +320,8 @@ CI 不依赖任何 LLM API Key。Mock 模式跑全部测试。
 
 ## 状态
 
-- 版本：0.12.0
-- 阶段：M5D 完成（基于 M4C/M5A/M5B/M5C 的 single-shot End-to-End Repair Benchmark）
+- 版本：0.13.0
+- 阶段：M6B 完成（M6A RCA 固化 + Repair Observability Hardening）
 - 上次更新：2026-08-12
 
 ## M5A / M5B / M5C / M5D 边界
@@ -430,7 +430,21 @@ independent metrics.
 
 ## M5C Isolated Maven Repair Verification
 
-Current stage: M5D complete, version `0.12.0`.
+Current stage: M6B complete, version `0.13.0`.
+
+## M6A RCA 固化与 M6B Repair Observability Hardening
+
+M6A freezes the postmortem for the retained M5D Live Run in
+`artifacts/failure-analysis/m5d-live-20260812T040246Z-b5818c80/`. The RCA is
+historical evidence for the observed proposal-boundary and Maven compile
+failures; it is not a claim of improved Repair Success.
+
+M6B adds bounded proposal-generation audit fields to existing LLM traces and
+proposal artifacts, plus deterministic Maven lifecycle/failure classification.
+Raw prompts, raw responses, credentials, full URLs, `.env`, temporary paths,
+and full Maven environments are not persisted. M6B is observability-only: it
+does not change repair behavior, prompts, Gold/sample data, validator rules,
+retries, AST logic, sandboxing, or run Live LLM calls.
 
 M5C is the deterministic verification stage after M5A proposal validation and
 M5B isolated application:

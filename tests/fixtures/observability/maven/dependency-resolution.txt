@@ -1,0 +1,3 @@
+[ERROR] Could not resolve dependencies for project com.example:sample:jar:1.0
+[ERROR] Could not transfer artifact org.example:missing-lib:jar:1.0 from/to central
+[ERROR] Failed to read artifact descriptor for org.example:missing-lib:jar:1.0

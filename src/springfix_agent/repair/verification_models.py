@@ -9,6 +9,39 @@ from pydantic import BaseModel, ConfigDict, Field
 VerificationStatus = Literal["success", "timeout", "failed", "not_executed"]
 
 
+class MavenFailureClassification(BaseModel):
+    """Deterministic, redacted classification of one Maven invocation."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    lifecycle_phase: Literal[
+        "dependency_resolution",
+        "validate",
+        "compile",
+        "test_compile",
+        "surefire",
+        "test_runtime",
+        "plugin",
+        "unknown",
+    ]
+    failure_category: Literal[
+        "dependency_resolution_failure",
+        "main_compile_failure",
+        "test_compile_failure",
+        "surefire_start_failure",
+        "test_failure",
+        "test_error",
+        "plugin_failure",
+        "timeout",
+        "success",
+        "unknown",
+    ]
+    first_actionable_error: str | None = Field(default=None, max_length=200)
+    affected_file: str | None = Field(default=None, max_length=240)
+    affected_symbol: str | None = Field(default=None, max_length=200)
+    surefire_started: bool | None = None
+
+
 class MavenTestResult(BaseModel):
     """Bounded result of one fixed Maven invocation."""
 
@@ -23,6 +56,8 @@ class MavenTestResult(BaseModel):
     skipped: int = Field(default=0, ge=0)
     target_test_found: bool = False
     surefire_report_found: bool = False
+    surefire_started: bool | None = None
+    maven_failure_classification: MavenFailureClassification | None = None
     duration_ms: int = Field(default=0, ge=0)
     stdout_tail: str = Field(default="", max_length=4096)
     stderr_tail: str = Field(default="", max_length=4096)
@@ -116,6 +151,7 @@ class RepairVerificationRunResult(BaseModel):
 
 __all__ = [
     "BaselineVerificationResult",
+    "MavenFailureClassification",
     "MavenTestResult",
     "RepairAggregateMetrics",
     "RepairCaseMetrics",

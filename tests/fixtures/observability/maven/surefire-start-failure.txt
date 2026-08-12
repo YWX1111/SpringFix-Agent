@@ -1,0 +1,3 @@
+[INFO] --- maven-surefire-plugin:3.2.5:test (default-test) @ sample ---
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.2.5:test (default-test) on project sample
+[ERROR] There are no tests to run.

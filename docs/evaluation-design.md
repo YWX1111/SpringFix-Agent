@@ -339,3 +339,21 @@ case failed at proposal, the bean ambiguity case reached application but Maven
 failed before a valid target Surefire result was produced, and the config-prefix
 case was the only Repair Success. Diagnosis Benchmark Pass was 3/3 while Repair
 Success was 1/3; neither metric is rewritten to hide the other.
+
+## M6A RCA and M6B Observability Evaluation
+
+M6A is a fixed postmortem artifact for the retained M5D Live Run, not a new
+evaluation sample. M6B evaluates observability with deterministic proposal
+fixtures for explicit insufficient evidence, unsafe status, invalid JSON,
+schema failure, provider timeout/error, and validator rejection. The fixtures
+assert that parser/schema/provider failures are not normalized to
+`proposal_status_insufficient_evidence` and that raw prompts/responses and
+credentials are absent.
+
+Deterministic Maven fixtures cover dependency resolution, main/test compile,
+Surefire start, test failure/error, timeout, unknown output, and success. The
+classifier exposes lifecycle phase, failure category, first actionable error,
+relative affected file, affected symbol, and tri-state `surefire_started`.
+`compile_success` is true only for a confirmed successful test execution, false
+for main/test compilation failure, and null for other Maven failures. These
+metrics describe failure observability and are not Repair Success claims.

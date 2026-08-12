@@ -1,0 +1,200 @@
+{
+  "report": "M5D Live Repair Failure RCA",
+  "run_id": "20260812T040246Z-b5818c80",
+  "scope": "evidence-only RCA; no optimization or repair retry",
+  "current_baseline": {
+    "branch": "main",
+    "head": "e4e87320804a6cdf23a2956eb5505751bb98b3ab",
+    "tag": "v0.12.0-m5d",
+    "working_tree": "clean",
+    "env_ignored": true,
+    "env_read": false
+  },
+  "run_provenance": {
+    "commit": "7bfaea3be5dbddff80faa58a568f898ef2cf6412",
+    "tag": "v0.11.0-m5c",
+    "version": "0.12.0",
+    "mode": "live",
+    "provider": "openai_compatible",
+    "model": "qwen3.7-plus",
+    "sample_size": 3
+  },
+  "funnel": {
+    "baseline_reproduced": "3/3",
+    "diagnosis_completed": "3/3",
+    "diagnosis_benchmark_passed": "3/3",
+    "proposal_generated": "2/3",
+    "proposal_validated": "2/3",
+    "patch_applied": "2/3",
+    "target_test_executed": "1/3",
+    "repair_successful": "1/3"
+  },
+  "cases": {
+    "transaction-self-invocation": {
+      "status": "failed",
+      "failed_stage": "proposal",
+      "exact_category": "proposal_insufficient_evidence",
+      "pipeline_failure_reason": "proposal_invalid",
+      "primary_failure_layer": "patch proposal generator / structured-proposal boundary; exact sublayer unknown",
+      "diagnosis": {
+        "status": "passed",
+        "benchmark_pass": true,
+        "root_cause_keyword_coverage": 1.0,
+        "expected_file_recall": 1.0,
+        "evidence_target_recall": 1.0,
+        "model_evidence_count": 2,
+        "validated_evidence_count": 2,
+        "rejected_evidence_count": 0,
+        "valid_evidence_rate": 1.0
+      },
+      "proposal": {
+        "result_status": "insufficient_evidence",
+        "generated": false,
+        "valid": false,
+        "edit_count": 0,
+        "validated_edit_count": 0,
+        "rejected_edit_count": 0,
+        "logical_llm_calls": 1,
+        "http_attempts": 1
+      },
+      "evidence": {
+        "repository_corrobation": [
+          {
+            "file": "samples/sample-springboot-bug-transaction-self-invocation/src/main/java/com/springfix/sample/transaction/service/OrderService.java",
+            "line_range": [31, 37],
+            "supports": "direct self-invocation of @Transactional method"
+          },
+          {
+            "file": "samples/sample-springboot-bug-transaction-self-invocation/src/test/java/com/springfix/sample/transaction/TransactionSelfInvocationTest.java",
+            "line_range": [40, 46],
+            "supports": "observed persisted row and proxy-bypass assertion"
+          }
+        ],
+        "run_retained_evidence_files": "unknown; artifact retains counts/recall only"
+      },
+      "primary_rca": "The proposal stage ended in normalized insufficient_evidence; retained artifacts cannot distinguish model-declared insufficiency from structured parsing/schema or generation-exception normalization.",
+      "capability_boundary_proven": false,
+      "recommended_experiment": "Offline proposal-boundary fixture replay with preserved proposal status, parser error class, evidence ranges, and single-file versus two-file candidates."
+    },
+    "no-unique-bean-definition": {
+      "status": "failed",
+      "failed_stage": "verification",
+      "primary_failure_layer": "main source compilation",
+      "actual_patch": {
+        "file": "src/main/java/com/springfix/sample/beans/gateway/StripePaymentGateway.java",
+        "line_range": [7, 7],
+        "change": "add @Primary",
+        "import_added": false,
+        "intended_fix": "select StripePaymentGateway among two PaymentGateway beans"
+      },
+      "maven": {
+        "executed": true,
+        "exit_code": 1,
+        "phase": "maven-compiler-plugin:3.11.0:compile (default-compile)",
+        "phase_class": "main_compile",
+        "first_actionable_error": "cannot find symbol: class Primary",
+        "affected_file": "src/main/java/com/springfix/sample/beans/gateway/StripePaymentGateway.java",
+        "affected_symbol": "Primary",
+        "surefire_plugin_started": false,
+        "surefire_report_found": false,
+        "target_test_found": false,
+        "tests": 0,
+        "failures": 0,
+        "errors": 0
+      },
+      "why_earlier_validators_passed": "M5A validated path, evidence, line range, old_code, and static safety; M5B applied the edit and preserved workspace integrity. Neither performs Java compilation or Spring annotation/import resolution.",
+      "primary_rca": "The actual patch added @Primary without importing org.springframework.context.annotation.Primary, so main compilation failed before Surefire could start.",
+      "recommended_experiment": "Offline classifier for accepted diffs and Maven tails that extracts lifecycle phase and first actionable compiler symbol before generic Surefire-missing classification."
+    },
+    "configuration-properties-prefix-mismatch": {
+      "status": "success",
+      "patch": {
+        "file": "src/main/java/com/springfix/sample/config/MailProperties.java",
+        "change": "springfix.mail -> springfix.email",
+        "single_file": true,
+        "new_import_or_symbol": false,
+        "structural_refactor": false
+      },
+      "verification": {
+        "maven_exit_code": 0,
+        "surefire_report_found": true,
+        "target_test_found": true,
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "repair_success": true
+      },
+      "control_interpretation": "The pipeline currently handles minimal, existing-file, evidence-local metadata edits well."
+    }
+  },
+  "cross_case": [
+    {
+      "case": "transaction-self-invocation",
+      "patch_type": "unknown",
+      "files_touched": [],
+      "new_file_required": "unknown",
+      "new_import_or_symbol": "unknown",
+      "structural_refactor": "unknown",
+      "proposal_valid": false,
+      "compile_or_test_reached": false,
+      "repair_success": false
+    },
+    {
+      "case": "no-unique-bean-definition",
+      "patch_type": "add annotation",
+      "files_touched": ["src/main/java/com/springfix/sample/beans/gateway/StripePaymentGateway.java"],
+      "new_file_required": false,
+      "new_import_or_symbol": "@Primary symbol added; import absent",
+      "structural_refactor": false,
+      "proposal_valid": true,
+      "compile_or_test_reached": "main compile reached; target test not reached",
+      "repair_success": false
+    },
+    {
+      "case": "configuration-properties-prefix-mismatch",
+      "patch_type": "one-line annotation-value edit",
+      "files_touched": ["src/main/java/com/springfix/sample/config/MailProperties.java"],
+      "new_file_required": false,
+      "new_import_or_symbol": false,
+      "structural_refactor": false,
+      "proposal_valid": true,
+      "compile_or_test_reached": true,
+      "repair_success": true
+    }
+  ],
+  "current_repair_capability_boundary": "Diagnosis is demonstrated for 3/3, while successful repair is demonstrated for a minimal existing-file edit only. The Transaction run does not prove a multi-file/new-bean capability boundary because its proposal payload and rejection/parser audit were not retained.",
+  "instrumentation_gaps": [
+    "proposal parser final error category",
+    "proposal generation exception category and sanitized proposal status",
+    "validated evidence file/ranges delivered to Patch Proposal Generator",
+    "rejected edit reason audit",
+    "Maven lifecycle phase",
+    "first actionable compiler/runtime error",
+    "main compile versus test compile versus runtime startup classification"
+  ],
+  "prioritized_follow_up_experiments": [
+    {"priority": "P0", "experiment": "Offline Transaction proposal-boundary fixture replay"},
+    {"priority": "P1", "experiment": "Offline Bean compile-phase and first-error classification"},
+    {"priority": "P2", "experiment": "Expand benchmark with import-sensitive and multi-file repair cases"}
+  ],
+  "execution_policy": {
+    "code_modified": false,
+    "prompt_modified": false,
+    "gold_modified": false,
+    "sample_modified": false,
+    "test_modified": false,
+    "live_llm_called": false,
+    "patch_regenerated": false,
+    "repair_retried": false,
+    "git_commit_created": false,
+    "git_push_performed": false,
+    "git_tag_created": false
+  },
+  "limitations": [
+    "sample size is three",
+    "raw LLM response and full trace were not retained",
+    "Transaction lower-level proposal failure cause is unresolved",
+    "Bean Maven tail is partially encoding-damaged, though compile goal and Primary symbol are clear"
+  ]
+}

@@ -37,6 +37,7 @@ from springfix_agent.llm.schemas import (
 )
 from springfix_agent.llm.trace import LLMCall
 from springfix_agent.repair.models import PatchProposal
+from springfix_agent.repair.observability import audit_snapshot, classify_proposal_exception
 
 Behavior = Literal["ok", "timeout", "connection", "rate_limit", "auth", "invalid_json", "schema_error"]
 
@@ -132,10 +133,23 @@ class MockLLMClient:
         start_perf = time.monotonic()
         start_iso = datetime.now(tz=UTC).isoformat()
         prompt_chars = len(system_prompt) + len(user_prompt)
+        audit = trace_context.get("audit")
+        if audit is not None:
+            audit["logical_call_started"] = True
 
         behavior = self._next_behavior(response_model)
         if behavior != "ok":
             exc = self._build_behavior_exception(behavior)
+            if audit is not None:
+                audit["response_received"] = behavior in {"invalid_json", "schema_error"}
+                audit["response_count"] = 1 if audit["response_received"] else 0
+                audit["response_character_count"] = 0
+                audit["structured_parse_attempts"] = 1 if audit["response_received"] else 0
+                category, detail = classify_proposal_exception(exc)
+                audit["failure_category"] = category
+                audit["failure_detail_code"] = detail
+                audit["source_exception_class"] = type(exc).__name__
+                audit["generator_outcome"] = category
             end_iso = datetime.now(tz=UTC).isoformat()
             duration_ms = int((time.monotonic() - start_perf) * 1000)
             call = LLMCall(
@@ -154,6 +168,8 @@ class MockLLMClient:
                 error_type=type(exc).__name__,
                 error_message=str(exc)[:500],
             )
+            if audit is not None:
+                call["proposal_audit"] = audit_snapshot(audit)
             self.record_llm_call(call, trace_context)
             raise exc
 
@@ -173,6 +189,15 @@ class MockLLMClient:
                     node_name=trace_context["node_name"],
                     prompt_chars=prompt_chars,
                 )
+                if audit is not None:
+                    category, detail = classify_proposal_exception(exc)
+                    audit["provider_completed"] = False
+                    audit["response_received"] = False
+                    audit["failure_category"] = category
+                    audit["failure_detail_code"] = detail
+                    audit["source_exception_class"] = type(exc).__name__
+                    audit["generator_outcome"] = "exception_normalized_insufficient_evidence"
+                    failure_call["proposal_audit"] = audit_snapshot(audit)
                 self.record_llm_call(failure_call, trace_context)
                 raise exc
             profile_instance = get_profile_response(self._profile, response_model)
@@ -184,6 +209,11 @@ class MockLLMClient:
 
         if instance is None:
             exc = SchemaValidationError(f"no mock response for {response_model.__name__}")
+            if audit is not None:
+                category, detail = classify_proposal_exception(exc)
+                audit["failure_category"] = category
+                audit["failure_detail_code"] = detail
+                audit["source_exception_class"] = type(exc).__name__
             end_iso = datetime.now(tz=UTC).isoformat()
             duration_ms = int((time.monotonic() - start_perf) * 1000)
             call = LLMCall(
@@ -202,11 +232,35 @@ class MockLLMClient:
                 error_type="SchemaValidationError",
                 error_message=str(exc)[:500],
             )
+            if audit is not None:
+                call["proposal_audit"] = audit_snapshot(audit)
             self.record_llm_call(call, trace_context)
             raise exc
 
         end_iso = datetime.now(tz=UTC).isoformat()
         duration_ms = int((time.monotonic() - start_perf) * 1000)
+        if audit is not None:
+            data = instance.model_dump(mode="json")
+            audit["provider_completed"] = True
+            audit["response_received"] = True
+            audit["response_count"] = 1
+            audit["response_character_count"] = len(instance.model_dump_json())
+            audit["structured_parse_attempts"] = 1
+            audit["structured_parse_succeeded"] = True
+            audit["schema_validation_succeeded"] = True
+            audit["response_top_level_keys"] = sorted(str(key) for key in data)
+            audit["response_status_field_present"] = "status" in data
+            status = data.get("status")
+            if status == "insufficient_evidence":
+                audit["failure_category"] = "proposal_status_insufficient_evidence"
+                audit["generator_outcome"] = status
+            elif status == "unsafe_to_propose":
+                audit["failure_category"] = "proposal_status_unsafe"
+                audit["generator_outcome"] = status
+            elif status == "proposed":
+                audit["generator_outcome"] = status
+            if isinstance(data.get("edits"), list):
+                audit["response_edit_count"] = len(data["edits"])
         call = LLMCall(
             node=trace_context["node_name"],
             provider=self.provider,
@@ -223,6 +277,8 @@ class MockLLMClient:
             error_type=None,
             error_message=None,
         )
+        if audit is not None:
+            call["proposal_audit"] = audit_snapshot(audit)
         self.record_llm_call(call, trace_context)
         return instance
 

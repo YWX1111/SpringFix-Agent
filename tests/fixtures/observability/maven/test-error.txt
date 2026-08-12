@@ -1,0 +1,4 @@
+[INFO] --- maven-surefire-plugin:3.2.5:test (default-test) @ sample ---
+[INFO] Running com.example.StripePaymentGatewayTest
+[ERROR] APPLICATION FAILED TO START
+[ERROR] NoUniqueBeanDefinitionException: expected single matching bean but found 2

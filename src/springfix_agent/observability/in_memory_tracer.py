@@ -67,6 +67,7 @@ class InMemoryTracer:
             _LOGGER.exception("failed to record llm_call for task %s", task_id)
 
 
+
 def _tool_call_payload(call: ToolCall) -> dict[str, object]:
     return {
         "node": call["node"],
@@ -89,7 +90,7 @@ def _node_timing_payload(timing: NodeTiming) -> dict[str, object]:
 
 
 def _llm_call_payload(call: LLMCall) -> dict[str, object]:
-    return {
+    payload: dict[str, object] = {
         "node": call["node"],
         "provider": call["provider"],
         "model": call["model"],
@@ -105,3 +106,6 @@ def _llm_call_payload(call: LLMCall) -> dict[str, object]:
         "error_type": call["error_type"],
         "error_message": call["error_message"],
     }
+    if "proposal_audit" in call:
+        payload["proposal_audit"] = dict(call["proposal_audit"])
+    return payload

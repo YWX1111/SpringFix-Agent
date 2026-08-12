@@ -69,6 +69,11 @@ def write_repair_artifacts(result: RepairBenchmarkRunResult, output_dir: Path) -
             "case_id": case.case_id,
             "model": case.model,
             "proposal_status": case.proposal_status,
+            "proposal_generation_audit": (
+                case.proposal_generation_audit.model_dump()
+                if case.proposal_generation_audit is not None
+                else None
+            ),
             "summary": case.summary,
             "edits": case.edits,
             "verification_steps": case.verification_steps,

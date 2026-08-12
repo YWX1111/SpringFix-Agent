@@ -6,6 +6,7 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from springfix_agent.repair.observability import ProposalGenerationAudit
 from springfix_agent.repair.verification_models import MavenTestResult
 
 StageStatus = Literal["not_run", "passed", "failed", "skipped"]
@@ -65,6 +66,7 @@ class EndToEndCaseResult(BaseModel):
     proposal_generated: bool = False
     proposal_valid: bool = False
     proposal_result_status: str | None = None
+    proposal_generation_audit: ProposalGenerationAudit | None = None
     edit_count: int = 0
     validated_edit_count: int = 0
     rejected_edit_count: int = 0

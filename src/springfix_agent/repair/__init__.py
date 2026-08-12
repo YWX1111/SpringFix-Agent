@@ -32,6 +32,7 @@ from springfix_agent.repair.models import (
     PatchValidationResult,
     RejectedPatchEdit,
 )
+from springfix_agent.repair.observability import ProposalGenerationAudit
 from springfix_agent.repair.validator import (
     PatchProposalValidator,
     collect_validated_evidence,
@@ -39,6 +40,7 @@ from springfix_agent.repair.validator import (
 )
 from springfix_agent.repair.verification_models import (
     BaselineVerificationResult,
+    MavenFailureClassification,
     MavenTestResult,
     RepairAggregateMetrics,
     RepairCaseMetrics,
@@ -64,6 +66,7 @@ __all__ = [
     "PatchProposalValidator",
     "PatchApplier",
     "MavenRepairVerifier",
+    "ProposalGenerationAudit",
     "PatchApplicationAggregateMetrics",
     "PatchApplicationCaseMetrics",
     "PatchApplicationResult",
@@ -73,6 +76,7 @@ __all__ = [
     "RejectedPatchEdit",
     "BaselineVerificationResult",
     "MavenTestResult",
+    "MavenFailureClassification",
     "RepairAggregateMetrics",
     "RepairCaseMetrics",
     "RepairVerificationResult",

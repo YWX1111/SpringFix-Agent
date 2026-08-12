@@ -9,6 +9,7 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from springfix_agent.repair.models import PatchValidationResult
+from springfix_agent.repair.observability import ProposalGenerationAudit
 
 
 def _normalise(value: str) -> str:
@@ -71,6 +72,7 @@ class RepairCaseResult(BaseModel):
     case_id: str
     model: str
     proposal_status: Literal["proposed", "insufficient_evidence", "unsafe_to_propose"]
+    proposal_generation_audit: ProposalGenerationAudit | None = None
     summary: str
     edits: list[dict[str, object]] = Field(default_factory=list)
     verification_steps: list[str] = Field(default_factory=list)
@@ -156,6 +158,7 @@ def evaluate_repair_proposal(
     input_tokens: int | None,
     output_tokens: int | None,
     duration_ms: int,
+    proposal_generation_audit: ProposalGenerationAudit | None = None,
 ) -> RepairCaseResult:
     """Evaluate concept/path/safety metrics without a model judge."""
     proposal = validation.proposal
@@ -207,6 +210,7 @@ def evaluate_repair_proposal(
         risks=proposal.risks,
         assumptions=proposal.assumptions,
         rejected_edit_reasons=reasons,
+        proposal_generation_audit=proposal_generation_audit,
         metrics=result_metrics,
     )
 

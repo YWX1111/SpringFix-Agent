@@ -206,3 +206,17 @@ attempts, nullable provider tokens, latency, failure attribution, funnel
 counts, and redacted run-scoped artifacts. Mock CI uses Mock diagnosis/proposal
 with real isolated application and Maven/Surefire verification. No iterative
 repair retry, prompt/Gold/sample changes, or stronger sandbox is included.
+
+## M6A (post-M5D) - RCA Solidification
+
+Completed: retained the M5D Live Run postmortem as a sanitized two-file
+failure-analysis artifact. The postmortem is historical evidence and does not
+change code behavior or claim improved Repair Success.
+
+## M6B (0.13.0) - Repair Observability Hardening
+
+Completed: bounded proposal-generation audit fields in existing traces and
+artifacts, deterministic failure categories, deterministic Maven lifecycle and
+failure classification, relative affected file/symbol extraction, and
+fixture-backed regression tests. No prompt, Gold/sample, validator, retry,
+repair-success, or Live-LLM behavior changes are included.

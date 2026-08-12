@@ -19,7 +19,7 @@ The client implementations strip them on the way out.
 
 from __future__ import annotations
 
-from typing import Protocol, TypedDict, TypeVar
+from typing import NotRequired, Protocol, TypedDict, TypeVar
 
 from pydantic import BaseModel
 
@@ -35,6 +35,7 @@ class LLMTraceContext(TypedDict):
     task_id: str
     node_name: str
     tracer: Tracer
+    audit: NotRequired[dict[str, object]]
 
 
 class LLMClient(Protocol):

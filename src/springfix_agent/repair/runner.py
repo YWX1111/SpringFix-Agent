@@ -236,6 +236,7 @@ class RepairProposalRunner:
                 input_tokens=_token_sum(traces, "input_tokens"),
                 output_tokens=_token_sum(traces, "output_tokens"),
                 duration_ms=duration_ms,
+                proposal_generation_audit=patch_result.proposal_generation_audit,
             )
 
     def _resolve_case_repository(self, case: BenchmarkCase) -> Path:

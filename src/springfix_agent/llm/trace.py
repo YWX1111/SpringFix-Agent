@@ -16,7 +16,7 @@ Constraints:
 
 from __future__ import annotations
 
-from typing import Literal, TypedDict
+from typing import Literal, NotRequired, TypedDict
 
 MAX_LLM_ERROR_CHARS = 500
 
@@ -38,3 +38,4 @@ class LLMCall(TypedDict):
     output_tokens: int | None
     error_type: str | None
     error_message: str | None
+    proposal_audit: NotRequired[dict[str, object]]

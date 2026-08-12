@@ -19,6 +19,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Protocol
 
+from springfix_agent.repair.maven_classification import classify_maven_failure
 from springfix_agent.repair.verification_models import (
     BaselineVerificationResult,
     MavenTestResult,
@@ -595,6 +596,19 @@ class MavenRepairVerifier:
             suites,
             expectation.test_name,
         )
+        classification = classify_maven_failure(
+            stdout=process.stdout,
+            stderr=process.stderr,
+            executed=process.executed,
+            timed_out=process.timed_out,
+            exit_code=process.returncode,
+            surefire_report_found=bool(report_files),
+            target_test_found=found,
+            tests=tests,
+            failures=failures,
+            errors=errors,
+            workspace=workspace,
+        )
         return MavenTestResult(
             executed=process.executed,
             timed_out=process.timed_out,
@@ -605,9 +619,11 @@ class MavenRepairVerifier:
             skipped=skipped,
             target_test_found=found,
             surefire_report_found=bool(report_files),
+            surefire_started=classification.surefire_started,
             duration_ms=process.duration_ms,
             stdout_tail=tail_output(process.stdout),
             stderr_tail=tail_output(process.stderr),
+            maven_failure_classification=classification,
         )
 
     @staticmethod

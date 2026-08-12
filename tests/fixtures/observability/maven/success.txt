@@ -1,0 +1,4 @@
+[INFO] --- maven-surefire-plugin:3.2.5:test (default-test) @ sample ---
+[INFO] Running com.example.StripePaymentGatewayTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS

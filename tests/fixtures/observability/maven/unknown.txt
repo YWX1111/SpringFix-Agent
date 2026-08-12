@@ -1,0 +1,2 @@
+[INFO] BUILD FAILURE
+[ERROR] Maven stopped before a lifecycle phase could be identified.

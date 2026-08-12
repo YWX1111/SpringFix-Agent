@@ -33,6 +33,7 @@ from springfix_agent.llm._retry import (
 from springfix_agent.llm.client import LLMTraceContext
 from springfix_agent.llm.parser import build_repair_prompt, parse_structured
 from springfix_agent.llm.trace import LLMCall
+from springfix_agent.repair.observability import audit_snapshot, classify_proposal_exception
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -113,13 +114,35 @@ class OpenAICompatibleLLMClient:
         attempt_number = 0
         last_usage: dict[str, int | None] = {"input_tokens": None, "output_tokens": None}
         prompt_chars = len(system_prompt) + len(base_user_prompt)
+        audit = trace_context.get("audit")
+        if audit is not None:
+            audit["logical_call_started"] = True
 
         def attempt() -> T:
             nonlocal attempt_number
             attempt_number += 1
-            raw, usage = self._raw_completion(system_prompt, base_user_prompt)
+            raw, usage = self._raw_completion(system_prompt, base_user_prompt, audit=audit)
             last_usage.update(usage)
-            return parse_structured(raw, response_model)
+            if audit is not None:
+                audit["structured_parse_attempts"] = _audit_int(audit, "structured_parse_attempts") + 1
+                audit["response_character_count"] = len(raw)
+                audit["response_received"] = True
+                if not raw.strip():
+                    audit["failure_category"] = "empty_response"
+            try:
+                result = parse_structured(raw, response_model)
+            except SchemaValidationError as exc:
+                if audit is not None and audit.get("failure_category") != "empty_response":
+                    message = str(exc).casefold()
+                    audit["failure_category"] = (
+                        "invalid_json" if "invalid json" in message else "schema_validation_failure"
+                    )
+                raise
+            if audit is not None:
+                audit["structured_parse_succeeded"] = True
+                audit["schema_validation_succeeded"] = True
+                _record_response_shape(audit, result)
+            return result
 
         start_perf = time.monotonic()
         start_iso = datetime.now(tz=UTC).isoformat()
@@ -132,11 +155,23 @@ class OpenAICompatibleLLMClient:
                 raw="", errors=str(first_error), response_model=response_model
             )
             combined_user = f"{base_user_prompt}\n\n---\n{repair_prompt}"
-            raw, usage = self._raw_completion(system_prompt, combined_user)
+            raw, usage = self._raw_completion(system_prompt, combined_user, audit=audit)
             last_usage.update(usage)
+            if audit is not None:
+                audit["structured_parse_attempts"] = _audit_int(audit, "structured_parse_attempts") + 1
+                audit["response_character_count"] = len(raw)
+                audit["response_received"] = True
             try:
                 result = parse_structured(raw, response_model)
             except SchemaValidationError as second_error:
+                if audit is not None:
+                    if raw.strip():
+                        _record_parse_failure(audit, second_error)
+                    else:
+                        audit["failure_category"] = "empty_response"
+                        audit["failure_detail_code"] = "empty_response"
+                        audit["source_exception_class"] = type(second_error).__name__
+                        audit["generator_outcome"] = "empty_response"
                 end_iso = datetime.now(tz=UTC).isoformat()
                 duration_ms = int((time.monotonic() - start_perf) * 1000)
                 call = LLMCall(
@@ -155,8 +190,38 @@ class OpenAICompatibleLLMClient:
                     error_type="SchemaValidationError",
                     error_message=self.sanitize_for_trace(str(second_error))[:500],
                 )
+                _attach_audit(call, audit)
                 self.record_llm_call(call, trace_context)
                 raise second_error
+        except Exception as exc:  # noqa: BLE001 - preserve bounded provider failures
+            if audit is not None:
+                category, detail = classify_proposal_exception(exc)
+                if category == "internal_error":
+                    category = "provider_failure"
+                audit["failure_category"] = category
+                audit["failure_detail_code"] = detail
+                audit["source_exception_class"] = type(exc).__name__
+            end_iso = datetime.now(tz=UTC).isoformat()
+            duration_ms = int((time.monotonic() - start_perf) * 1000)
+            call = LLMCall(
+                node=trace_context["node_name"],
+                provider=self.provider,
+                model=self.model,
+                attempt=max(1, attempt_number),
+                start=start_iso,
+                end=end_iso,
+                duration_ms=duration_ms,
+                status="error",
+                prompt_chars=prompt_chars,
+                response_chars=0,
+                input_tokens=last_usage.get("input_tokens"),
+                output_tokens=last_usage.get("output_tokens"),
+                error_type=type(exc).__name__,
+                error_message=self.sanitize_for_trace(str(exc))[:500],
+            )
+            _attach_audit(call, audit)
+            self.record_llm_call(call, trace_context)
+            raise
 
         # Success path: record one trace for the overall invocation.
         end_iso = datetime.now(tz=UTC).isoformat()
@@ -178,11 +243,12 @@ class OpenAICompatibleLLMClient:
             error_type=None,
             error_message=None,
         )
+        _attach_audit(call, audit)
         self.record_llm_call(call, trace_context)
         return result
 
     def _raw_completion(
-        self, system_prompt: str, user_prompt: str
+        self, system_prompt: str, user_prompt: str, *, audit: dict[str, object] | None = None
     ) -> tuple[str, dict[str, int | None]]:
         """POST /chat/completions and return (content, usage_dict)."""
         # Many OpenAI-compatible endpoints expect the /v1 prefix. If the
@@ -207,6 +273,8 @@ class OpenAICompatibleLLMClient:
         }
 
         try:
+            if audit is not None:
+                audit["http_attempts"] = _audit_int(audit, "http_attempts") + 1
             response = self._client.post(url, headers=headers, json=body)
         except httpx.TimeoutException as e:
             raise RetryableError(f"timeout: {e}") from e
@@ -227,6 +295,9 @@ class OpenAICompatibleLLMClient:
             raise RetryableError(f"invalid JSON response: {e}") from e
 
         content = ""
+        if audit is not None:
+            audit["provider_completed"] = True
+            audit["response_count"] = _audit_int(audit, "response_count") + 1
         choices = payload.get("choices") if isinstance(payload, dict) else None
         if isinstance(choices, list) and choices:
             first = choices[0]
@@ -247,3 +318,48 @@ class OpenAICompatibleLLMClient:
                 output_tokens = ot
 
         return content, {"input_tokens": input_tokens, "output_tokens": output_tokens}
+
+
+def _record_response_shape(audit: dict[str, object], result: BaseModel) -> None:
+    """Record bounded structured-output shape, never its content."""
+    data = result.model_dump(mode="json")
+    audit["response_top_level_keys"] = sorted(str(key) for key in data)
+    audit["response_status_field_present"] = "status" in data
+    status = data.get("status")
+    if status == "insufficient_evidence":
+        audit["failure_category"] = "proposal_status_insufficient_evidence"
+        audit["generator_outcome"] = status
+    elif status == "unsafe_to_propose":
+        audit["failure_category"] = "proposal_status_unsafe"
+        audit["generator_outcome"] = status
+    elif status == "proposed":
+        audit["generator_outcome"] = status
+    if isinstance(data.get("edits"), list):
+        audit["response_edit_count"] = len(data["edits"])
+
+
+def _audit_int(audit: dict[str, object], key: str) -> int:
+    value = audit.get(key)
+    return value if isinstance(value, int) else 0
+
+
+def _attach_audit(call: LLMCall, audit: dict[str, object] | None) -> None:
+    if audit is not None:
+        call["proposal_audit"] = audit_snapshot(audit)
+
+
+def _record_parse_failure(audit: dict[str, object], exc: SchemaValidationError) -> None:
+    """Record only a stable parse category, never response content."""
+    message = str(exc).casefold()
+    audit["failure_category"] = (
+        "empty_response"
+        if "empty response" in message
+        else "invalid_json"
+        if "invalid json" in message
+        else "schema_validation_failure"
+        if "schema mismatch" in message
+        else "structured_parse_failure"
+    )
+    audit["failure_detail_code"] = str(audit["failure_category"])
+    audit["source_exception_class"] = type(exc).__name__
+    audit["generator_outcome"] = str(audit["failure_category"])

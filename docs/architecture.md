@@ -499,3 +499,20 @@ completed and passed 3/3, proposal and application reached 2/3, target tests
 executed 1/3, and single-shot Repair Success was 1/3. The bean ambiguity case
 failed before a valid target Surefire result was produced; the config-prefix
 case passed; no result was retried or optimized after the Run.
+
+## M6A RCA and M6B Repair Observability Hardening
+
+M6A preserves the retained M5D Live Run postmortem under
+`artifacts/failure-analysis/m5d-live-20260812T040246Z-b5818c80/`. It records
+the evidence boundary and failure attribution without changing the historical
+run or presenting it as a Repair Success improvement.
+
+M6B stores bounded proposal-generation audit data in the existing LLM trace
+payload and proposal result artifacts. The audit distinguishes logical call,
+HTTP attempts, provider completion, response receipt/count, structured parse,
+schema validation, generator outcome, and stable failure category/detail. It
+never stores prompt or response bodies. Maven verification adds deterministic
+lifecycle/failure classification, tri-state `surefire_started`, first
+actionable error, and repository-relative file/symbol fields. These are
+observability-only additions; repair generation, application, validation, and
+success gates remain unchanged.

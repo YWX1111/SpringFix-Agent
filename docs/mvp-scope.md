@@ -292,7 +292,7 @@ test/pom/source integrity, original-repository integrity, cleanup, and bounded
 sanitized artifacts. It has no arbitrary command or argument passthrough, Live
 LLM call, automatic repair retry, or OS/container/network sandbox.
 
-## M5D scope (0.12.0)
+## M5D scope (historical, 0.12.0)
 
 M5D is the complete single-shot benchmark composition:
 

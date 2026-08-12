@@ -61,7 +61,6 @@ from springfix_agent.tools._path_safety import PathSafetyError, canonicalize_rep
 
 E2EMode = Literal["mock", "live"]
 _MAVEN_VERSION_RE = re.compile(r"Apache Maven\s+([0-9][^\s]+)")
-_COMPILATION_FAILURE_RE = re.compile(r"(?i)(compilation failure|compilation error|compilation failure)")
 
 
 def _ratio(numerator: int, denominator: int) -> float:
@@ -134,10 +133,17 @@ def _pom_hash(manifest: dict[str, str]) -> str | None:
 
 
 def _compile_success(maven: MavenTestResult) -> bool | None:
+    classification = maven.maven_failure_classification
+    if classification is not None:
+        if classification.failure_category in {
+            "main_compile_failure",
+            "test_compile_failure",
+        }:
+            return False
+        if classification.failure_category == "success":
+            return True
     if maven.surefire_report_found and maven.target_test_found:
         return True
-    if _COMPILATION_FAILURE_RE.search(f"{maven.stdout_tail}\n{maven.stderr_tail}"):
-        return False
     return None
 
 
@@ -467,11 +473,13 @@ class EndToEndRepairBenchmarkRunner:
                 input_tokens=_optional_sum([diagnostic_inputs, patch_inputs]),
                 output_tokens=_optional_sum([diagnostic_outputs, patch_outputs]),
                 duration_ms=patch_duration,
+                proposal_generation_audit=patch_result.proposal_generation_audit,
             ).metrics
             base.proposal_generated = patch_result.proposal.status == "proposed"
             base.proposal_valid = patch_result.validation.passed and not proposal_metrics.forbidden_file_edits
             base.proposal_status = "passed" if base.proposal_valid else "failed"
             base.proposal_result_status = patch_result.proposal.status
+            base.proposal_generation_audit = patch_result.proposal_generation_audit
             base.edit_count = proposal_metrics.edit_count
             base.validated_edit_count = proposal_metrics.validated_edit_count
             base.rejected_edit_count = proposal_metrics.rejected_edit_count

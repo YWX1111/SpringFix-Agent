@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 import time
 from collections.abc import Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from importlib import resources
 from pathlib import Path
 from typing import Any
@@ -16,6 +16,11 @@ from springfix_agent.repair.models import (
     EvidenceSnippet,
     PatchProposal,
     PatchValidationResult,
+)
+from springfix_agent.repair.observability import (
+    ProposalGenerationAudit,
+    audit_from_state,
+    classify_proposal_exception,
 )
 from springfix_agent.repair.validator import (
     collect_validated_evidence,
@@ -34,6 +39,9 @@ class _NullTracer:
 
     def record_llm_call(self, task_id: str, call: Any) -> None:
         del task_id, call
+
+    def record_proposal_audit(self, task_id: str, audit: dict[str, object]) -> None:
+        del task_id, audit
 
 
 def _render_patch_prompt(root_cause: dict[str, object], evidence: list[EvidenceSnippet]) -> str:
@@ -74,6 +82,7 @@ class PatchGenerationResult:
     patch_llm_calls: int
     patch_generation_duration_ms: int = 0
     patch_validation_duration_ms: int = 0
+    proposal_generation_audit: ProposalGenerationAudit = field(default_factory=ProposalGenerationAudit)
 
     @property
     def proposal(self) -> PatchProposal:
@@ -94,10 +103,19 @@ class PatchProposalGenerator:
         validated_evidence: list[EvidenceSnippet] | tuple[EvidenceSnippet, ...],
         task_id: str = "patch-proposal",
         tracer: Tracer | None = None,
+        audit: dict[str, object] | None = None,
     ) -> PatchProposal:
         """Call the Patch LLM once, unless the evidence set is empty."""
         evidence = list(validated_evidence)
+        audit_state = audit if audit is not None else {}
         if not evidence:
+            audit_state.update(
+                {
+                    "generator_outcome": "insufficient_evidence_without_llm_call",
+                    "failure_category": "no_validated_evidence",
+                    "failure_detail_code": "no_validated_evidence",
+                }
+            )
             return _insufficient("Validated evidence is required before proposing a patch.")
         if hasattr(root_cause_analysis, "model_dump"):
             root_cause = dict(root_cause_analysis.model_dump(exclude={"rejected_evidence"}))
@@ -105,13 +123,22 @@ class PatchProposalGenerator:
             root_cause = dict(root_cause_analysis)
             root_cause.pop("rejected_evidence", None)
         else:
+            audit_state.update(
+                {
+                    "generator_outcome": "insufficient_evidence_without_llm_call",
+                    "failure_category": "internal_error",
+                    "failure_detail_code": "invalid_root_cause_analysis",
+                }
+            )
             return _insufficient("The root-cause analysis is not a valid structured result.")
         context_tracer: Tracer = tracer if tracer is not None else _NullTracer()
         trace_context: LLMTraceContext = {
             "task_id": task_id,
             "node_name": "patch_proposal",
             "tracer": context_tracer,
+            "audit": audit_state,
         }
+        audit_state["logical_call_started"] = True
         prompt = _render_patch_prompt(root_cause, evidence)
         try:
             result = self._llm.invoke_structured(
@@ -124,8 +151,22 @@ class PatchProposalGenerator:
                 response_model=PatchProposal,
                 trace_context=trace_context,
             )
-        except Exception:  # noqa: BLE001
+        except Exception as exc:  # noqa: BLE001
+            category, detail = classify_proposal_exception(exc)
+            audit_state.update(
+                {
+                    "generator_outcome": "exception_normalized_insufficient_evidence",
+                    "failure_category": category,
+                    "failure_detail_code": detail,
+                    "source_exception_class": type(exc).__name__,
+                }
+            )
             return _insufficient("Patch proposal generation failed; no patch was proposed.")
+        audit_state["generator_outcome"] = result.status
+        if result.status == "insufficient_evidence":
+            audit_state["failure_category"] = "proposal_status_insufficient_evidence"
+        elif result.status == "unsafe_to_propose":
+            audit_state["failure_category"] = "proposal_status_unsafe"
         return result
 
 
@@ -150,17 +191,26 @@ class PatchProposalService:
             root_cause_analysis,
             retrieved_snippets,
         )
+        audit_state: dict[str, object] = {}
         generation_started = time.monotonic()
         proposal = self._generator.generate(
             root_cause_analysis=root_cause_analysis,
             validated_evidence=evidence,
             task_id=task_id,
             tracer=tracer,
+            audit=audit_state,
         )
         generation_duration_ms = max(0, int((time.monotonic() - generation_started) * 1000))
         validation_started = time.monotonic()
         validation = validate_patch_proposal(proposal, repository_root, evidence)
         validation_duration_ms = max(0, int((time.monotonic() - validation_started) * 1000))
+        proposal_audit = audit_from_state(audit_state)
+        if proposal.status == "proposed" and validation.accepted_edit_count == 0:
+            proposal_audit.failure_category = "validator_no_valid_edits"
+            proposal_audit.failure_detail_code = "all_edits_rejected"
+            proposal_audit.failure_detail = "all_edits_rejected"
+            proposal_audit.generator_outcome = "validator_rejected_all_edits"
+            proposal_audit.outcome = "validator_rejected_all_edits"
         patch_calls = 1 if evidence else 0
         return PatchGenerationResult(
             validation=validation,
@@ -169,6 +219,7 @@ class PatchProposalService:
             patch_llm_calls=patch_calls,
             patch_generation_duration_ms=generation_duration_ms,
             patch_validation_duration_ms=validation_duration_ms,
+            proposal_generation_audit=proposal_audit,
         )
 
     generate = propose

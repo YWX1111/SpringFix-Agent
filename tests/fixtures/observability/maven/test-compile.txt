@@ -1,0 +1,4 @@
+[ERROR] COMPILATION ERROR :
+[ERROR] /workspace/src/test/java/com/example/StripePaymentGatewayTest.java:[12,5] cannot find symbol
+[ERROR]   symbol: class MissingFixtureType
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.11.0:testCompile (default-testCompile) on project sample: Compilation failure
