@@ -2,8 +2,8 @@
 #
 # Two independent jobs:
 #   - python-quality: Python 3.11 static analysis + unit/integration tests
-#   - sample-bug-verification: Java 21 + Maven verification of all M4B
-#     benchmark samples via scripts/verify_benchmark_samples.py
+#   - sample-bug-verification: Java 21 + Maven verification of the frozen
+#     legacy and unseen Holdout benchmark samples
 #
 # Neither job calls any external LLM API. Neither job uploads secrets.
 
@@ -91,6 +91,9 @@ jobs:
 
       - name: Validate benchmark manifest
         run: uv run python scripts/validate_agent_benchmark.py
+
+      - name: Verify Holdout v1 integrity
+        run: uv run python scripts/holdout_integrity.py
 
       - name: Run benchmark sample verification
         run: uv run python scripts/verify_benchmark_samples.py

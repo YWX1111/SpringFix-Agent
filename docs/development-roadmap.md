@@ -230,3 +230,22 @@ fixture-backed coverage for missing/existing/added/FQN/same-file/unknown and
 unrelated-import cases. Maven remains the authoritative compile/test oracle;
 there is no automatic import insertion or repair retry, and the historical
 M5D/M6C-1 results remain unchanged.
+
+## M7A - Unseen Holdout Benchmark Expansion
+
+Completed benchmark construction and freeze without changing runtime behavior.
+The legacy development benchmark remains 3 cases, while Unseen Holdout v1 is
+a separate 7-case split covering dependency injection, configuration/profile,
+component scanning, transaction AOP, and MVC mapping failures. Together the
+offline baseline contains 10 cases. Total controlled samples: 10.
+
+`benchmark/holdout_cases.jsonl` contains only repository, issue, error-log, and
+verification metadata; `benchmark/holdout_repair_gold.jsonl` is separate and
+never enters the Agent projection. `benchmark/splits.json` records the split,
+`benchmark/holdout_manifest.json` freezes SHA-256 sample/source/test/Gold
+hashes, and `scripts/holdout_integrity.py` verifies the freeze. The expected
+baseline is legacy `3/3`, Holdout `7/7`, total `10/10`.
+
+M7A does not run a Holdout Agent or Live LLM evaluation. Holdout v1 Repair
+Success: NOT EVALUATED YET. CI performs only offline manifest/integrity checks and
+deterministic Maven baseline verification; runtime version remains `0.14.0`.

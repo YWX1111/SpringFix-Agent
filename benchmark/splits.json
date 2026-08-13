@@ -1,0 +1,17 @@
+{
+  "benchmark_version": "holdout_v1",
+  "legacy": [
+    "transaction-self-invocation",
+    "no-unique-bean-definition",
+    "configuration-properties-prefix-mismatch"
+  ],
+  "holdout": [
+    "missing-constructor-bean",
+    "constructor-circular-dependency",
+    "invalid-config-property-value",
+    "wrong-active-profile",
+    "component-scan-boundary",
+    "transaction-proxy-visibility",
+    "ambiguous-request-mapping"
+  ]
+}

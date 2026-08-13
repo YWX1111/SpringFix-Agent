@@ -14,10 +14,20 @@ from pathlib import Path, PureWindowsPath
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_MANIFEST = PROJECT_ROOT / "benchmark" / "agent_cases.jsonl"
+HOLDOUT_MANIFEST = PROJECT_ROOT / "benchmark" / "holdout_cases.jsonl"
 EXPECTED_CASE_IDS = {
     "transaction-self-invocation",
     "no-unique-bean-definition",
     "configuration-properties-prefix-mismatch",
+}
+HOLDOUT_EXPECTED_CASE_IDS = {
+    "missing-constructor-bean",
+    "constructor-circular-dependency",
+    "invalid-config-property-value",
+    "wrong-active-profile",
+    "component-scan-boundary",
+    "transaction-proxy-visibility",
+    "ambiguous-request-mapping",
 }
 _TEST_METHOD_RE = re.compile(r"\b([A-Za-z_$][A-Za-z0-9_$]*)\s*\(")
 
@@ -40,18 +50,6 @@ def _is_absolute_like(value: str) -> bool:
 def _has_parent_traversal(value: str) -> bool:
     """Reject parent components regardless of slash style."""
     return ".." in value.replace("\\", "/").split("/")
-
-
-def _iter_strings(value: object) -> Iterable[str]:
-    """Yield all string values from a nested manifest object."""
-    if isinstance(value, str):
-        yield value
-    elif isinstance(value, dict):
-        for item in value.values():
-            yield from _iter_strings(item)
-    elif isinstance(value, list):
-        for item in value:
-            yield from _iter_strings(item)
 
 
 def _safe_relative_path(value: str, label: str, errors: list[str]) -> bool:
@@ -115,8 +113,12 @@ def _test_files(repo_path: Path) -> list[Path]:
 def _validate_case(case: BenchmarkCase) -> list[str]:
     """Return all validation errors for one manifest case."""
     errors: list[str] = []
-    payload = case.model_dump()
-    for value in _iter_strings(payload):
+    path_values = [
+        case.repository,
+        *case.expected_files,
+        *(target.file for target in case.evidence_targets),
+    ]
+    for value in path_values:
         if _is_absolute_like(value):
             errors.append(f"manifest contains an absolute path-like value: {value}")
             break
@@ -233,18 +235,74 @@ def validate_manifest(manifest_path: Path = DEFAULT_MANIFEST) -> tuple[bool, lis
     return all_ok, diagnostics
 
 
+def validate_holdout_manifest(
+    manifest_path: Path = HOLDOUT_MANIFEST,
+) -> tuple[bool, list[str]]:
+    """Validate the seven unseen Holdout v1 cases and their evidence."""
+    try:
+        cases = load_cases(manifest_path)
+    except BenchmarkManifestError as exc:
+        return False, [f"manifest load failed: {exc}"]
+
+    diagnostics: list[str] = []
+    all_ok = True
+    case_ids = {case.case_id for case in cases}
+    if len(cases) != len(HOLDOUT_EXPECTED_CASE_IDS):
+        diagnostics.append(
+            f"[FAIL] expected exactly {len(HOLDOUT_EXPECTED_CASE_IDS)} cases, "
+            f"found {len(cases)}"
+        )
+        all_ok = False
+    missing = sorted(HOLDOUT_EXPECTED_CASE_IDS - case_ids)
+    unexpected = sorted(case_ids - HOLDOUT_EXPECTED_CASE_IDS)
+    if missing:
+        diagnostics.append(f"[FAIL] missing required case(s): {', '.join(missing)}")
+        all_ok = False
+    if unexpected:
+        diagnostics.append(f"[FAIL] unexpected case(s): {', '.join(unexpected)}")
+        all_ok = False
+
+    for case in cases:
+        errors = _validate_case(case)
+        if errors:
+            all_ok = False
+            diagnostics.append(f"[FAIL] {case.case_id}")
+            diagnostics.extend(f"  - {error}" for error in errors)
+        else:
+            diagnostics.append(f"[PASS] {case.case_id}")
+    return all_ok, diagnostics
+
+
 def main() -> int:
     """CLI entrypoint for deterministic manifest validation."""
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--manifest", type=Path, default=DEFAULT_MANIFEST)
+    parser.add_argument(
+        "--manifest",
+        type=Path,
+        default=None,
+        help="Validate one legacy manifest; default validates legacy and Holdout v1.",
+    )
     args = parser.parse_args()
-    passed, diagnostics = validate_manifest(args.manifest.resolve())
-    print(f"Manifest: {args.manifest}")
-    for diagnostic in diagnostics:
-        print(diagnostic)
-    if passed:
-        print("Agent benchmark manifest validated")
-        return 0
+    if args.manifest is not None:
+        passed, diagnostics = validate_manifest(args.manifest.resolve())
+        print(f"Manifest: {args.manifest}")
+        for diagnostic in diagnostics:
+            print(diagnostic)
+        if passed:
+            print("Agent benchmark manifest validated")
+            return 0
+    else:
+        legacy_passed, legacy_diagnostics = validate_manifest(DEFAULT_MANIFEST)
+        holdout_passed, holdout_diagnostics = validate_holdout_manifest(HOLDOUT_MANIFEST)
+        print(f"Manifest: {DEFAULT_MANIFEST}")
+        for diagnostic in legacy_diagnostics:
+            print(diagnostic)
+        print(f"Manifest: {HOLDOUT_MANIFEST}")
+        for diagnostic in holdout_diagnostics:
+            print(diagnostic)
+        if legacy_passed and holdout_passed:
+            print("Legacy and Holdout benchmark manifests validated")
+            return 0
     print("Agent benchmark manifest validation failed", file=sys.stderr)
     return 1
 

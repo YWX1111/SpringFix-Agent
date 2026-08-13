@@ -430,7 +430,8 @@ independent metrics.
 
 ## M5C Isolated Maven Repair Verification
 
-Current stage: M6C-2 complete, version `0.14.0`.
+Current stage: M7A complete (Unseen Holdout Benchmark Expansion), version
+`0.14.0`. Runtime behavior remains unchanged.
 
 ## M6A RCA 固化与 M6B Repair Observability Hardening
 
@@ -455,6 +456,32 @@ type identifiers, resolves existing imports, same-file declarations,
 `java.lang` types, and fully-qualified names, and otherwise returns the
 conservative `unknown` status. It never guesses a fully-qualified name,
 automatically edits a Proposal, or retries the LLM.
+
+## M7A Unseen Holdout Benchmark Expansion
+
+The development benchmark remains the frozen legacy three-case set:
+`transaction-self-invocation`, `no-unique-bean-definition`, and
+`configuration-properties-prefix-mismatch`. The M6D `3/3` diagnosis and `1/3`
+Repair Success results apply only to that controlled legacy benchmark.
+
+Holdout v1 is a separate seven-case split. Total controlled samples: 10. Its
+inventory and split are declared in
+`benchmark/holdout_cases.jsonl` and `benchmark/splits.json`; the frozen sample,
+source, test, and Repair Gold SHA-256 values are in
+`benchmark/holdout_manifest.json`. Run the offline checks with:
+
+```powershell
+uv run python scripts/validate_agent_benchmark.py
+uv run python scripts/holdout_integrity.py
+uv run python scripts/verify_benchmark_samples.py
+```
+
+Holdout v1 is baseline construction evidence only. No Holdout Live Agent or
+Repair Success result has been evaluated yet; **Holdout v1 Repair Success: NOT
+EVALUATED YET**. Holdout cases are not loaded by the legacy Agent/Mock runner,
+and Gold remains outside the Agent-facing repository, issue, and error-log
+projection. M7A keeps runtime version `0.14.0` and does not tune Prompt,
+Validator, Repair, or Retrieval behavior.
 
 An obvious missing import is rejected with `missing_required_import` and the
 affected symbol. A supporting import edit is accepted only when it is in the

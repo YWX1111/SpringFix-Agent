@@ -316,6 +316,36 @@ p50, and max pipeline latency; it explicitly states the tiny controlled sample,
 lack of statistical significance, model/configuration dependence, no production
 accuracy claim, and process-restricted rather than sandboxed Maven.
 
+## M7A Unseen Holdout Benchmark Expansion
+
+The benchmark has two intentionally separate splits:
+
+| Split | Purpose | Cases |
+|---|---|---:|
+| Legacy development benchmark | Frozen controlled development/regression set | 3 |
+| Unseen Holdout v1 | Post-freeze evaluation set, not used by the Agent runner | 7 |
+
+The legacy IDs remain `transaction-self-invocation`,
+`no-unique-bean-definition`, and `configuration-properties-prefix-mismatch`.
+The seven Holdout IDs and their repository-facing fields are in
+`benchmark/holdout_cases.jsonl`; `benchmark/holdout_repair_gold.jsonl` is a
+separate verification-only file. `benchmark/splits.json` records the split
+membership, and `benchmark/holdout_manifest.json` freezes SHA-256 hashes for
+each sample, non-test source tree, test tree, and Gold record.
+
+M7A verification is offline and deterministic. The manifest validator checks
+relative sample paths, required source evidence, symbols, and one target test;
+`scripts/holdout_integrity.py` checks split membership, Agent projection,
+Gold structure, and frozen hashes; `scripts/verify_benchmark_samples.py`
+executes the declared Maven baseline tests. The expected baseline report is
+legacy `3/3`, Holdout `7/7`, total `10/10`. Total controlled samples: 10.
+
+The Holdout is not passed to the Live or Mock Agent runner during M7A, and no
+Holdout Live result exists. Therefore **Holdout v1 Repair Success: NOT EVALUATED
+YET**. The M6D `3/3` diagnosis result and `1/3` Repair Success result apply only
+to the legacy controlled three-case benchmark. M7A does not change runtime
+behavior, Prompt, Validator, Repair, or Retrieval, and keeps version `0.14.0`.
+
 ## Formal M5D Live baseline
 
 The accepted formal Live Run is `20260812T040246Z-b5818c80`, with one frozen

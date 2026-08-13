@@ -4,7 +4,7 @@
 
 ## 阶段定位
 
-当前阶段：**M6C-2 Import-aware Patch Correctness（已完成）**；版本 0.14.0。
+当前阶段：**M7A Unseen Holdout Benchmark Expansion（已完成）**；版本 0.14.0。
 
 M4A 在 M3 基础上新增 SQLite 持久化层：
 
@@ -297,3 +297,28 @@ supporting import edit is allowed only under the same-file validated-evidence,
 Java-import-section, import-only, primary-symbol-use constraints. It never
 guesses FQNs, auto-edits, or retries. Maven remains the authoritative
 compile/test oracle, and M5D/M6C-1 historical results are not rewritten.
+
+## M7A Unseen Holdout Benchmark Expansion
+
+The development benchmark is the frozen legacy set of three cases. M6D's
+controlled `3/3` diagnosis result and historical Repair Success result apply
+only to those three cases. Holdout v1 is a separate seven-case split, for an
+offline inventory of 10 cases total:
+
+- Legacy development benchmark: 3
+- Unseen Holdout v1: 7
+- Total controlled samples: 10
+
+Holdout manifests and freeze data are `benchmark/holdout_cases.jsonl`,
+`benchmark/holdout_repair_gold.jsonl`, `benchmark/splits.json`, and
+`benchmark/holdout_manifest.json`. `scripts/validate_agent_benchmark.py`
+checks the legacy and Holdout structure, `scripts/holdout_integrity.py`
+checks Gold isolation plus SHA-256 freeze data, and
+`scripts/verify_benchmark_samples.py` verifies the 3/3, 7/7, and 10/10 Maven
+baseline counts. The sanitizer still exposes only repository, issue
+description, and error log to an Agent; Holdout Gold is never projected.
+
+M7A does not run a Holdout Agent or Live LLM evaluation and does not change
+runtime code, Prompt, Validator, Repair, or Retrieval behavior. Holdout Repair
+Holdout v1 Repair Success: **NOT EVALUATED YET**. Runtime version remains
+`0.14.0`.
