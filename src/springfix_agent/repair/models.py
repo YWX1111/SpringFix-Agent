@@ -67,6 +67,18 @@ class RejectedPatchEdit(BaseModel):
     file: str | None = Field(default=None, max_length=240)
     line_range: tuple[int, int] | None = None
     reason: str = Field(min_length=1, max_length=200)
+    affected_symbol: str | None = Field(default=None, max_length=120)
+
+
+class JavaImportCheckResult(BaseModel):
+    """Bounded result of the lightweight Java import consistency check."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    introduced_symbols: list[str] = Field(default_factory=list, max_length=100)
+    already_resolved_symbols: list[str] = Field(default_factory=list, max_length=100)
+    unresolved_symbols: list[str] = Field(default_factory=list, max_length=100)
+    status: Literal["pass", "fail", "unknown"]
 
 
 class PatchValidationResult(BaseModel):
@@ -78,6 +90,7 @@ class PatchValidationResult(BaseModel):
     rejected_edits: list[RejectedPatchEdit] = Field(default_factory=list)
     original_edit_count: int = Field(ge=0)
     accepted_edit_count: int = Field(ge=0)
+    java_import_checks: list[JavaImportCheckResult] = Field(default_factory=list, max_length=50)
 
     @property
     def rejected_edit_count(self) -> int:

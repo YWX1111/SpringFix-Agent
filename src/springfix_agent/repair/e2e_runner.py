@@ -480,6 +480,22 @@ class EndToEndRepairBenchmarkRunner:
             base.proposal_status = "passed" if base.proposal_valid else "failed"
             base.proposal_result_status = patch_result.proposal.status
             base.proposal_generation_audit = patch_result.proposal_generation_audit
+            import_checks = patch_result.validation.java_import_checks
+            base.import_check_status = (
+                "fail"
+                if any(check.status == "fail" for check in import_checks)
+                else "unknown"
+                if any(check.status == "unknown" for check in import_checks)
+                else "pass"
+                if import_checks
+                else "not_run"
+            )
+            base.introduced_symbols = sorted(
+                {symbol for check in import_checks for symbol in check.introduced_symbols}
+            )
+            base.unresolved_symbols = sorted(
+                {symbol for check in import_checks for symbol in check.unresolved_symbols}
+            )
             base.edit_count = proposal_metrics.edit_count
             base.validated_edit_count = proposal_metrics.validated_edit_count
             base.rejected_edit_count = proposal_metrics.rejected_edit_count

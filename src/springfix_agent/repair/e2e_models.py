@@ -67,6 +67,9 @@ class EndToEndCaseResult(BaseModel):
     proposal_valid: bool = False
     proposal_result_status: str | None = None
     proposal_generation_audit: ProposalGenerationAudit | None = None
+    import_check_status: Literal["not_run", "pass", "fail", "unknown"] = "not_run"
+    introduced_symbols: list[str] = Field(default_factory=list)
+    unresolved_symbols: list[str] = Field(default_factory=list)
     edit_count: int = 0
     validated_edit_count: int = 0
     rejected_edit_count: int = 0

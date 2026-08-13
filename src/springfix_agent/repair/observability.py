@@ -21,6 +21,7 @@ ProposalFailureCategory = Literal[
     "proposal_status_insufficient_evidence",
     "proposal_status_unsafe",
     "validator_no_valid_edits",
+    "missing_required_import",
     "internal_error",
 ]
 

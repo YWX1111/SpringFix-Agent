@@ -7,8 +7,13 @@ from collections.abc import Iterable, Mapping, Sequence
 from pathlib import Path, PureWindowsPath
 from typing import Any
 
+from springfix_agent.repair.java_import_validator import (
+    check_java_import_completeness_for_file,
+    imported_simple_symbols,
+)
 from springfix_agent.repair.models import (
     EvidenceSnippet,
+    JavaImportCheckResult,
     PatchEdit,
     PatchProposal,
     PatchValidationResult,
@@ -35,6 +40,9 @@ _DANGEROUS_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     ),
     ("credential_or_secret", re.compile(r"\b(?:credential|password|secret|api[_ -]?key)\b\s*[:=]", re.I)),
     ("hardcoded_bearer", re.compile(r"\bbearer\s+[A-Za-z0-9._-]{12,}", re.I)),
+)
+_JAVA_IMPORT_LINE_RE = re.compile(
+    r"^\s*import\s+(?:static\s+)?[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*)+\s*;\s*$"
 )
 
 
@@ -145,6 +153,52 @@ def _dangerous_reason(new_code: str) -> str | None:
     return None
 
 
+def _replacement_lines(code: str) -> list[str]:
+    normalized = _normalise_newlines(code)
+    if normalized.endswith("\n"):
+        normalized = normalized[:-1]
+    return normalized.split("\n") if normalized else [""]
+
+
+def _import_lines_only(code: str) -> bool:
+    lines = _normalise_newlines(code).split("\n")
+    meaningful = [line for line in lines if line.strip()]
+    return bool(meaningful) and all(_JAVA_IMPORT_LINE_RE.match(line) for line in meaningful)
+
+
+def _is_java_import_section(path: Path, start_line: int, end_line: int, old_code: str, new_code: str) -> bool:
+    if not _import_lines_only(old_code) or not _import_lines_only(new_code):
+        return False
+    try:
+        lines = _code_lines(path)
+    except (OSError, UnicodeError):
+        return False
+    if start_line < 1 or end_line > len(lines):
+        return False
+    for line in lines[:end_line]:
+        stripped = line.strip()
+        if not stripped or stripped.startswith(("//", "/*", "*", "*/")):
+            continue
+        if stripped.startswith("package ") or _JAVA_IMPORT_LINE_RE.match(line):
+            continue
+        return False
+    return True
+
+
+def _is_import_only_edit(actual: str, new_code: str) -> bool:
+    return _import_lines_only(actual) and _import_lines_only(new_code)
+
+
+def _compose_java_file(path: Path, edits: Sequence[PatchEdit]) -> str:
+    raw = path.read_bytes().decode("utf-8")
+    if raw.startswith("\ufeff"):
+        raw = raw[1:]
+    lines = _normalise_newlines(raw).split("\n")
+    for edit in sorted(edits, key=lambda item: item.start_line, reverse=True):
+        lines[edit.start_line - 1 : edit.end_line] = _replacement_lines(edit.new_code)
+    return "\n".join(lines)
+
+
 def collect_validated_evidence(
     repository_root: Path,
     root_cause_analysis: Mapping[str, object] | Any,
@@ -233,6 +287,7 @@ def _reject(
     index: int,
     edit: PatchEdit | None,
     reason: str,
+    affected_symbol: str | None = None,
 ) -> None:
     rejected.append(
         RejectedPatchEdit(
@@ -240,6 +295,7 @@ def _reject(
             file=_normalise_path(edit.file) if edit is not None else None,
             line_range=(edit.start_line, edit.end_line) if edit is not None else None,
             reason=reason,
+            affected_symbol=affected_symbol,
         )
     )
 
@@ -257,7 +313,7 @@ def validate_patch_proposal(
     root = repository_root.resolve()
     evidence_ranges = _evidence_ranges(validated_evidence)
     rejected: list[RejectedPatchEdit] = []
-    candidates: list[tuple[int, PatchEdit, str]] = []
+    candidates: list[tuple[int, PatchEdit, str, bool, bool]] = []
     dangerous_found = False
 
     for index, edit in enumerate(proposal.edits):
@@ -274,9 +330,6 @@ def validate_patch_proposal(
             continue
         if edit.start_line > edit.end_line or edit.start_line < 1:
             _reject(rejected, index, edit, "line_range_invalid")
-            continue
-        if not any(_overlaps(edit.start_line, edit.end_line, start, end) for start, end in ranges):
-            _reject(rejected, index, edit, "line_range_outside_evidence")
             continue
         path = root / Path(normalized_file)
         if not path.is_file():
@@ -305,11 +358,29 @@ def validate_patch_proposal(
             dangerous_found = True
             _reject(rejected, index, edit, dangerous_reason)
             continue
-        candidates.append((index, edit, normalized_file))
+        evidence_supported = any(
+            _overlaps(edit.start_line, edit.end_line, start, end) for start, end in ranges
+        )
+        is_import_edit = normalized_file.startswith("src/main/java/") and _is_import_only_edit(
+            actual, edit.new_code
+        )
+        if not evidence_supported:
+            if not (
+                is_import_edit
+                and _is_java_import_section(
+                    path, edit.start_line, edit.end_line, actual, edit.new_code
+                )
+            ):
+                _reject(rejected, index, edit, "line_range_outside_evidence")
+            else:
+                candidates.append((index, edit, normalized_file, False, True))
+            continue
+        candidates.append((index, edit, normalized_file, True, is_import_edit))
 
     accepted: list[PatchEdit] = []
+    accepted_meta: list[tuple[int, PatchEdit, str, bool, bool]] = []
     accepted_ranges: list[tuple[str, int, int]] = []
-    for index, edit, normalized_file in candidates:
+    for index, edit, normalized_file, evidence_supported, is_import_edit in candidates:
         duplicate = any(
             normalized_file == file and edit.start_line == start and edit.end_line == end
             for file, start, end in accepted_ranges
@@ -325,7 +396,87 @@ def validate_patch_proposal(
             _reject(rejected, index, edit, "conflicting_edit")
             continue
         accepted_ranges.append((normalized_file, edit.start_line, edit.end_line))
-        accepted.append(edit.model_copy(update={"file": normalized_file}))
+        accepted_meta.append(
+            (index, edit.model_copy(update={"file": normalized_file}), normalized_file, evidence_supported, is_import_edit)
+        )
+
+    java_import_checks: list[JavaImportCheckResult] = []
+    removed_indices: set[int] = set()
+
+    def reject_accepted(index: int, edit: PatchEdit, reason: str, symbol: str | None = None) -> None:
+        if index not in removed_indices:
+            removed_indices.add(index)
+            _reject(rejected, index, edit, reason, symbol)
+
+    by_java_file: dict[str, list[tuple[int, PatchEdit, str, bool, bool]]] = {}
+    for item in accepted_meta:
+        if item[2].startswith("src/main/java/"):
+            by_java_file.setdefault(item[2], []).append(item)
+
+    for normalized_file, file_items in by_java_file.items():
+        path = root / Path(normalized_file)
+        primary_items = [item for item in file_items if not item[4] and item[3]]
+        import_items = [item for item in file_items if item[4]]
+        for index, edit, _file, _evidence_supported, _is_import_edit in import_items:
+            if not primary_items:
+                reject_accepted(index, edit, "supporting_import_edit_not_justified")
+                continue
+            imported_symbols = imported_simple_symbols(edit.new_code)
+            matching_symbols = {
+                symbol
+                for symbol in imported_symbols
+                if any(re.search(rf"\b{re.escape(symbol)}\b", primary.new_code) for _, primary, *_ in primary_items)
+            }
+            if not matching_symbols:
+                reject_accepted(index, edit, "unrelated_import")
+
+        remaining = [item for item in file_items if item[0] not in removed_indices]
+        if not remaining:
+            continue
+        try:
+            existing_full_file = "\n".join(_code_lines(path))
+            proposed_full_file = _compose_java_file(
+                path, [item[1] for item in remaining]
+            )
+        except (OSError, UnicodeError):
+            continue
+        check = check_java_import_completeness_for_file(
+            existing_full_file,
+            proposed_full_file,
+            [(item[1].old_code, item[1].new_code) for item in remaining],
+        )
+        java_import_checks.append(check)
+        if check.status != "fail":
+            continue
+        unresolved = set(check.unresolved_symbols)
+        for index, edit, _file, _evidence_supported, is_import_edit in remaining:
+            if is_import_edit:
+                continue
+            for symbol in sorted(unresolved):
+                if re.search(rf"\b{re.escape(symbol)}\b", edit.new_code):
+                    reject_accepted(index, edit, "missing_required_import", symbol)
+        remaining_primary = [
+            item
+            for item in remaining
+            if not item[4] and item[0] not in removed_indices
+        ]
+        for index, edit, _file, _evidence_supported, is_import_edit in remaining:
+            if not is_import_edit:
+                continue
+            if not remaining_primary:
+                reject_accepted(index, edit, "supporting_import_edit_not_justified")
+                continue
+            imported_symbols = imported_simple_symbols(edit.new_code)
+            if not any(
+                any(re.search(rf"\b{re.escape(symbol)}\b", primary[1].new_code) for symbol in imported_symbols)
+                for primary in remaining_primary
+            ):
+                reject_accepted(index, edit, "missing_required_import")
+
+    accepted = [
+        edit for index, edit, _file, _evidence_supported, _is_import_edit in accepted_meta
+        if index not in removed_indices
+    ]
 
     if dangerous_found or proposal.status == "unsafe_to_propose":
         status = "unsafe_to_propose"
@@ -339,6 +490,7 @@ def validate_patch_proposal(
         rejected_edits=rejected,
         original_edit_count=len(proposal.edits),
         accepted_edit_count=len(accepted),
+        java_import_checks=java_import_checks,
     )
 
 

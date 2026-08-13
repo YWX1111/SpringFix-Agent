@@ -23,6 +23,17 @@ Rules:
 7. If a proposed change would introduce command execution, process control,
    deletion, network download, credentials, secrets, or hardcoded keys, return
    status `unsafe_to_propose` and an empty edits list.
+8. When an edit introduces a new Java type, annotation, class, interface, enum,
+   record, or other non-fully-qualified symbol that requires an import, include
+   the necessary import change in the same Java file. Do not assume imports
+   already exist, and do not return Java code that introduces unresolved simple
+   type names.
+9. If a new symbol requires an import, include that import within the same
+   `PatchEdit` or an additional evidence-supported edit for the same file.
+   Prefer minimal import changes and never use wildcard imports merely to
+   satisfy this requirement.
+10. The proposal is expected to be syntactically self-consistent, but it has
+    not yet been compiled. Maven remains the authoritative compile/test check.
 
 Return only one JSON object matching this shape:
 

@@ -1,0 +1,48 @@
+{
+  "task": "M6C-2",
+  "fixture_policy": "generic Java import correctness; no production case names or Gold inputs",
+  "fixtures": [
+    {
+      "name": "missing_import",
+      "input": "new @SomeFrameworkAnnotation usage without a matching import",
+      "expected_status": "fail",
+      "expected_failure_category": "missing_required_import",
+      "expected_affected_symbol": "SomeFrameworkAnnotation"
+    },
+    {
+      "name": "existing_import",
+      "input": "new usage with an existing non-wildcard import",
+      "expected_status": "pass"
+    },
+    {
+      "name": "added_import",
+      "input": "primary usage plus a same-file import-only supporting edit",
+      "expected_status": "pass"
+    },
+    {
+      "name": "fully_qualified",
+      "input": "fully-qualified type usage without an import",
+      "expected_status": "pass"
+    },
+    {
+      "name": "same_file_declaration",
+      "input": "new usage resolved by a declaration in the same Java file",
+      "expected_status": "pass"
+    },
+    {
+      "name": "unknown",
+      "input": "ambiguous non-type identifier change",
+      "expected_status": "unknown",
+      "expected_behavior": "non-fatal"
+    },
+    {
+      "name": "wrong_or_unrelated_import",
+      "input": "supporting import does not match a primary edit symbol",
+      "expected_status": "fail",
+      "expected_failure_category": "unrelated_import"
+    }
+  ],
+  "gold_isolation": true,
+  "sample_modified": false,
+  "production_prompt_case_specific_content": false
+}

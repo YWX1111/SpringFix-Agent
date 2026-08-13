@@ -73,6 +73,9 @@ class RepairCaseResult(BaseModel):
     model: str
     proposal_status: Literal["proposed", "insufficient_evidence", "unsafe_to_propose"]
     proposal_generation_audit: ProposalGenerationAudit | None = None
+    import_check_status: Literal["not_run", "pass", "fail", "unknown"] = "not_run"
+    introduced_symbols: list[str] = Field(default_factory=list)
+    unresolved_symbols: list[str] = Field(default_factory=list)
     summary: str
     edits: list[dict[str, object]] = Field(default_factory=list)
     verification_steps: list[str] = Field(default_factory=list)
@@ -211,6 +214,29 @@ def evaluate_repair_proposal(
         assumptions=proposal.assumptions,
         rejected_edit_reasons=reasons,
         proposal_generation_audit=proposal_generation_audit,
+        import_check_status=(
+            "fail"
+            if any(check.status == "fail" for check in validation.java_import_checks)
+            else "unknown"
+            if any(check.status == "unknown" for check in validation.java_import_checks)
+            else "pass"
+            if validation.java_import_checks
+            else "not_run"
+        ),
+        introduced_symbols=sorted(
+            {
+                symbol
+                for check in validation.java_import_checks
+                for symbol in check.introduced_symbols
+            }
+        ),
+        unresolved_symbols=sorted(
+            {
+                symbol
+                for check in validation.java_import_checks
+                for symbol in check.unresolved_symbols
+            }
+        ),
         metrics=result_metrics,
     )
 

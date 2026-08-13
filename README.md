@@ -320,9 +320,9 @@ CI 不依赖任何 LLM API Key。Mock 模式跑全部测试。
 
 ## 状态
 
-- 版本：0.13.0
-- 阶段：M6B 完成（M6A RCA 固化 + Repair Observability Hardening）
-- 上次更新：2026-08-12
+- 版本：0.14.0
+- 阶段：M6C-2 完成（Import-aware Patch Correctness）
+- 上次更新：2026-08-13
 
 ## M5A / M5B / M5C / M5D 边界
 
@@ -430,7 +430,7 @@ independent metrics.
 
 ## M5C Isolated Maven Repair Verification
 
-Current stage: M6B complete, version `0.13.0`.
+Current stage: M6C-2 complete, version `0.14.0`.
 
 ## M6A RCA 固化与 M6B Repair Observability Hardening
 
@@ -445,6 +445,22 @@ Raw prompts, raw responses, credentials, full URLs, `.env`, temporary paths,
 and full Maven environments are not persisted. M6B is observability-only: it
 does not change repair behavior, prompts, Gold/sample data, validator rules,
 retries, AST logic, sandboxing, or run Live LLM calls.
+
+## M6C-2 Import-aware Patch Correctness
+
+M6C-2 adds a generic Patch Prompt contract for import-complete Java edits and a
+lightweight deterministic validator in `repair/java_import_validator.py`.
+It detects high-confidence newly introduced simple annotations and capitalized
+type identifiers, resolves existing imports, same-file declarations,
+`java.lang` types, and fully-qualified names, and otherwise returns the
+conservative `unknown` status. It never guesses a fully-qualified name,
+automatically edits a Proposal, or retries the LLM.
+
+An obvious missing import is rejected with `missing_required_import` and the
+affected symbol. A supporting import edit is accepted only when it is in the
+same validated evidence file, under `src/main/java/**`, in the import section,
+changes only import declarations, and supplies a symbol used by a validated
+primary edit in that file. Maven remains the authoritative compile/test oracle.
 
 M5C is the deterministic verification stage after M5A proposal validation and
 M5B isolated application:

@@ -1,0 +1,109 @@
+{
+  "task": "M6C-1",
+  "case_id": "transaction-self-invocation",
+  "run_id": "20260812T070259Z-8ab8d6b1",
+  "mode": "live",
+  "provider": "openai_compatible",
+  "base_url_host": "wincode.winning.com.cn",
+  "model": "qwen3.7-plus",
+  "version": "0.13.0",
+  "git_commit": "1e55b62acfc8ad61e86ea1b703f4648655e8bfcd",
+  "git_tag": "v0.13.0-m6b",
+  "diagnosis": {
+    "completed": true,
+    "benchmark_passed": true,
+    "issue_category_match": true,
+    "diagnosis_status_match": true,
+    "root_cause_keyword_coverage": 1.0,
+    "validated_evidence_count": 2,
+    "rejected_evidence_count": 0,
+    "evidence_target_recall": 1.0,
+    "validated_evidence_files": null,
+    "validated_evidence_line_ranges": null,
+    "evidence_metadata_note": "The bounded case result retains counts and recall, but not the file/range list."
+  },
+  "proposal_audit": {
+    "logical_llm_calls": 1,
+    "http_attempts": 1,
+    "provider_completed": true,
+    "response_received": true,
+    "response_character_count": 2578,
+    "parse_attempts": 1,
+    "parse_success": true,
+    "structured_parse_attempts": 1,
+    "structured_parse_success": true,
+    "schema_success": true,
+    "status_field_present": true,
+    "proposal_status": "proposed",
+    "generator_outcome": "proposed",
+    "normalized_outcome": "proposed",
+    "edit_count": 2,
+    "failure_category": null,
+    "failure_detail_code": null,
+    "failure_detail": null,
+    "source_exception_class": null
+  },
+  "validator": {
+    "invoked": true,
+    "validated_edit_count": 2,
+    "rejected_edit_count": 0,
+    "rejected_edit_reasons": {}
+  },
+  "pipeline": {
+    "baseline_cases": 1,
+    "diagnosis_completed": 1,
+    "proposal_generated": 1,
+    "proposal_valid": 1,
+    "patch_applied": 1,
+    "target_test_executed": 1,
+    "repair_success": 1,
+    "compile_success": true,
+    "logical_llm_calls": 4,
+    "http_attempts": 4
+  },
+  "classification": {
+    "historical_category": "proposal_insufficient_evidence",
+    "historical_failure_reproduced": false,
+    "exact_failure_layer": "not reproduced; fresh Proposal generation and validation succeeded",
+    "framework_bug_demonstrated": false,
+    "code_changed": false,
+    "normalized_outcome": "historical_failure_not_reproduced",
+    "change_made": "None"
+  },
+  "before_after": {
+    "before": "M5D historical transaction proposal stopped at insufficient_evidence with insufficient audit detail.",
+    "after": "The fresh single-case Live run returned a valid proposed PatchProposal, passed validation, and completed repair.",
+    "history_rewritten": false
+  },
+  "tokens": {
+    "input": 6440,
+    "output": 9366,
+    "total": 15806
+  },
+  "latency_ms": {
+    "total_pipeline": 182715,
+    "diagnosis": 115130,
+    "patch_proposal": 47411,
+    "baseline_verification": 8880,
+    "maven_verification": 9716
+  },
+  "scope_boundary": {
+    "prompt_modified": false,
+    "diagnostic_prompt_modified": false,
+    "gold_modified": false,
+    "sample_modified": false,
+    "validator_modified": false,
+    "retry_added": false,
+    "transaction_behavior_modified": false,
+    "bean_missing_import_handling_added": false,
+    "m6c2_started": false
+  },
+  "artifact_safety": {
+    "raw_response_saved": false,
+    "full_prompt_saved": false,
+    "api_key_saved": false,
+    "full_patch_snapshot_saved": false,
+    "report_contains_only_bounded_audit": true
+  },
+  "observed_out_of_scope_limitation": "The baseline Maven classifier recorded a stack-frame-like token as affected_file and no first_actionable_error. This was not used to classify the Proposal boundary and was not fixed in M6C-1."
+}

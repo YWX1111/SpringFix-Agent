@@ -27,6 +27,7 @@ from springfix_agent.repair.generator import (
 from springfix_agent.repair.maven_verifier import MavenRepairVerifier
 from springfix_agent.repair.models import (
     EvidenceSnippet,
+    JavaImportCheckResult,
     PatchEdit,
     PatchProposal,
     PatchValidationResult,
@@ -56,6 +57,7 @@ from springfix_agent.repair.workspace import (
 
 __all__ = [
     "EvidenceSnippet",
+    "JavaImportCheckResult",
     "AppliedEdit",
     "IsolatedPatchWorkspace",
     "PatchEdit",

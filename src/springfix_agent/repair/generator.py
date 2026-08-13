@@ -205,10 +205,21 @@ class PatchProposalService:
         validation = validate_patch_proposal(proposal, repository_root, evidence)
         validation_duration_ms = max(0, int((time.monotonic() - validation_started) * 1000))
         proposal_audit = audit_from_state(audit_state)
+        import_failure = any(
+            check.status == "fail" for check in validation.java_import_checks
+        )
+        if import_failure:
+            proposal_audit.failure_category = "missing_required_import"
+            proposal_audit.failure_detail_code = "missing_required_import"
+            proposal_audit.failure_detail = "missing_required_import"
         if proposal.status == "proposed" and validation.accepted_edit_count == 0:
-            proposal_audit.failure_category = "validator_no_valid_edits"
-            proposal_audit.failure_detail_code = "all_edits_rejected"
-            proposal_audit.failure_detail = "all_edits_rejected"
+            proposal_audit.failure_category = (
+                "missing_required_import" if import_failure else "validator_no_valid_edits"
+            )
+            proposal_audit.failure_detail_code = (
+                "missing_required_import" if import_failure else "all_edits_rejected"
+            )
+            proposal_audit.failure_detail = proposal_audit.failure_detail_code
             proposal_audit.generator_outcome = "validator_rejected_all_edits"
             proposal_audit.outcome = "validator_rejected_all_edits"
         patch_calls = 1 if evidence else 0

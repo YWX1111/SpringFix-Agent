@@ -4,7 +4,7 @@
 
 ## 阶段定位
 
-当前阶段：**M6B Repair Observability Hardening（已完成）**；版本 0.13.0。
+当前阶段：**M6C-2 Import-aware Patch Correctness（已完成）**；版本 0.14.0。
 
 M4A 在 M3 基础上新增 SQLite 持久化层：
 
@@ -248,7 +248,7 @@ M1-M3 期间不输出 Agent 准确率或命中率。M3 检索评测（Recall@K /
 3. 用户明确确认"进入下一里程碑"
 ## M5A / M5B / M5C / M5D repair boundary
 
-Version `0.13.0` keeps the independent `repair/` stage after the unchanged
+Version `0.14.0` keeps the independent `repair/` stage after the unchanged
 diagnostic Graph. M5A proposes and validates; M5B applies only to a temporary
 isolated copy and creates a deterministic diff; M5C executes deterministic
 Maven verification in that patched copy. The three diagnostic LLM calls remain
@@ -288,3 +288,12 @@ proposal-generation audit fields and deterministic Maven lifecycle/failure
 classification to existing traces and artifacts. It does not change prompts,
 Gold/sample data, validator rules, repair behavior, retries, or Repair Success
 gates, and M6B validation does not run Live LLM calls.
+
+M6C-2 adds only generic import-aware Patch Proposal correctness. The Prompt
+requires imports for newly introduced Java simple types/annotations, while the
+deterministic validator rejects only high-confidence unresolved symbols with
+`missing_required_import`; conservative unknown cases remain non-fatal. A
+supporting import edit is allowed only under the same-file validated-evidence,
+Java-import-section, import-only, primary-symbol-use constraints. It never
+guesses FQNs, auto-edits, or retries. Maven remains the authoritative
+compile/test oracle, and M5D/M6C-1 historical results are not rewritten.

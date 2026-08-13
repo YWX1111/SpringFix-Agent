@@ -220,3 +220,13 @@ artifacts, deterministic failure categories, deterministic Maven lifecycle and
 failure classification, relative affected file/symbol extraction, and
 fixture-backed regression tests. No prompt, Gold/sample, validator, retry,
 repair-success, or Live-LLM behavior changes are included.
+
+## M6C-2 (0.14.0) - Import-aware Patch Correctness
+
+Completed: generic import-complete Patch Prompt constraints, a conservative
+deterministic Java import heuristic, `missing_required_import` rejection with
+affected-symbol audit, strict same-file supporting-import handling, and
+fixture-backed coverage for missing/existing/added/FQN/same-file/unknown and
+unrelated-import cases. Maven remains the authoritative compile/test oracle;
+there is no automatic import insertion or repair retry, and the historical
+M5D/M6C-1 results remain unchanged.

@@ -357,3 +357,12 @@ relative affected file, affected symbol, and tri-state `surefire_started`.
 `compile_success` is true only for a confirmed successful test execution, false
 for main/test compilation failure, and null for other Maven failures. These
 metrics describe failure observability and are not Repair Success claims.
+
+## M6C-2 Import-aware Patch Correctness Evaluation
+
+M6C-2 evaluates a generic import-completeness contract rather than a named
+benchmark answer. Deterministic fixtures cover missing imports, existing
+imports, added supporting imports, fully-qualified names, same-file
+declarations, conservative unknown identifiers, wrong-symbol imports, and
+unrelated imports. The validator must not auto-repair or retry a rejected
+Proposal. Maven remains the final compilation and test oracle.

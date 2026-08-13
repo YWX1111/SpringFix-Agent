@@ -108,3 +108,6 @@ data/*.db
 data/*.db-wal
 data/*.db-shm
 !data/.gitkeep
+
+# M6 optimization Live artifacts (detailed local outputs are not commit candidates)
+artifacts/optimization/*/live/

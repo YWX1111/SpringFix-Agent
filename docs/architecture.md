@@ -516,3 +516,27 @@ lifecycle/failure classification, tri-state `surefire_started`, first
 actionable error, and repository-relative file/symbol fields. These are
 observability-only additions; repair generation, application, validation, and
 success gates remain unchanged.
+
+## M6C-2 Import-aware Patch Correctness
+
+M6C-2 is a generic Java-level correctness layer after the existing M5A
+Evidence Gate. The Patch Prompt requires a Proposal that introduces a new
+simple Java type or annotation to include its import in the same Java file,
+without wildcard imports or case-specific examples. The validator does not
+auto-edit a Proposal and does not start a retry loop.
+
+`repair/java_import_validator.py` performs a bounded heuristic over the
+existing full Java file and the composed proposed file. It recognizes
+high-confidence annotation/type contexts, subtracts Java keywords,
+`java.lang` common types, same-file declarations, existing imports, and
+fully-qualified names, and reports `pass`, `fail`, or conservative `unknown`.
+It does not implement Java name resolution or a parser/frontend.
+
+`missing_required_import` rejects a high-confidence unresolved symbol and
+records `affected_symbol`. A supporting import edit is a derived exception to
+the unchanged Evidence Gate only when it shares an evidence-supported
+`src/main/java/**` file with a primary edit, is located in the Java import
+section, changes only import declarations, and imports a symbol used by that
+primary edit. Unrelated imports and unsupported import-only edits are rejected.
+Maven remains the authoritative compile/test oracle; the import check only
+catches obvious incomplete proposals earlier.
