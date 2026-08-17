@@ -245,6 +245,9 @@ never enters the Agent projection. `benchmark/splits.json` records the split,
 `benchmark/holdout_manifest.json` freezes SHA-256 sample/source/test/Gold
 hashes, and `scripts/holdout_integrity.py` verifies the freeze. The expected
 baseline is legacy `3/3`, Holdout `7/7`, total `10/10`.
+The integrity scheme is cross-platform deterministic: UTF-8 benchmark content
+is canonicalized to LF (`utf8-lf-v1`) before hashing, while non-UTF-8 content
+uses raw bytes; content and whitespace changes remain detectable.
 
 M7A does not run a Holdout Agent or Live LLM evaluation. Holdout v1 Repair
 Success: NOT EVALUATED YET. CI performs only offline manifest/integrity checks and

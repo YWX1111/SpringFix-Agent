@@ -470,6 +470,11 @@ inventory and split are declared in
 source, test, and Repair Gold SHA-256 values are in
 `benchmark/holdout_manifest.json`. Run the offline checks with:
 
+Holdout v1 integrity hashes use SHA-256 over UTF-8 content canonicalized to LF
+(`utf8-lf-v1`). Non-UTF-8 content is hashed as raw bytes; only line-ending
+representation is normalized, so semantic, whitespace, and final-newline
+changes remain detectable across Git checkouts with different EOL policies.
+
 ```powershell
 uv run python scripts/validate_agent_benchmark.py
 uv run python scripts/holdout_integrity.py

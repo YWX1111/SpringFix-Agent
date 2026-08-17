@@ -332,6 +332,10 @@ The seven Holdout IDs and their repository-facing fields are in
 separate verification-only file. `benchmark/splits.json` records the split
 membership, and `benchmark/holdout_manifest.json` freezes SHA-256 hashes for
 each sample, non-test source tree, test tree, and Gold record.
+The declared hash scheme is `sha256` with `utf8-lf-v1` content normalization:
+UTF-8 text is canonicalized to LF, while non-UTF-8 content remains raw bytes.
+Only LF/CRLF/CR representation is ignored; whitespace, final-newline, and
+semantic changes remain integrity mutations.
 
 M7A verification is offline and deterministic. The manifest validator checks
 relative sample paths, required source evidence, symbols, and one target test;

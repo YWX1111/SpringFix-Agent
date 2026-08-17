@@ -42,6 +42,8 @@ HOLDOUT_SAMPLE_DIRECTORIES = {
     "transaction-proxy-visibility": "sample-springboot-holdout-transaction-proxy-visibility",
     "ambiguous-request-mapping": "sample-springboot-holdout-ambiguous-request-mapping",
 }
+HASH_ALGORITHM = "sha256"
+CONTENT_NORMALIZATION = "utf8-lf-v1"
 GOLD_REQUIRED_KEYS = {
     "case_id",
     "acceptable_files",
@@ -106,7 +108,8 @@ def load_cases_for_split(split: str, project_root: Path = PROJECT_ROOT):
 
 def _iter_files(root: Path, *, tests_only: bool | None = None) -> Iterable[Path]:
     excluded = {".git", "target", "artifacts", "benchmark"}
-    for path in sorted(root.rglob("*")):
+    paths: list[Path] = []
+    for path in root.rglob("*"):
         if not path.is_file() or any(part in excluded for part in path.parts):
             continue
         relative = path.relative_to(root).as_posix()
@@ -115,16 +118,28 @@ def _iter_files(root: Path, *, tests_only: bool | None = None) -> Iterable[Path]
             continue
         if tests_only is False and is_test:
             continue
-        yield path
+        paths.append(path)
+    yield from sorted(paths, key=lambda path: path.relative_to(root).as_posix())
+
+
+def canonical_content_bytes(path: Path) -> bytes:
+    """Return UTF-8 content with only line-ending representation canonicalized."""
+    raw = path.read_bytes()
+    try:
+        text = raw.decode("utf-8")
+    except UnicodeDecodeError:
+        return raw
+    return text.replace("\r\n", "\n").replace("\r", "\n").encode("utf-8")
 
 
 def _hash_files(root: Path, files: Iterable[Path]) -> str:
     digest = hashlib.sha256()
-    for path in files:
+    ordered_files = sorted(files, key=lambda path: path.relative_to(root).as_posix())
+    for path in ordered_files:
         relative = path.relative_to(root).as_posix().encode("utf-8")
         digest.update(relative)
         digest.update(b"\0")
-        digest.update(path.read_bytes())
+        digest.update(canonical_content_bytes(path))
         digest.update(b"\0")
     return digest.hexdigest()
 
@@ -208,6 +223,8 @@ def build_freeze_manifest(project_root: Path = PROJECT_ROOT) -> dict[str, Any]:
     return {
         "benchmark_version": splits["benchmark_version"],
         "created_at": "2026-08-13",
+        "hash_algorithm": HASH_ALGORITHM,
+        "content_normalization": CONTENT_NORMALIZATION,
         "case_ids": case_ids,
         **hashes,
     }
@@ -229,6 +246,11 @@ def verify_holdout_manifest(project_root: Path = PROJECT_ROOT) -> tuple[bool, li
     actual = list(splits.get("holdout", []))
     checks = [
         ("benchmark_version", splits.get("benchmark_version") == "holdout_v1"),
+        ("hash algorithm", frozen.get("hash_algorithm") == HASH_ALGORITHM),
+        (
+            "content normalization",
+            frozen.get("content_normalization") == CONTENT_NORMALIZATION,
+        ),
         ("legacy split count", splits.get("legacy") == list(LEGACY_CASE_IDS)),
         ("holdout split IDs", actual == expected),
         ("freeze case IDs", frozen.get("case_ids") == expected),

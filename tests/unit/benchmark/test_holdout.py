@@ -15,6 +15,26 @@ PROJECT_ROOT = Path(__file__).resolve().parents[3]
 HOLDOUT_MANIFEST = PROJECT_ROOT / "benchmark" / "holdout_cases.jsonl"
 
 
+def _hash_snapshot(project_root: Path) -> dict[str, object]:
+    hashes: dict[str, object] = holdout_integrity.compute_hashes(
+        project_root, holdout_integrity.HOLDOUT_CASE_IDS
+    )
+    hashes["diagnosis_gold_hashes"] = holdout_integrity._diagnosis_gold_hashes(
+        project_root / "benchmark" / "holdout_cases.jsonl"
+    )
+    hashes["gold_hashes"] = holdout_integrity._gold_hashes(
+        project_root / "benchmark" / "holdout_repair_gold.jsonl"
+    )
+    return hashes
+
+
+def _single_file_hash(root: Path, content: bytes) -> str:
+    root.mkdir()
+    path = root / "value.txt"
+    path.write_bytes(content)
+    return holdout_integrity._hash_files(root, [path])
+
+
 def test_holdout_split_and_agent_projection_are_frozen() -> None:
     cases = holdout_integrity.load_cases_for_split("holdout", PROJECT_ROOT)
     assert [case.case_id for case in cases] == list(holdout_integrity.HOLDOUT_CASE_IDS)
@@ -55,6 +75,76 @@ def test_holdout_integrity_manifest_passes() -> None:
     assert passed, "\n".join(diagnostics)
 
 
+def test_holdout_manifest_declares_canonical_hash_scheme() -> None:
+    manifest = json.loads(
+        (PROJECT_ROOT / "benchmark" / "holdout_manifest.json").read_text(encoding="utf-8")
+    )
+    assert manifest["hash_algorithm"] == holdout_integrity.HASH_ALGORITHM
+    assert manifest["content_normalization"] == holdout_integrity.CONTENT_NORMALIZATION
+
+
+def test_canonical_hash_normalizes_only_line_endings(tmp_path: Path) -> None:
+    lf_hash = _single_file_hash(tmp_path / "lf", b"hello\nworld\n")
+    crlf_hash = _single_file_hash(tmp_path / "crlf", b"hello\r\nworld\r\n")
+    cr_hash = _single_file_hash(tmp_path / "cr", b"hello\rworld\r")
+    assert lf_hash == crlf_hash == cr_hash
+
+    assert _single_file_hash(tmp_path / "timeout-30", b"timeout=30\n") != _single_file_hash(
+        tmp_path / "timeout-31", b"timeout=31\n"
+    )
+    assert _single_file_hash(tmp_path / "compact", b"value=1\n") != _single_file_hash(
+        tmp_path / "spaced", b"value = 1\n"
+    )
+    assert _single_file_hash(tmp_path / "with-final-newline", b"final\n") != _single_file_hash(
+        tmp_path / "without-final-newline", b"final"
+    )
+
+
+def test_canonical_hash_preserves_non_utf8_bytes(tmp_path: Path) -> None:
+    raw = b"binary\xff\r\n"
+    path = tmp_path / "payload.bin"
+    path.write_bytes(raw)
+    assert holdout_integrity.canonical_content_bytes(path) == raw
+    original_hash = holdout_integrity._hash_files(tmp_path, [path])
+    path.write_bytes(raw.replace(b"\xff", b"\xfe"))
+    assert holdout_integrity._hash_files(tmp_path, [path]) != original_hash
+
+
+def test_aggregate_hash_orders_canonical_relative_paths(tmp_path: Path) -> None:
+    first = tmp_path / "a" / "File.java"
+    second = tmp_path / "b" / "File.java"
+    first.parent.mkdir()
+    second.parent.mkdir()
+    first.write_text("first\n", encoding="utf-8")
+    second.write_text("second\n", encoding="utf-8")
+    assert first.relative_to(tmp_path).as_posix() == "a/File.java"
+    assert second.relative_to(tmp_path).as_posix() == "b/File.java"
+    assert holdout_integrity._hash_files(tmp_path, [second, first]) == holdout_integrity._hash_files(
+        tmp_path, [first, second]
+    )
+
+
+def test_aggregate_holdout_hashes_are_eol_stable(tmp_path: Path) -> None:
+    lf_root = tmp_path / "lf"
+    crlf_root = tmp_path / "crlf"
+    for root in (lf_root, crlf_root):
+        copytree(PROJECT_ROOT / "benchmark", root / "benchmark")
+        copytree(PROJECT_ROOT / "samples", root / "samples")
+
+    for path in crlf_root.rglob("*"):
+        if not path.is_file():
+            continue
+        raw = path.read_bytes()
+        try:
+            text = raw.decode("utf-8")
+        except UnicodeDecodeError:
+            continue
+        canonical = text.replace("\r\n", "\n").replace("\r", "\n")
+        path.write_bytes(canonical.replace("\n", "\r\n").encode("utf-8"))
+
+    assert _hash_snapshot(lf_root) == _hash_snapshot(crlf_root)
+
+
 def test_holdout_gold_is_not_in_sanitized_repository_view() -> None:
     cases = load_cases(HOLDOUT_MANIFEST)
     for case in cases:
@@ -93,13 +183,7 @@ def test_holdout_integrity_detects_source_test_and_gold_tampering(tmp_path: Path
         copytree(PROJECT_ROOT / "samples" / directory, root / "samples" / directory)
 
     frozen = json.loads((root / "benchmark" / "holdout_manifest.json").read_text())
-    baseline = holdout_integrity.compute_hashes(root, holdout_integrity.HOLDOUT_CASE_IDS)
-    baseline["diagnosis_gold_hashes"] = holdout_integrity._diagnosis_gold_hashes(
-        root / "benchmark" / "holdout_cases.jsonl"
-    )
-    baseline["gold_hashes"] = holdout_integrity._gold_hashes(
-        root / "benchmark" / "holdout_repair_gold.jsonl"
-    )
+    baseline = _hash_snapshot(root)
     for key in baseline:
         assert baseline[key] == frozen[key]
 
