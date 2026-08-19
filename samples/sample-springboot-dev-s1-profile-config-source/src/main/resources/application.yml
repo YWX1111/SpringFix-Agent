@@ -1,0 +1,5 @@
+spring:
+  profiles:
+    active: dev
+shipping:
+  endpoint: https://shipping-default.invalid

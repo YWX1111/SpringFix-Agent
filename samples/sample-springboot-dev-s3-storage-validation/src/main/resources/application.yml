@@ -1,0 +1,4 @@
+storage:
+  container-name: archive
+  connection-timeout: 250ms
+  max-entries: 0

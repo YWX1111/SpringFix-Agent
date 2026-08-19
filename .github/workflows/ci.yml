@@ -95,6 +95,12 @@ jobs:
       - name: Verify Holdout v1 integrity
         run: uv run python scripts/holdout_integrity.py
 
+      - name: Verify semantic Dev split integrity
+        run: uv run python scripts/semantic_dev_integrity.py
+
+      - name: Verify semantic Dev samples
+        run: uv run python scripts/verify_semantic_dev_samples.py
+
       - name: Run benchmark sample verification
         run: uv run python scripts/verify_benchmark_samples.py
 

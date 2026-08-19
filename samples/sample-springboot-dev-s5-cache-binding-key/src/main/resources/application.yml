@@ -1,0 +1,3 @@
+cache:
+  region-ttl:
+    us-east: 30s

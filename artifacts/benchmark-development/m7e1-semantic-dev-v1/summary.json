@@ -1,0 +1,191 @@
+{
+  "benchmark": "M7E-1 Semantic Repair Development Benchmark Expansion",
+  "split": "dev_semantic_v1",
+  "created_at": "2026-08-19",
+  "runtime": "0.15.1",
+  "case_count": 6,
+  "baseline_verified": 6,
+  "reference_fix_verified": 6,
+  "cases": [
+    {
+      "case_id": "dev-s1-profile-config-source",
+      "category": "configuration",
+      "repository": "samples/sample-springboot-dev-s1-profile-config-source",
+      "baseline": {
+        "verified": true,
+        "exit_code": 1,
+        "tests": 1,
+        "failures": 1,
+        "errors": 0,
+        "skipped": 0
+      },
+      "reference_fix_verified": true,
+      "reference_fix_diagnostics": [
+        "using Java 17",
+        "Maven exit code: 0",
+        "  [PASS] tests = 1",
+        "  [PASS] failures = 0",
+        "  [PASS] errors = 0",
+        "  [PASS] skipped = 0",
+        "  [PASS] testcase activeDevProfileShouldUseProfileSpecificShippingEndpoint exists",
+        "  [PASS] failure element present"
+      ]
+    },
+    {
+      "case_id": "dev-s2-code-property-override",
+      "category": "configuration",
+      "repository": "samples/sample-springboot-dev-s2-code-property-override",
+      "baseline": {
+        "verified": true,
+        "exit_code": 1,
+        "tests": 1,
+        "failures": 1,
+        "errors": 0,
+        "skipped": 0
+      },
+      "reference_fix_verified": true,
+      "reference_fix_diagnostics": [
+        "using Java 17",
+        "Maven exit code: 0",
+        "  [PASS] tests = 1",
+        "  [PASS] failures = 0",
+        "  [PASS] errors = 0",
+        "  [PASS] skipped = 0",
+        "  [PASS] testcase applicationCodeShouldNotOverrideConfiguredNotificationChannel exists",
+        "  [PASS] failure element present"
+      ]
+    },
+    {
+      "case_id": "dev-s3-storage-validation",
+      "category": "configuration",
+      "repository": "samples/sample-springboot-dev-s3-storage-validation",
+      "baseline": {
+        "verified": true,
+        "exit_code": 1,
+        "tests": 1,
+        "failures": 1,
+        "errors": 0,
+        "skipped": 0
+      },
+      "reference_fix_verified": true,
+      "reference_fix_diagnostics": [
+        "using Java 17",
+        "Maven exit code: 0",
+        "  [PASS] tests = 1",
+        "  [PASS] failures = 0",
+        "  [PASS] errors = 0",
+        "  [PASS] skipped = 0",
+        "  [PASS] testcase contextShouldStartWithValidStorageSettings exists",
+        "  [PASS] failure element present"
+      ]
+    },
+    {
+      "case_id": "dev-s4-conditional-notification",
+      "category": "dependency_injection",
+      "repository": "samples/sample-springboot-dev-s4-conditional-notification",
+      "baseline": {
+        "verified": true,
+        "exit_code": 1,
+        "tests": 1,
+        "failures": 1,
+        "errors": 0,
+        "skipped": 0
+      },
+      "reference_fix_verified": true,
+      "reference_fix_diagnostics": [
+        "using Java 17",
+        "Maven exit code: 0",
+        "  [PASS] tests = 1",
+        "  [PASS] failures = 0",
+        "  [PASS] errors = 0",
+        "  [PASS] skipped = 0",
+        "  [PASS] testcase contextShouldStartWithConfiguredNotificationProvider exists",
+        "  [PASS] failure element present"
+      ]
+    },
+    {
+      "case_id": "dev-s5-cache-binding-key",
+      "category": "configuration",
+      "repository": "samples/sample-springboot-dev-s5-cache-binding-key",
+      "baseline": {
+        "verified": true,
+        "exit_code": 1,
+        "tests": 1,
+        "failures": 1,
+        "errors": 0,
+        "skipped": 0
+      },
+      "reference_fix_verified": true,
+      "reference_fix_diagnostics": [
+        "using Java 17",
+        "Maven exit code: 0",
+        "  [PASS] tests = 1",
+        "  [PASS] failures = 0",
+        "  [PASS] errors = 0",
+        "  [PASS] skipped = 0",
+        "  [PASS] testcase shouldBindRegionSpecificCacheTtl exists",
+        "  [PASS] failure element present"
+      ]
+    },
+    {
+      "case_id": "dev-s6-local-precedence-conflict",
+      "category": "configuration",
+      "repository": "samples/sample-springboot-dev-s6-local-precedence-conflict",
+      "baseline": {
+        "verified": true,
+        "exit_code": 1,
+        "tests": 1,
+        "failures": 1,
+        "errors": 0,
+        "skipped": 0
+      },
+      "reference_fix_verified": true,
+      "reference_fix_diagnostics": [
+        "using Java 17",
+        "Maven exit code: 0",
+        "  [PASS] tests = 1",
+        "  [PASS] failures = 0",
+        "  [PASS] errors = 0",
+        "  [PASS] skipped = 0",
+        "  [PASS] testcase contextShouldStartWithValidLocalRetryConfiguration exists",
+        "  [PASS] failure element present"
+      ]
+    }
+  ],
+  "gold_alignment_audit": {
+    "all_cases_have_post_output_gold": true,
+    "gold_not_in_agent_projection": true,
+    "reference_patch_not_stored": true
+  },
+  "holdout_isolation": {
+    "case_count": 7,
+    "case_ids_unchanged": true,
+    "hashes_unchanged": true,
+    "integrity_verifier": "scripts/holdout_integrity.py"
+  },
+  "holdout": {
+    "split": "frozen holdout v1",
+    "case_count": 7,
+    "repair_success_baseline": "3/7 historical evidence; unchanged"
+  },
+  "agent_execution": {
+    "agent": false,
+    "holdout_mock": false,
+    "live": false
+  },
+  "pipeline_changes": {
+    "runtime": false,
+    "validator": false,
+    "retrieval": false,
+    "patch_applier": false,
+    "maven_verifier": false
+  },
+  "artifact_safety": {
+    "full_reference_patch": false,
+    "secrets": false,
+    "absolute_paths": false,
+    "temp_paths": false,
+    "raw_llm_response": false,
+    "full_maven_output": false
+  }
+}

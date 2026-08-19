@@ -5,6 +5,14 @@
     "no-unique-bean-definition",
     "configuration-properties-prefix-mismatch"
   ],
+  "dev_semantic_v1": [
+    "dev-s1-profile-config-source",
+    "dev-s2-code-property-override",
+    "dev-s3-storage-validation",
+    "dev-s4-conditional-notification",
+    "dev-s5-cache-binding-key",
+    "dev-s6-local-precedence-conflict"
+  ],
   "holdout": [
     "missing-constructor-bean",
     "constructor-circular-dependency",

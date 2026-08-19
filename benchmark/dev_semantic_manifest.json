@@ -1,0 +1,46 @@
+{
+  "benchmark_version": "dev_semantic_v1",
+  "created_at": "2026-08-19",
+  "hash_algorithm": "sha256",
+  "content_normalization": "utf8-lf-v1",
+  "case_ids": [
+    "dev-s1-profile-config-source",
+    "dev-s2-code-property-override",
+    "dev-s3-storage-validation",
+    "dev-s4-conditional-notification",
+    "dev-s5-cache-binding-key",
+    "dev-s6-local-precedence-conflict"
+  ],
+  "sample_hashes": {
+    "dev-s1-profile-config-source": "c95aba3e16ad1444204d4840c67551ecdfd2ab2169bed7aaadf79c184e4168a0",
+    "dev-s2-code-property-override": "83b0e39ef58a15e5e0804d17d494b814f283ca4d6864ca86ed26274432b21369",
+    "dev-s3-storage-validation": "d44613f85d3995e66153ad73440e7b66f00563d7b7d90b13b493fb5a91eb07be",
+    "dev-s4-conditional-notification": "42eee860d67ed56440f3d36a3b54548ac9be641304ad5018d1d65d36ec2c71f8",
+    "dev-s5-cache-binding-key": "411fb6431e7eed78d7f889cda94442032782036246b41f158b146fb3795d1c56",
+    "dev-s6-local-precedence-conflict": "ee59d48269a8aed1d310348b141553e801f6fa3cc91dce80ea8bd29d7c06b2a9"
+  },
+  "source_hashes": {
+    "dev-s1-profile-config-source": "2ee2326e3c4bd1987408fcddfc0bb01ba7efc63cf1fac5c30f9c4e53e62c4714",
+    "dev-s2-code-property-override": "32bffad8afeab65102c561825c85b142ffeab9fb5d7e5b48cb6255725c924663",
+    "dev-s3-storage-validation": "10d09912a53d57beefe6e0c31284d17f7323a8f35f4656a8f52bd9968e8ae362",
+    "dev-s4-conditional-notification": "6cb076b043d8e0c4446d11c5f7673b2a71af0545584c664a5c684bdab77e55c6",
+    "dev-s5-cache-binding-key": "982825dca1753c690becf3c18a7d5f2c6b1307fd5fd8a8b87713bd97390d5813",
+    "dev-s6-local-precedence-conflict": "732bf99b34fdc26cc3b9c6a221a67099076944613abc9f361b1f2d8c84a4148d"
+  },
+  "test_hashes": {
+    "dev-s1-profile-config-source": "344b569922176a1b0ee50287c07dd424a8e522b235fab67bb0502ccf2324565a",
+    "dev-s2-code-property-override": "4829ccfb7e70af29f7ace69a8157757762505e5ce1f2fe3dafbc302934d9c5fa",
+    "dev-s3-storage-validation": "4991f8c619f01cbd9289848a7ec5a27c4c09dc2b48a3df4a339eb9ceecd5dd19",
+    "dev-s4-conditional-notification": "66cfc00ada2a3ae93c453a53928696ea9e0e0866ad564fbfa274528db16f1e86",
+    "dev-s5-cache-binding-key": "f3af5b5bc06f5e69052d31e6caa5f463579e07d7488ada77cb0459974afd2708",
+    "dev-s6-local-precedence-conflict": "01680a7ba25eb140193a44ce1d489b055308aba33c7a1fc8d3843ed80fd042b7"
+  },
+  "gold_hashes": {
+    "dev-s1-profile-config-source": "3094110c466014dba30807d24429f58881cbf11156f015109fcbe80cf2189406",
+    "dev-s2-code-property-override": "2b6cb3d64541f1446b72528854f295b895d9b56ba332ff2dce31425aa443ccea",
+    "dev-s3-storage-validation": "77d53de03fdd33211249150ba2e52cd13bbf57162e0d470ffbad3a5b12a1d9f0",
+    "dev-s4-conditional-notification": "8c9f01573746853f407c515f901ade3e4baa2f2dda65b99fd456bc81b00638a5",
+    "dev-s5-cache-binding-key": "6fdfc51474fb0cbf264edc927df17d762eecacfef68e2e43a338079abadc849a",
+    "dev-s6-local-precedence-conflict": "72aaf239557bf58910e752260ec9009612f6e47cbd26a3b531c0f8d025f66b68"
+  }
+}

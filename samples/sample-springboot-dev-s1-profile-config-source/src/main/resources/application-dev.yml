@@ -1,0 +1,6 @@
+spring:
+  config:
+    activate:
+      on-profile: staging
+shipping:
+  endpoint: https://shipping-dev.internal
