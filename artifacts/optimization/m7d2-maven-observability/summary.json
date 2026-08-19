@@ -1,0 +1,69 @@
+{
+  "schema_version": "m7d2-maven-observability",
+  "baseline": {
+    "branch": "main",
+    "commit": "0600052d7e90eb22b5f34592f7289ed7a39ed746",
+    "tag": "v0.15.0-m7d1",
+    "runtime": "0.15.0",
+    "working_tree_before": "clean"
+  },
+  "scope": {
+    "primary": "Maven verification observability hardening",
+    "holdout_live_run": false,
+    "holdout_mock_run": false,
+    "repair_success_claim": false,
+    "proposal_atomicity_changed": false,
+    "runtime_semantics_changed": false
+  },
+  "observability_contract": {
+    "primary_failure_categories": [
+      "main_compile_failure",
+      "test_compile_failure",
+      "test_failure",
+      "timeout",
+      "maven_execution_failure",
+      "success",
+      "unknown"
+    ],
+    "secondary_observations": [
+      "surefire_started",
+      "surefire_report_found",
+      "target_test_found",
+      "tests",
+      "failures",
+      "errors",
+      "skipped"
+    ],
+    "path_policy": "repository-relative existing file only"
+  },
+  "m7c_synthetic_fixture": {
+    "fixture": "tests/fixtures/observability/maven/m7c-main-compile-missing-surefire.txt",
+    "lifecycle_phase": "compile",
+    "failure_category": "main_compile_failure",
+    "surefire_started": false,
+    "surefire_report_found": false,
+    "affected_file": "src/main/java/com/example/AuditClient.java",
+    "affected_symbol": "AuditClient",
+    "first_actionable_error": "duplicate class: AuditClient",
+    "framework_frame_rejected": true
+  },
+  "validation": {
+    "targeted_maven_tests": "31 passed",
+    "full_pytest": "455 passed, 1 skipped",
+    "m7d1_regression": "8 passed",
+    "ruff": "pass",
+    "mypy_strict": "pass",
+    "lock_check": "pass",
+    "holdout_integrity": "pass",
+    "benchmark_samples": "legacy 3/3; holdout 7/7",
+    "agent_benchmark_manifest": "pass",
+    "m4a_sqlite": "pass",
+    "legacy_mock_e2e": "3/3"
+  },
+  "git_policy": {
+    "commit_message": "fix: harden Maven failure observability",
+    "tag": "v0.15.1-m7d2",
+    "recommended_version": "0.15.1",
+    "solidified_runtime": "0.15.1"
+  }
+}

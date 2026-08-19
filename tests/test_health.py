@@ -24,9 +24,9 @@ def test_health_response_shape(client: TestClient) -> None:
     assert body["version"] == __version__
 
 
-def test_runtime_version_is_0_15_0() -> None:
-    """M7D-1 solidification metadata is aligned across package and health response."""
-    assert __version__ == "0.15.0"
+def test_runtime_version_is_0_15_1() -> None:
+    """M7D-2 solidification metadata is aligned across package and health response."""
+    assert __version__ == "0.15.1"
 
 
 def test_openapi_docs_available(client: TestClient) -> None:

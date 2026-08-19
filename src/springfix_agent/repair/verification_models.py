@@ -32,6 +32,7 @@ class MavenFailureClassification(BaseModel):
         "test_failure",
         "test_error",
         "plugin_failure",
+        "maven_execution_failure",
         "timeout",
         "success",
         "unknown",

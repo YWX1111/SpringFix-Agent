@@ -607,6 +607,8 @@ class MavenRepairVerifier:
             tests=tests,
             failures=failures,
             errors=errors,
+            skipped=skipped,
+            surefire_failure_text=_failure_text,
             workspace=workspace,
         )
         return MavenTestResult(
@@ -637,6 +639,14 @@ class MavenRepairVerifier:
             return "maven_timeout"
         if not result.executed:
             return "maven_not_found"
+        classification = result.maven_failure_classification
+        if classification is not None and classification.failure_category in {
+            "main_compile_failure",
+            "test_compile_failure",
+            "timeout",
+            "maven_execution_failure",
+        }:
+            return classification.failure_category
         if result.exit_code == 0:
             return "baseline_bug_not_reproduced"
         if not result.target_test_found:
@@ -660,6 +670,9 @@ class MavenRepairVerifier:
         *,
         reports_exist: bool = True,
     ) -> str | None:
+        classification = result.maven_failure_classification
+        if classification is not None and classification.failure_category != "success":
+            return classification.failure_category
         if result.timed_out:
             return "maven_timeout"
         if not result.executed:
