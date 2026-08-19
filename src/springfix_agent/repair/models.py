@@ -99,8 +99,19 @@ class PatchValidationResult(BaseModel):
 
     @property
     def passed(self) -> bool:
-        """Return whether the final proposal is safe to review as proposed."""
-        return self.proposal.status == "proposed" and self.accepted_edit_count > 0
+        """Return whether the original proposal passed validation atomically.
+
+        A sanitized proposal may contain only the edits accepted by the
+        validator, but that subset must never be reinterpreted as a new
+        proposal.  A proposed repair is valid only when every original edit
+        was accepted and no edit was rejected.
+        """
+        return (
+            self.proposal.status == "proposed"
+            and self.original_edit_count > 0
+            and self.accepted_edit_count == self.original_edit_count
+            and self.rejected_edit_count == 0
+        )
 
 
 # A descriptive alias used by callers that call the input "validated code".

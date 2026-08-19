@@ -22,6 +22,8 @@ ProposalFailureCategory = Literal[
     "proposal_status_unsafe",
     "validator_no_valid_edits",
     "missing_required_import",
+    "proposal_validation_rejected",
+    "proposal_partial_rejection",
     "internal_error",
 ]
 

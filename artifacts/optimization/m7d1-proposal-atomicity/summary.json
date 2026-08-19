@@ -1,0 +1,74 @@
+{
+  "milestone": "M7D-1",
+  "runtime_version": "0.15.0",
+  "development_started_version": "0.14.0",
+  "start_commit": "94e48ba88e0ff0592b33d17f135577d3e8f22934",
+  "contract": {
+    "passed": "proposal.status == proposed AND original_edit_count > 0 AND accepted_edit_count == original_edit_count AND rejected_edit_count == 0",
+    "atomic_invariant": "A proposed repair is accepted atomically or rejected atomically.",
+    "partial_rejection": "Any rejected original edit blocks application, even when accepted_edit_count > 0.",
+    "edit_count_conservation": "original_edit_count == accepted_edit_count + rejected_edit_count"
+  },
+  "before": {
+    "original_edit_count": 2,
+    "accepted_edit_count": 1,
+    "rejected_edit_count": 1,
+    "validation_passed": true,
+    "proposal_valid": true,
+    "patch_application_reachable": true
+  },
+  "after": {
+    "original_edit_count": 2,
+    "accepted_edit_count": 1,
+    "rejected_edit_count": 1,
+    "validation_passed": false,
+    "proposal_valid": false,
+    "patch_application_reachable": false,
+    "patch_applier_call_count": 0
+  },
+  "synthetic_failure_shape": {
+    "partial_rejection": {
+      "accepted_edit_count": 1,
+      "rejected_edit_count": 1,
+      "validation_passed": false
+    },
+    "missing_required_import_is_generic_atomic_block": true,
+    "non_import_rejection_is_generic_atomic_block": true,
+    "zero_edit_proposed_passes": false,
+    "single_valid_edit_passes": true,
+    "all_valid_multi_edit_passes": true
+  },
+  "failure_category": {
+    "partial_rejection": "proposal_partial_rejection",
+    "other_deterministic_validation_rejection": "proposal_validation_rejected",
+    "provider_or_application_or_verification_misclassification": false
+  },
+  "tests": {
+    "m7d1_regression_tests": 8,
+    "m7d1_regression_result": "8 passed",
+    "full_pytest": "446 passed, 1 skipped"
+  },
+  "quality_gates": {
+    "uv_lock_check": "pass",
+    "ruff": "pass",
+    "mypy_strict_src": "pass",
+    "holdout_integrity": "pass",
+    "benchmark_samples": "legacy 3/3; holdout 7/7; total 10/10",
+    "m4a_sqlite": "pass",
+    "legacy_mock_e2e": "3/3"
+  },
+  "version_solidification": {
+    "old_runtime_version": "0.14.0",
+    "new_runtime_version": "0.15.0",
+    "version_sources": ["pyproject.toml", "src/springfix_agent/__init__.py", "uv.lock"]
+  },
+  "scope": {
+    "patch_applier_modified": false,
+    "prompt_modified": false,
+    "retrieval_modified": false,
+    "gold_samples_tests_holdout_modified": false,
+    "holdout_live_or_mock_rerun": false,
+    "runtime_version_bumped": false,
+    "commit_push_tag": false
+  }
+}

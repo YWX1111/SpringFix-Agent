@@ -212,6 +212,12 @@ class PatchProposalService:
             proposal_audit.failure_category = "missing_required_import"
             proposal_audit.failure_detail_code = "missing_required_import"
             proposal_audit.failure_detail = "missing_required_import"
+        if proposal.status == "proposed" and validation.rejected_edit_count > 0:
+            proposal_audit.failure_category = "proposal_partial_rejection"
+            proposal_audit.failure_detail_code = "proposal_partial_rejection"
+            proposal_audit.failure_detail = "proposal_partial_rejection"
+            proposal_audit.generator_outcome = "validator_rejected_partial_proposal"
+            proposal_audit.outcome = "validator_rejected_partial_proposal"
         if proposal.status == "proposed" and validation.accepted_edit_count == 0:
             proposal_audit.failure_category = (
                 "missing_required_import" if import_failure else "validator_no_valid_edits"

@@ -97,6 +97,17 @@ def _provider_failed(payloads: list[dict[str, object]]) -> bool:
     return bool(payloads) and not any(item.get("status") == "success" for item in payloads)
 
 
+def _proposal_validation_failure_reason(validation: PatchValidationResult) -> str:
+    """Return a deterministic pre-application failure category."""
+    if (
+        validation.proposal.status == "proposed"
+        and validation.original_edit_count > 0
+        and validation.rejected_edit_count > 0
+    ):
+        return "proposal_partial_rejection"
+    return "proposal_validation_rejected"
+
+
 def _optional_sum(values: list[int | None]) -> int | None:
     if not values or any(value is None for value in values):
         return None
@@ -516,7 +527,11 @@ class EndToEndRepairBenchmarkRunner:
             if not base.proposal_valid:
                 base.failed_stage = "proposal"
                 provider_failure = _provider_failed(patch_payloads) and not base.proposal_generated
-                base.failure_reason = "provider_failure" if provider_failure else "proposal_invalid"
+                base.failure_reason = (
+                    "provider_failure"
+                    if provider_failure
+                    else _proposal_validation_failure_reason(patch_result.validation)
+                )
                 base.outcome = "provider_failed" if provider_failure else "proposal_failed"
                 return self._finish(base, started)
 

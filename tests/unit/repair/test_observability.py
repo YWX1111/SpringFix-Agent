@@ -148,6 +148,10 @@ def test_all_rejected_edits_are_classified_after_deterministic_validation(tmp_pa
     )
     result, _, _ = _run_service(tmp_path, mock)
     assert result.validation.accepted_edit_count == 0
+    assert result.validation.original_edit_count == (
+        result.validation.accepted_edit_count + result.validation.rejected_edit_count
+    )
+    assert result.validation.passed is False
     assert result.proposal_generation_audit.failure_category == "validator_no_valid_edits"
     assert result.proposal_generation_audit.failure_detail == "all_edits_rejected"
     assert result.proposal_generation_audit.outcome == "validator_rejected_all_edits"

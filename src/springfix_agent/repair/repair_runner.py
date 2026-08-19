@@ -362,7 +362,7 @@ class RepairVerificationRunner:
         outcome_reason: str | None,
     ) -> str | None:
         if not proposal_valid:
-            return "proposal_invalid"
+            return "proposal_validation_rejected"
         if not patch_applied or not all_edits_applied:
             return "patch_application_failed"
         if not original_unchanged:
