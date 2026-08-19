@@ -1,0 +1,13 @@
+--- a/src/main/java/com/springfix/dev/s2/notification/Application.java
++++ b/src/main/java/com/springfix/dev/s2/notification/Application.java
+@@ -7,9 +7,7 @@
+ @SpringBootApplication
+ @EnableConfigurationProperties(NotificationProperties.class)
+ public class Application {
+-    static {
+-        System.setProperty("notification.channel", "legacy");
+-    }
++    // Removed static initializer to allow application.yml to configure notification.channel
+
+     public static void main(String[] args) {
+         SpringApplication.run(Application.class, args);
