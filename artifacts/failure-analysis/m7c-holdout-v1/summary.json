@@ -1,0 +1,280 @@
+{
+  "schema_version": "m7c-holdout-v1",
+  "phase": "M7C Frozen Holdout Failure RCA",
+  "scope": {
+    "mode": "read_only_rca",
+    "live_rerun": false,
+    "holdout_agent_run": false,
+    "holdout_mock_run": false,
+    "m7d_started": false,
+    "production_source_modified": false,
+    "prompt_validator_retrieval_gold_samples_tests_runtime_modified": false,
+    "commit_push_tag": false
+  },
+  "baseline": {
+    "branch": "main",
+    "evidence_commit": "a28e763c052dafa8a5459e5eeb56d44926faf466",
+    "runtime": "0.14.0",
+    "run_id": "20260819T040252Z-9aa5957d",
+    "split": "unseen holdout v1",
+    "case_count": 7,
+    "provider": "openai_compatible",
+    "model": "qwen3.7-plus",
+    "repair_success": {
+      "passed": 3,
+      "total": 7,
+      "rate": 0.4286
+    },
+    "provider_failures": 0,
+    "infrastructure_failures": 0
+  },
+  "evidence": {
+    "curated_relative_paths": [
+      "artifacts/evaluation/m7b-holdout-v1/report.md",
+      "artifacts/evaluation/m7b-holdout-v1/summary.json",
+      "artifacts/evaluation/m7b-holdout-v1/run-metadata.json"
+    ],
+    "raw_relative_directory": "artifacts/end-to-end-repair/live/20260819T040252Z-9aa5957d/",
+    "raw_llm_response_included": false,
+    "full_prompt_included": false,
+    "full_maven_output_included": false,
+    "full_patch_diff_included": false
+  },
+  "aggregate": {
+    "diagnosis_completed": 7,
+    "diagnosis_benchmark_passed": 5,
+    "proposal_generated": 6,
+    "proposal_validated": 6,
+    "patch_applied": 6,
+    "target_test_executed": 5,
+    "verification_failures": 3,
+    "proposal_failures": 1
+  },
+  "cases": [
+    {
+      "case": "missing-constructor-bean",
+      "confidence": "CONFIRMED_HIGH",
+      "first_failing_boundary": "Maven Compile",
+      "direct_failure": "main_compile_failure",
+      "failure_category": "compile_correctness",
+      "root_cause": "Import-aware validation rejected one unresolved-symbol edit while retaining another edit; the E2E proposal gate allowed the sanitized residual proposal to pass, and the residual edit introduced a duplicate AuditClient declaration.",
+      "retrieval": {
+        "r_at_1": false,
+        "r_at_3": false,
+        "r_at_5": true,
+        "expected_file_recall": 1.0,
+        "evidence_target_recall": 1.0,
+        "bottleneck": "PARTIAL_CONFIRMED_RANKING_WEAKNESS_NOT_FIRST_FAILURE"
+      },
+      "diagnosis": {
+        "benchmark_pass": false,
+        "keyword_coverage": 0.5,
+        "category_match": true,
+        "status_match": true,
+        "problem": "CONFIRMED_METRIC_MISS_LIKELY_NOT_SOLE_CAUSE"
+      },
+      "proposal": {
+        "status": "proposed",
+        "original_edit_count": 2,
+        "validated_edit_count": 1,
+        "rejected_edit_count": 1,
+        "import_check_status": "fail",
+        "problem": "CONFIRMED"
+      },
+      "application": {
+        "patch_applied": true,
+        "all_sanitized_edits_applied": true,
+        "problem": "CONFIRMED_NO_APPLIER_PARTIAL_WRITE"
+      },
+      "attribution": {
+        "validator_problem": "CONFIRMED",
+        "framework_defect": "CONFIRMED_BOUNDARY_CORRECTNESS_GAP",
+        "llm_quality_issue": "CONFIRMED",
+        "compile_test_problem": "CONFIRMED_OBSERVED_COMPILE_FAILURE"
+      }
+    },
+    {
+      "case": "invalid-config-property-value",
+      "confidence": "CONFIRMED_HIGH",
+      "first_failing_boundary": "Surefire / Target Test",
+      "direct_failure": "test_failure_remaining",
+      "failure_category": "semantic_repair_correctness",
+      "root_cause": "The applied application.yml value satisfies @Min(1), but the target ApplicationContextRunner supplies no property values and the run retained the binding failure; the edit did not affect the binding input used by the target test.",
+      "retrieval": {
+        "r_at_1": true,
+        "r_at_3": true,
+        "r_at_5": true,
+        "expected_file_recall": 0.6667,
+        "evidence_target_recall": 1.0,
+        "bottleneck": "CONFIRMED_NONE"
+      },
+      "diagnosis": {
+        "benchmark_pass": true,
+        "keyword_coverage": 0.75,
+        "category_match": true,
+        "status_match": true,
+        "problem": "CONFIRMED_NONE_DIRECT"
+      },
+      "proposal": {
+        "status": "proposed",
+        "validation": "passed",
+        "problem": "CONFIRMED_SEMANTIC_SOURCE_SELECTION"
+      },
+      "application": {
+        "patch_applied": true,
+        "compile_success": true,
+        "problem": "CONFIRMED_NONE"
+      },
+      "attribution": {
+        "validator_problem": "CONFIRMED_NONE",
+        "framework_defect": "CONFIRMED_NOT_SHOWN",
+        "llm_quality_issue": "CONFIRMED",
+        "compile_test_problem": "CONFIRMED_TARGET_TEST_FAILURE"
+      },
+      "evaluation_tension": "LIKELY_CONFIG_SOURCE_CONTRACT_TENSION"
+    },
+    {
+      "case": "wrong-active-profile",
+      "confidence": "CONFIRMED_HIGH",
+      "first_failing_boundary": "Surefire / Target Test",
+      "direct_failure": "test_failure_remaining",
+      "failure_category": "semantic_repair_correctness",
+      "root_cause": "The patch changes application.yml to production, but the target test explicitly sets spring.profiles.active=test; ProductionCatalog therefore remains unavailable in the test context.",
+      "retrieval": {
+        "r_at_1": true,
+        "r_at_3": true,
+        "r_at_5": true,
+        "expected_file_recall": 0.6667,
+        "evidence_target_recall": 1.0,
+        "bottleneck": "CONFIRMED_NONE"
+      },
+      "diagnosis": {
+        "benchmark_pass": true,
+        "keyword_coverage": 0.75,
+        "category_match": false,
+        "status_match": true,
+        "actual_category": "UNKNOWN_NOT_RETAINED_IN_SAFE_ARTIFACT",
+        "problem": "CONFIRMED_CATEGORY_METRIC_MISMATCH_NOT_CASE_PASS_GATE"
+      },
+      "proposal": {
+        "status": "proposed",
+        "validation": "passed",
+        "problem": "CONFIRMED_SEMANTIC_SOURCE_SELECTION"
+      },
+      "application": {
+        "patch_applied": true,
+        "compile_success": true,
+        "problem": "CONFIRMED_NONE"
+      },
+      "attribution": {
+        "validator_problem": "CONFIRMED_NONE",
+        "framework_defect": "CONFIRMED_NOT_SHOWN",
+        "llm_quality_issue": "CONFIRMED",
+        "compile_test_problem": "CONFIRMED_TARGET_TEST_FAILURE"
+      },
+      "evaluation_tension": "LIKELY_CONFIG_SOURCE_OVERRIDE_CONTRACT_TENSION"
+    },
+    {
+      "case": "ambiguous-request-mapping",
+      "confidence": "LIKELY_MEDIUM",
+      "first_failing_boundary": "Proposal",
+      "direct_failure": "proposal_status_insufficient_evidence",
+      "failure_category": "proposal_abstention",
+      "root_cause": "The provider completed a structured response with zero edits and insufficient_evidence despite evaluator-level retrieval and evidence metrics passing.",
+      "retrieval": {
+        "r_at_1": true,
+        "r_at_3": true,
+        "r_at_5": true,
+        "expected_file_recall": 1.0,
+        "evidence_target_recall": 1.0,
+        "validated_evidence_count": 2,
+        "rejected_evidence_count": 0,
+        "bottleneck": "CONFIRMED_NONE_AT_EVALUATOR_LEVEL"
+      },
+      "diagnosis": {
+        "benchmark_pass": true,
+        "keyword_coverage": 0.75,
+        "category_match": false,
+        "status_match": true,
+        "actual_category": "UNKNOWN_NOT_RETAINED_IN_SAFE_ARTIFACT",
+        "problem": "CONFIRMED_CATEGORY_METRIC_MISMATCH_NOT_CASE_PASS_GATE"
+      },
+      "proposal": {
+        "status": "insufficient_evidence",
+        "provider_completed": true,
+        "structured_parse_schema_passed": true,
+        "response_edit_count": 0,
+        "problem": "LIKELY_OVER_ABSTENTION_UNKNOWN_EXACT_SNIPPET_SUFFICIENCY"
+      },
+      "application": {
+        "patch_applied": false,
+        "problem": "CONFIRMED_NOT_REACHED"
+      },
+      "attribution": {
+        "validator_problem": "UNKNOWN_NOT_REACHED",
+        "framework_defect": "CONFIRMED_NOT_SHOWN",
+        "llm_quality_issue": "LIKELY",
+        "compile_test_problem": "CONFIRMED_NOT_RUN"
+      }
+    }
+  ],
+  "taxonomy": {
+    "A_compile_correctness": ["missing-constructor-bean"],
+    "B_semantic_repair_correctness": ["invalid-config-property-value", "wrong-active-profile"],
+    "C_proposal_abstention": ["ambiguous-request-mapping"],
+    "D_evaluation_metric_inconsistency": ["wrong-active-profile", "ambiguous-request-mapping"],
+    "E_observability_quality_issue": ["missing-constructor-bean", "invalid-config-property-value", "wrong-active-profile"]
+  },
+  "framework_semantics": {
+    "patch_validation_pass_condition": "proposal status proposed and accepted_edit_count greater than zero",
+    "import_failure_gate": "recorded in import_check_status and audit but not independently blocking when another edit remains accepted",
+    "applier_atomicity": "all-or-nothing for the sanitized validated proposal it receives",
+    "all_edits_applied_metric": "counts sanitized application proposal, not all original provider edits",
+    "maven_observability": "main_compile_failure is upstream; surefire_report_missing is downstream; affected_file may be a framework stack frame"
+  },
+  "follow_up_priorities": {
+    "P0": [
+      "Define and test the invariant for proposals with rejected required edits, including mixed Java import-aware multi-edit proposals.",
+      "Evaluate edit lineage/dependency handling between Validator and E2E proposal gate before any residual edit reaches PatchApplier.",
+      "Harden Maven affected-file extraction and separate compile classifier from missing Surefire report reason."
+    ],
+    "P1": [
+      "Evaluate config/profile source-of-truth guards for ApplicationContextRunner explicit overrides.",
+      "Decide whether category_match belongs in Diagnosis Benchmark Pass while preserving separate diagnosis and category metrics.",
+      "Add a semantic-failure guard for compile-passed target-test failures without labeling them infrastructure failures."
+    ],
+    "P2": [
+      "Improve multi-edit import consistency and duplicate-symbol avoidance in proposal quality.",
+      "Improve config/profile source selection and explicit override reasoning.",
+      "Calibrate evidence sufficiency and abstention for bounded ambiguous mapping repairs."
+    ]
+  },
+  "post_rca_regressions": {
+    "live_or_holdout_mock_allowed": false,
+    "commands_required": [
+      "uv lock --check",
+      "uv run python scripts/holdout_integrity.py",
+      "uv run ruff check src/ tests/ scripts/",
+      "uv run mypy --strict src/",
+      "uv run pytest tests/ -q"
+    ],
+    "status": "PASS",
+    "results": {
+      "uv_lock_check": "PASS",
+      "holdout_integrity": "PASS",
+      "ruff": "PASS",
+      "mypy_strict": "PASS",
+      "pytest": "438 passed, 1 skipped"
+    }
+  },
+  "artifact_safety": {
+    "relative_paths_only": true,
+    "secrets_included": false,
+    "authorization_or_bearer_included": false,
+    "absolute_paths_included": false,
+    "raw_llm_response_included": false,
+    "full_prompt_included": false,
+    "full_maven_output_included": false,
+    "full_patch_diff_included": false
+  }
+}
