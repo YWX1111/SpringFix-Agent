@@ -350,6 +350,13 @@ YET**. The M6D `3/3` diagnosis result and `1/3` Repair Success result apply only
 to the legacy controlled three-case benchmark. M7A does not change runtime
 behavior, Prompt, Validator, Repair, or Retrieval, and keeps version `0.14.0`.
 
+The single-shot E2E harness selects the frozen input pair through
+`--split legacy|holdout`. Legacy remains the default and continues to support
+`--case`; Holdout selects exactly the seven frozen cases, records its split and
+sample size in run metadata/report artifacts, and rejects `--case` before any
+Agent invocation. This is evaluation orchestration only and does not change
+repair behavior.
+
 ## Formal M5D Live baseline
 
 The accepted formal Live Run is `20260812T040246Z-b5818c80`, with one frozen

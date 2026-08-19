@@ -488,6 +488,13 @@ and Gold remains outside the Agent-facing repository, issue, and error-log
 projection. M7A keeps runtime version `0.14.0` and does not tune Prompt,
 Validator, Repair, or Retrieval behavior.
 
+The single-shot E2E evaluation harness keeps Legacy as the default split:
+`--split legacy` runs the original three cases and preserves `--case` behavior.
+`--split holdout` selects the frozen seven-case Holdout v1 manifests, records
+the split and sample size in its artifacts, and rejects `--case` so the full
+split cannot be reduced to a per-case run. M7B Live evaluation remains a
+separate gated step.
+
 An obvious missing import is rejected with `missing_required_import` and the
 affected symbol. A supporting import edit is accepted only when it is in the
 same validated evidence file, under `src/main/java/**`, in the import section,

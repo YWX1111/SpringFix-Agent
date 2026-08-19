@@ -206,6 +206,7 @@ class EndToEndRepairBenchmarkRunner:
         output_dir: Path,
         mode: E2EMode = "mock",
         case_id: str | None = None,
+        benchmark_split: str = "legacy",
         llm: LLMClient | None = None,
         settings: Settings | None = None,
         verifier: MavenRepairVerifier | None = None,
@@ -216,6 +217,7 @@ class EndToEndRepairBenchmarkRunner:
         self.output_dir = output_dir.resolve()
         self.mode = mode
         self.case_id = case_id
+        self.benchmark_split = benchmark_split
         self._provided_llm = llm
         self._settings = settings
         self.verifier = verifier if verifier is not None else MavenRepairVerifier()
@@ -325,6 +327,7 @@ class EndToEndRepairBenchmarkRunner:
             "git_commit": _git_value(self.project_root, "rev-parse", "HEAD"),
             "git_tag": _git_value(self.project_root, "describe", "--tags", "--always"),
             "mode": self.mode,
+            "split": self.benchmark_split,
             "provider": "mock",
             "base_url_host": None,
             "api_key_configured": False,
@@ -769,6 +772,7 @@ def run_end_to_end_repair_benchmark(
     output_dir: Path,
     mode: E2EMode = "mock",
     case_id: str | None = None,
+    benchmark_split: str = "legacy",
 ) -> EndToEndRunResult:
     """Convenience entry point for the M5D CLI and tests."""
     return EndToEndRepairBenchmarkRunner(
@@ -778,6 +782,7 @@ def run_end_to_end_repair_benchmark(
         output_dir=output_dir,
         mode=mode,
         case_id=case_id,
+        benchmark_split=benchmark_split,
     ).run()
 
 

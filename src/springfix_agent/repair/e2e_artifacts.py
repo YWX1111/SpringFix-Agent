@@ -52,14 +52,22 @@ def _write_json(path: Path, payload: Mapping[str, object]) -> None:
 
 def render_end_to_end_report(result: EndToEndRunResult) -> str:
     """Render the funnel and per-case table from the same result models."""
+    split = str(result.run_metadata.get("split", "legacy"))
+    sample_size = result.aggregate.sample_size
+    scope = (
+        "the frozen unseen Holdout v1 benchmark"
+        if split == "holdout"
+        else "the current controlled Legacy benchmark"
+    )
     lines = [
-        "# SpringFix M5D End-to-End Repair Benchmark",
+        f"# SpringFix {split.title()} End-to-End Repair Benchmark",
         "",
         f"- mode: `{result.mode}`",
         f"- run_id: `{result.run_id}`",
-        f"- sample_size: `{result.aggregate.sample_size}`",
+        f"- split: `{split}`",
+        f"- sample_size: `{sample_size}`",
         "- M5D is a single-shot end-to-end benchmark; failed repairs are not retried.",
-        "- Results are limited to the current controlled three-case sample and are not a production accuracy rate.",
+        f"- Results are limited to {scope} and are not a production accuracy rate.",
         "",
         "## End-to-End Funnel",
         "",
@@ -111,7 +119,7 @@ def render_end_to_end_report(result: EndToEndRunResult) -> str:
             "",
             "## Limitations",
             "",
-            "- sample_size is three and the bug categories are limited to the controlled benchmark cases.",
+            f"- sample_size is {sample_size} and the bug categories are limited to the selected frozen split.",
             "- Live results depend on the selected model version and frozen provider configuration.",
             "- The benchmark has no statistical significance claim and no iterative repair loop.",
             "- Maven verification is restricted by command shape, cwd, environment, and timeout, but is not an OS/container/network sandbox.",
