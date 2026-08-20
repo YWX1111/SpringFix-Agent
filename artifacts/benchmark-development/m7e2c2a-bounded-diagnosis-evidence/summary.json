@@ -1,0 +1,102 @@
+{
+  "milestone": "M7E-2C2A",
+  "status": "PASS_CAPTURE_VALIDATION_SEMANTIC_FAILURE",
+  "status_note": "Bounded evidence capture and replay validation passed. The live semantic diagnosis score is reported as a real 0/6; this is a diagnosis-quality result, not an artifact-insufficiency result.",
+  "starting_commit": "bd334e3e84508d5bfec288a0f6b9d7d08649b488",
+  "implementation_commit": "4d2594de70b2aa845cb105ecb904bcdc531f4d07",
+  "runtime": "0.15.1",
+  "v2_contract": "diagnosis-semantic-v2.0",
+  "evidence_schema": "diagnosis-evidence-v1.0",
+  "scope": {
+    "production_files_modified": [
+      "src/springfix_agent/repair/e2e_artifacts.py",
+      "src/springfix_agent/repair/e2e_models.py",
+      "src/springfix_agent/repair/e2e_runner.py"
+    ],
+    "agent_behavior_modified": false,
+    "prompt_modified": false,
+    "diagnosis_generation_modified": false,
+    "retrieval_modified": false,
+    "validator_modified": false,
+    "patch_applier_modified": false,
+    "maven_modified": false,
+    "repair_success_predicate_modified": false,
+    "diagnosis_v1_modified": false,
+    "diagnosis_v2_semantic_contract_modified": false,
+    "metadata_modified": false,
+    "samples_modified": false,
+    "holdout_modified": false
+  },
+  "evidence_boundary": {
+    "source": "sanitized M4C CaseResult",
+    "destination": "EndToEndCaseResult and artifact wire projection",
+    "root_cause_summary_max_chars": 400,
+    "candidate_max_count": 3,
+    "candidate_title_max_chars": 200,
+    "candidate_description_max_chars": 600,
+    "candidate_recommended_fix_max_chars": 600,
+    "total_semantic_text_max_chars": 4600,
+    "truncation": "sanitized before Unicode-code-point truncation; any truncation or missing semantic text omits frozen V2 compatibility keys",
+    "allowlist": ["title", "description", "recommended_fix"],
+    "excluded": ["reasoning", "thinking", "analysis", "prompt", "raw provider response", "tool transcript", "Maven output", "holdout/reference data"],
+    "serializer_projection": ["root_cause_summary", "diagnosis_candidates"],
+    "persistence_is_observability_only": true
+  },
+  "v2_frozen_files": {
+    "evaluator": {"path": "src/springfix_agent/benchmark/diagnosis_v2.py", "sha256": "ba7306d02182c81a50b1ab3ec9ce8b59de572987edad8ccd2fcf34ded8d5a060"},
+    "metadata": {"path": "benchmark/dev_semantic_diagnosis_v2.jsonl", "sha256": "7663a5ab72280bb60c368a793189434f845e833af7baa4fee516e32da97ef2d7"},
+    "metadata_manifest": {"path": "benchmark/dev_semantic_diagnosis_v2_manifest.json", "sha256": "bb7baee19383ad632d03846fc24ca7be941a9036acfe9a4119eec1ef64716007"},
+    "post_live_hashes_match": true
+  },
+  "preflight": {
+    "pytest": "PASS: 508 passed, 1 skipped",
+    "ruff": "PASS",
+    "mypy_strict": "PASS: 95 source files",
+    "uv_lock_check": "PASS",
+    "semantic_dev_integrity": "PASS",
+    "verify_semantic_dev_samples": "PASS: baseline 6/6, reference fixes 6/6 (--no-artifact)",
+    "holdout_integrity": "PASS",
+    "benchmark_structural_validation": "PASS",
+    "benchmark_sample_verification": "PASS: legacy 3/3, holdout 7/7, total 10/10",
+    "diagnosis_v2_controls": "PASS: 17/17"
+  },
+  "historical_replay": {
+    "m7e2a": {"artifact": "replay-m7e2a.json", "repair_success": "5/6", "diagnosis_v1": "0/6", "diagnosis_v2": "0/6, evaluated=0, insufficient_artifact=6", "sha256": "e13b9371ce66c1ad4140a259547ba7cc92ace23768b27fb37194b93b474e613b"},
+    "m7e2c1": {"artifact": "replay-m7e2c1.json", "repair_success": "6/6", "diagnosis_v1": "0/6", "diagnosis_v2": "0/6, evaluated=0, insufficient_artifact=6", "sha256": "685c4d04d804b902e4722a9cdae86fbd9db76dcbd37c6d2156afe565562830ec"},
+    "historical_artifacts_retrofilled": false
+  },
+  "live": {
+    "run_id": "20260820T040110Z-20b0fcf2",
+    "split": "dev_semantic_v1",
+    "sample_size": 6,
+    "run_count": 1,
+    "exactly_one_run": true,
+    "provider": "openai_compatible",
+    "model": "qwen3.7-plus",
+    "temperature": 0.0,
+    "timeout_seconds": 60,
+    "max_retries": 2,
+    "max_output_tokens": 2000,
+    "repair_success": {"passed": 6, "total": 6},
+    "diagnosis_v1": {"passed": 0, "total": 6},
+    "diagnosis_v2": {"passed": 0, "total": 6, "evaluated": 6, "failed": 6, "insufficient_artifact": 0, "mean_semantic_score": 0.8428},
+    "evidence_capture": {"all_cases_schema_version": "diagnosis-evidence-v1.0", "all_cases_evaluation_ready": true, "all_cases_untruncated": true, "flat_compatibility_projection_present": true},
+    "raw_artifact_hashes": {"manifest": "live-20260820T040110Z-20b0fcf2-artifact-hashes.json", "frozen_before_scoring": true, "verified_after_scoring": true, "mismatches": 0},
+    "safety_audit": {"files_scanned": 15, "secret_or_credential_findings": 0, "machine_path_findings": 0, "forbidden_key_findings": 0}
+  },
+  "live_v2_failure_classification": {
+    "classification": "semantic diagnosis incomplete; evidence capture valid",
+    "rerun_allowed": false,
+    "evaluator_or_gold_changes_allowed": false,
+    "cases": {
+      "dev-s1-profile-config-source": ["missing_concept:active_profile", "missing_relation:profile_gate_mismatch"],
+      "dev-s2-code-property-override": ["missing_relation:code_source_overrides_configuration"],
+      "dev-s3-storage-validation": ["missing_concept:binding_target", "missing_relation:configured_capacity_violates_validation"],
+      "dev-s4-conditional-notification": ["missing_relation:provider_condition_mismatch"],
+      "dev-s5-cache-binding-key": ["missing_concept:observed_default", "missing_relation:configuration_key_binding_mismatch"],
+      "dev-s6-local-precedence-conflict": ["missing_concept:invalid_retry_value", "missing_relation:local_source_overrides_base", "missing_relation:local_value_violates_validation"]
+    }
+  },
+  "post_run_controls": {"diagnosis_v2_control_tests": "PASS: 17/17", "agent_rerun_during_replay": false, "new_llm_calls_during_replay": 0},
+  "next_milestone": "M7E-2C2B RCA required; do not treat the 0/6 V2 result as an artifact failure and do not rerun this live sample"
+}
