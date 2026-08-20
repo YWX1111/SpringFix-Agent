@@ -1,0 +1,105 @@
+{
+  "status": "PASS",
+  "milestone": "M7E-2C2C4A",
+  "objective": "Evaluator-only Diagnosis Semantic V2.2 correction",
+  "starting_commit": "8417ec28ea4e89f1191ec21d842d649308c3397f",
+  "runtime": "0.15.1",
+  "agent_executions": 0,
+  "llm_calls": 0,
+  "prompt_modified": false,
+  "diagnosis_generation_modified": false,
+  "repair_pipeline_modified": false,
+  "holdout_executed": false,
+  "case_hardcoding": false,
+  "threshold_lowered": false,
+  "conjunctive_gate_modified": false,
+  "frozen_contracts": {
+    "v2_0": {
+      "schema_version": "diagnosis-semantic-v2.0",
+      "evaluator_sha256": "ba7306d02182c81a50b1ab3ec9ce8b59de572987edad8ccd2fcf34ded8d5a060"
+    },
+    "v2_1": {
+      "schema_version": "diagnosis-semantic-v2.1",
+      "evaluator_sha256": "33e9fa4262ed14e4ef5e58bc4259b619839740e55234828b232a6e2bc3621403",
+      "metadata_sha256": "3ab66235ae1127290a90cf07bd40c1f48b25f1219959f9e897c19e83361404a7",
+      "manifest_sha256": "ac7f37668961f47d61039a2150db686cc1c0d926681baa0655529b028473f37d",
+      "byte_preserved": true
+    }
+  },
+  "v2_2": {
+    "schema_version": "diagnosis-semantic-v2.2",
+    "evaluator_path": "src/springfix_agent/benchmark/diagnosis_v22.py",
+    "evaluator_sha256": "cd9c5f0113d2ed91a143d2d257a961a8642d74744e063c70eece1f419331a9b1",
+    "metadata_path": "benchmark/dev_semantic_diagnosis_v2_2.jsonl",
+    "metadata_sha256": "113d608a00f9ebf439c73201e5c48f702a87734fec5d5f2b8f16a9f3a3df9dbd",
+    "manifest_path": "benchmark/dev_semantic_diagnosis_v2_2_manifest.json",
+    "regression_corpus_path": "benchmark/dev_semantic_diagnosis_v2_2_regressions.jsonl",
+    "regression_corpus_sha256": "45fd7789504dcaaa411bc45e2b2affc0a3f6b2d9ae8e1bd176efa7945c755bc9",
+    "confirmed_regression_count": 15,
+    "positive_controls": 15,
+    "adversarial_negative_controls": 12,
+    "adversarial_negatives_rejected": 12
+  },
+  "calibration_run": {
+    "run_id": "20260820T040110Z-20b0fcf2",
+    "diagnosis_v1": "0/6",
+    "diagnosis_v2_0": "0/6",
+    "diagnosis_v2_1": "6/6",
+    "diagnosis_v2_2": "6/6",
+    "v2_2_cases_evaluated": 6,
+    "v2_2_insufficient_artifact": 0,
+    "v2_2_mean_semantic_score": 1.0,
+    "replay_sha256": "a56c9ec8084a827b7d588a664e379605473d3332bf48a152f064e8b9fd0b70af"
+  },
+  "fresh1_run": {
+    "run_id": "20260820T060935Z-fb5af9c3",
+    "repair_success": "6/6",
+    "diagnosis_v1": "1/6",
+    "diagnosis_v2_0": "1/6",
+    "diagnosis_v2_1": "3/6",
+    "diagnosis_v2_2": "6/6",
+    "v2_2_cases_evaluated": 6,
+    "v2_2_insufficient_artifact": 0,
+    "v2_2_mean_semantic_score": 1.0,
+    "replay_sha256": "5b0cd48c852d0f10b298577396de00640e189163169af2d72efdb8bf24b2873e"
+  },
+  "correction_design": {
+    "s1_profile_gate_mismatch": "bounded relation variants for restricts/activation restricted/configured only/skipped gate wording, with active-dev context and directionality",
+    "s4_provider_condition_mismatch": "bounded configured-provider versus required-webhook relation variants, preserving configured-value direction and context",
+    "s5_negation_scope": "bounded relation-span negation detection for do not/never/cannot/fails-to forms",
+    "s5_context_awareness": "forbidden contradiction matching uses assertion fields only; recommended_fix remains available to required concept/relation coverage",
+    "bounded_context_window": "relation companion context is limited to the current and adjacent normalized clauses",
+    "required_relation_invariant": "region-ttl does not match ttlByRegion passes while forbidden positive relation is not hit"
+  },
+  "quality_gates": {
+    "semantic_dev_integrity": "PASS",
+    "verify_semantic_dev_samples": "PASS 6/6 baseline, 6/6 reference fixes",
+    "holdout_integrity": "PASS",
+    "benchmark_validation": "PASS",
+    "v2_0_controls": "17/17 PASS",
+    "v2_1_controls": "24/24 PASS",
+    "v2_2_controls": "29/29 PASS",
+    "full_pytest": "PASS 561 passed, 1 skipped",
+    "ruff": "PASS",
+    "mypy_strict": "PASS",
+    "uv_lock_check": "PASS"
+  },
+  "artifact_safety": {
+    "raw_llm_response": false,
+    "prompt": false,
+    "hidden_reasoning": false,
+    "full_source_dump": false,
+    "maven_dump": false,
+    "reference_patch": false,
+    "holdout_material": false,
+    "secrets": false,
+    "machine_paths": false,
+    "bounded_excerpts_only": true
+  },
+  "artifacts": [
+    "artifacts/benchmark-development/m7e2c2c4a-diagnosis-v22/report.md",
+    "artifacts/benchmark-development/m7e2c2c4a-diagnosis-v22/summary.json",
+    "artifacts/benchmark-development/m7e2c2c4a-diagnosis-v22/calibration-v22-replay.json",
+    "artifacts/benchmark-development/m7e2c2c4a-diagnosis-v22/fresh1-v22-replay.json"
+  ]
+}

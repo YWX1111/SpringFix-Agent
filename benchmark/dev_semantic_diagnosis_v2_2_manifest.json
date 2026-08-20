@@ -1,0 +1,37 @@
+{
+  "schema_version": "diagnosis-semantic-v2.2",
+  "split": "dev_semantic_v1",
+  "hash_algorithm": "sha256",
+  "content_normalization": "canonical-json-v1",
+  "case_ids": [
+    "dev-s1-profile-config-source",
+    "dev-s2-code-property-override",
+    "dev-s3-storage-validation",
+    "dev-s4-conditional-notification",
+    "dev-s5-cache-binding-key",
+    "dev-s6-local-precedence-conflict"
+  ],
+  "metadata_path": "benchmark/dev_semantic_diagnosis_v2_2.jsonl",
+  "metadata_hashes": {
+    "dev-s1-profile-config-source": "8419da37fed2cd3c0be54f8113fa8af6d81651543cda71e41ba6d4fb2422df32",
+    "dev-s2-code-property-override": "393e6ebdb6005c2b1df82d7acb03f07c31652f5712f7ea48a9dba45d84f09ae3",
+    "dev-s3-storage-validation": "62b7f563b40c59fadc62636822157863dff81cf3381faeaa460fdbec1171f971",
+    "dev-s4-conditional-notification": "34ac6b24c0288dd154abc883cef48033050207d37585682341a6ceacbc71b23e",
+    "dev-s5-cache-binding-key": "9ff5890f37a76d4fac1ad03790b6dbd0bf8248ec46a24a5205cbd9550b17cd31",
+    "dev-s6-local-precedence-conflict": "6e8afef983b23f1c9df98bc2d2004a46f023f32f9f2742543f407bb7f7389087"
+  },
+  "regression_corpus_path": "benchmark/dev_semantic_diagnosis_v2_2_regressions.jsonl",
+  "regression_corpus_sha256": "45fd7789504dcaaa411bc45e2b2affc0a3f6b2d9ae8e1bd176efa7945c755bc9",
+  "regression_count": 15,
+  "v2_0_contract": "diagnosis-semantic-v2.0",
+  "v2_0_evaluator_sha256": "ba7306d02182c81a50b1ab3ec9ce8b59de572987edad8ccd2fcf34ded8d5a060",
+  "v2_1_contract": "diagnosis-semantic-v2.1",
+  "v2_1_evaluator_sha256": "33e9fa4262ed14e4ef5e58bc4259b619839740e55234828b232a6e2bc3621403",
+  "v2_1_metadata_sha256": "3ab66235ae1127290a90cf07bd40c1f48b25f1219959f9e897c19e83361404a7",
+  "v2_1_manifest_sha256": "ac7f37668961f47d61039a2150db686cc1c0d926681baa0655529b028473f37d",
+  "v2_2_contract": "diagnosis-semantic-v2.2",
+  "v2_2_evaluator_sha256": "cd9c5f0113d2ed91a143d2d257a961a8642d74744e063c70eece1f419331a9b1",
+  "v2_2_metadata_sha256": "113d608a00f9ebf439c73201e5c48f702a87734fec5d5f2b8f16a9f3a3df9dbd",
+  "v2_2_regression_corpus_sha256": "45fd7789504dcaaa411bc45e2b2affc0a3f6b2d9ae8e1bd176efa7945c755bc9",
+  "agent_projection_isolated": true
+}
