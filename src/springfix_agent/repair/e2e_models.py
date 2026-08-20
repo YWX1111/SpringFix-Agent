@@ -2,12 +2,34 @@
 
 from __future__ import annotations
 
-from typing import Literal
+from typing import Final, Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from springfix_agent.repair.observability import ProposalGenerationAudit
 from springfix_agent.repair.verification_models import MavenTestResult
+
+DIAGNOSIS_EVIDENCE_SCHEMA_VERSION: Final = "diagnosis-evidence-v1.0"
+DIAGNOSIS_SUMMARY_MAX_CHARS: Final = 400
+DIAGNOSIS_CANDIDATE_MAX_COUNT: Final = 3
+DIAGNOSIS_CANDIDATE_TITLE_MAX_CHARS: Final = 200
+DIAGNOSIS_CANDIDATE_DESCRIPTION_MAX_CHARS: Final = 600
+DIAGNOSIS_CANDIDATE_RECOMMENDED_FIX_MAX_CHARS: Final = 600
+DIAGNOSIS_TRUNCATED_FIELD_MAX_COUNT: Final = 11
+
+DiagnosisTruncatedField = Literal[
+    "summary",
+    "candidates",
+    "candidates[0].title",
+    "candidates[0].description",
+    "candidates[0].recommended_fix",
+    "candidates[1].title",
+    "candidates[1].description",
+    "candidates[1].recommended_fix",
+    "candidates[2].title",
+    "candidates[2].description",
+    "candidates[2].recommended_fix",
+]
 
 StageStatus = Literal["not_run", "passed", "failed", "skipped"]
 CaseOutcome = Literal[
@@ -20,6 +42,50 @@ CaseOutcome = Literal[
     "provider_failed",
     "infrastructure_failed",
 ]
+
+
+class DiagnosisCandidateEvidence(BaseModel):
+    """Whitelisted candidate text required by the frozen Diagnosis V2 evaluator."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    title: str = Field(default="", max_length=DIAGNOSIS_CANDIDATE_TITLE_MAX_CHARS)
+    description: str = Field(default="", max_length=DIAGNOSIS_CANDIDATE_DESCRIPTION_MAX_CHARS)
+    recommended_fix: str = Field(
+        default="", max_length=DIAGNOSIS_CANDIDATE_RECOMMENDED_FIX_MAX_CHARS
+    )
+
+
+class DiagnosisEvidenceV1(BaseModel):
+    """Versioned, bounded semantic evidence copied from the public Agent result."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    schema_version: Literal["diagnosis-evidence-v1.0"] = "diagnosis-evidence-v1.0"
+    bounded: Literal[True] = True
+    sanitized: Literal[True] = True
+    summary: str | None = Field(default=None, max_length=DIAGNOSIS_SUMMARY_MAX_CHARS)
+    candidates: tuple[DiagnosisCandidateEvidence, ...] = Field(
+        default_factory=tuple, max_length=DIAGNOSIS_CANDIDATE_MAX_COUNT
+    )
+    truncated: bool = False
+    truncated_fields: tuple[DiagnosisTruncatedField, ...] = Field(
+        default_factory=tuple,
+        max_length=DIAGNOSIS_TRUNCATED_FIELD_MAX_COUNT,
+    )
+    evaluation_ready: bool = Field(default=False, frozen=True)
+
+    @model_validator(mode="after")
+    def _derive_evaluation_ready(self) -> DiagnosisEvidenceV1:
+        """Derive readiness so callers cannot expose incomplete evidence."""
+        effective_truncated = self.truncated or bool(self.truncated_fields)
+        object.__setattr__(self, "truncated", effective_truncated)
+        has_text = bool(self.summary and self.summary.strip()) or any(
+            item.title.strip() or item.description.strip() or item.recommended_fix.strip()
+            for item in self.candidates
+        )
+        object.__setattr__(self, "evaluation_ready", has_text and not effective_truncated)
+        return self
 
 
 class EndToEndCaseResult(BaseModel):
@@ -130,10 +196,45 @@ class EndToEndCaseResult(BaseModel):
     retrieval_ms: int | None = None
     root_cause_analyzer_ms: int | None = None
 
+    diagnosis_evidence: DiagnosisEvidenceV1 | None = None
     baseline_maven: MavenTestResult | None = None
     maven: MavenTestResult = Field(default_factory=lambda: MavenTestResult(executed=False, timed_out=False))
     patch_diff: str | None = Field(default=None, exclude=True)
     warnings: list[str] = Field(default_factory=list)
+
+
+class EndToEndCaseArtifact(EndToEndCaseResult):
+    """Wire projection that adds the frozen V2 compatibility fields."""
+
+    diagnosis_evidence_schema_version: Literal["diagnosis-evidence-v1.0"] | None = None
+    root_cause_summary: str | None = Field(default=None, max_length=DIAGNOSIS_SUMMARY_MAX_CHARS)
+    diagnosis_candidates: tuple[DiagnosisCandidateEvidence, ...] = Field(
+        default_factory=tuple, max_length=DIAGNOSIS_CANDIDATE_MAX_COUNT
+    )
+
+    @model_validator(mode="after")
+    def _validate_projection(self) -> EndToEndCaseArtifact:
+        """Keep compatibility fields consistent with the versioned evidence object."""
+        evidence = self.diagnosis_evidence
+        if evidence is None:
+            if (
+                self.diagnosis_evidence_schema_version is not None
+                or self.root_cause_summary is not None
+                or self.diagnosis_candidates
+            ):
+                raise ValueError("compatibility projection requires diagnosis evidence")
+            return self
+        if self.diagnosis_evidence_schema_version != evidence.schema_version:
+            raise ValueError("diagnosis evidence schema version mismatch")
+        if evidence.evaluation_ready:
+            if (
+                self.root_cause_summary != evidence.summary
+                or self.diagnosis_candidates != evidence.candidates
+            ):
+                raise ValueError("complete evidence must match the V2 compatibility projection")
+        elif self.root_cause_summary is not None or self.diagnosis_candidates:
+            raise ValueError("incomplete evidence must not expose a V2 compatibility projection")
+        return self
 
 
 class EndToEndAggregateMetrics(BaseModel):
@@ -193,7 +294,18 @@ class EndToEndRunResult(BaseModel):
 
 __all__ = [
     "CaseOutcome",
+    "DIAGNOSIS_CANDIDATE_DESCRIPTION_MAX_CHARS",
+    "DIAGNOSIS_CANDIDATE_MAX_COUNT",
+    "DIAGNOSIS_CANDIDATE_RECOMMENDED_FIX_MAX_CHARS",
+    "DIAGNOSIS_CANDIDATE_TITLE_MAX_CHARS",
+    "DIAGNOSIS_EVIDENCE_SCHEMA_VERSION",
+    "DIAGNOSIS_SUMMARY_MAX_CHARS",
+    "DIAGNOSIS_TRUNCATED_FIELD_MAX_COUNT",
+    "DiagnosisCandidateEvidence",
+    "DiagnosisEvidenceV1",
+    "DiagnosisTruncatedField",
     "EndToEndAggregateMetrics",
+    "EndToEndCaseArtifact",
     "EndToEndCaseResult",
     "EndToEndRunResult",
     "StageStatus",

@@ -1,0 +1,67 @@
+{
+  "milestone": "M7E-2C2A",
+  "recorded_at_utc": "2026-08-20T03:45:59Z",
+  "starting_commit": "bd334e3e84508d5bfec288a0f6b9d7d08649b488",
+  "runtime": "0.15.1",
+  "diagnosis_v2_contract": "diagnosis-semantic-v2.0",
+  "diagnosis_evidence_schema": "diagnosis-evidence-v1.0",
+  "live_run_count_before_freeze": 0,
+  "v2_frozen_files": {
+    "evaluator": {
+      "path": "src/springfix_agent/benchmark/diagnosis_v2.py",
+      "sha256": "ba7306d02182c81a50b1ab3ec9ce8b59de572987edad8ccd2fcf34ded8d5a060"
+    },
+    "metadata": {
+      "path": "benchmark/dev_semantic_diagnosis_v2.jsonl",
+      "sha256": "7663a5ab72280bb60c368a793189434f845e833af7baa4fee516e32da97ef2d7"
+    },
+    "metadata_manifest": {
+      "path": "benchmark/dev_semantic_diagnosis_v2_manifest.json",
+      "sha256": "bb7baee19383ad632d03846fc24ca7be941a9036acfe9a4119eec1ef64716007"
+    }
+  },
+  "quality_gates": {
+    "pytest": "PASS: 508 passed, 1 skipped",
+    "ruff": "PASS",
+    "mypy_strict": "PASS: 95 source files",
+    "uv_lock_check": "PASS",
+    "semantic_dev_integrity": "PASS",
+    "verify_semantic_dev_samples": "PASS: baseline 6/6, reference fixes 6/6",
+    "holdout_integrity": "PASS",
+    "benchmark_structural_validation": "PASS",
+    "benchmark_sample_verification": "PASS: legacy 3/3, holdout 7/7, total 10/10",
+    "diagnosis_v2_controls": "PASS: 17/17"
+  },
+  "historical_replay": {
+    "m7e2a": {
+      "repair_success": "5/6",
+      "diagnosis_v1": "0/6",
+      "diagnosis_v2": "0/6 evaluated=0 insufficient_artifact=6",
+      "sha256": "e13b9371ce66c1ad4140a259547ba7cc92ace23768b27fb37194b93b474e613b"
+    },
+    "m7e2c1": {
+      "repair_success": "6/6",
+      "diagnosis_v1": "0/6",
+      "diagnosis_v2": "0/6 evaluated=0 insufficient_artifact=6",
+      "sha256": "685c4d04d804b902e4722a9cdae86fbd9db76dcbd37c6d2156afe565562830ec"
+    }
+  },
+  "frozen_live_configuration": {
+    "mode": "live",
+    "provider": "openai_compatible",
+    "model": "qwen3.7-plus",
+    "temperature": 0.0,
+    "timeout_seconds": 60,
+    "max_retries": 2,
+    "max_output_tokens": 2000
+  },
+  "agent_behavior_modified": false,
+  "prompt_modified": false,
+  "diagnosis_generation_modified": false,
+  "diagnosis_v1_modified": false,
+  "diagnosis_v2_semantic_contract_modified": false,
+  "repair_success_predicate_modified": false,
+  "holdout_agent_execution": false,
+  "holdout_mock_execution": false,
+  "holdout_live_execution": false
+}

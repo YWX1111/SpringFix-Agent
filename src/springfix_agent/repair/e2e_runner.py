@@ -36,7 +36,10 @@ from springfix_agent.llm.mock import MockLLMClient
 from springfix_agent.observability.in_memory_tracer import InMemoryTracer
 from springfix_agent.repair.application_models import PatchApplicationResult
 from springfix_agent.repair.applier import PatchApplier
-from springfix_agent.repair.e2e_artifacts import write_end_to_end_artifacts
+from springfix_agent.repair.e2e_artifacts import (
+    capture_bounded_diagnosis_evidence,
+    write_end_to_end_artifacts,
+)
 from springfix_agent.repair.e2e_metrics import aggregate_end_to_end_metrics
 from springfix_agent.repair.e2e_models import EndToEndCaseResult, EndToEndRunResult
 from springfix_agent.repair.evaluator import RepairGold, evaluate_repair_proposal
@@ -451,6 +454,13 @@ class EndToEndRepairBenchmarkRunner:
             base.diagnostic_http_attempts = diagnostic_attempts
             base.diagnostic_input_tokens = diagnostic_inputs
             base.diagnostic_output_tokens = diagnostic_outputs
+            try:
+                base.diagnosis_evidence = capture_bounded_diagnosis_evidence(
+                    m4c.root_cause_summary,
+                    m4c.candidates,
+                )
+            except Exception:  # noqa: BLE001 - observability must not affect repair behavior
+                base.warnings.append("diagnosis_evidence_capture_failed")
 
             if _provider_failed(diagnostic_payloads):
                 base.diagnosis_completed = False

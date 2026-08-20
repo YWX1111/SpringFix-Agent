@@ -5,6 +5,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import pytest
+
 from springfix_agent.llm.mock import MockLLMClient
 from springfix_agent.repair.e2e_artifacts import sanitize_artifact_value
 from springfix_agent.repair.e2e_metrics import aggregate_end_to_end_metrics
@@ -85,6 +87,30 @@ def test_m5d_mock_orchestration_uses_existing_stages(tmp_path: Path) -> None:
     assert case.patch_proposal_duration_ms >= 0
     assert case.patch_application_ms >= 0
     assert case.verification_status == "passed"
+    assert case.diagnosis_evidence is not None
+    assert case.diagnosis_evidence.evaluation_ready is True
+    assert case.diagnosis_evidence.truncated is False
+
+
+def test_diagnosis_capture_failure_does_not_change_repair_pipeline(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def fail_capture(*_args: object, **_kwargs: object) -> None:
+        raise RuntimeError("synthetic artifact failure")
+
+    monkeypatch.setattr(
+        "springfix_agent.repair.e2e_runner.capture_bounded_diagnosis_evidence",
+        fail_capture,
+    )
+    result = _runner(tmp_path, verifier=_FakeVerifier()).run()
+    case = result.cases[0]
+    assert case.repair_success is True
+    assert case.proposal_generated is True
+    assert case.patch_applied is True
+    assert case.target_test_found is True
+    assert case.diagnosis_evidence is None
+    assert case.warnings == ["diagnosis_evidence_capture_failed"]
 
 
 def test_baseline_failure_short_circuits_before_agent(tmp_path: Path) -> None:

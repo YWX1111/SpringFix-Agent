@@ -6,18 +6,36 @@ import json
 import re
 from collections.abc import Mapping, Sequence
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 from springfix_agent.repair.e2e_metrics import funnel_rows
-from springfix_agent.repair.e2e_models import EndToEndRunResult
+from springfix_agent.repair.e2e_models import (
+    DIAGNOSIS_CANDIDATE_DESCRIPTION_MAX_CHARS,
+    DIAGNOSIS_CANDIDATE_MAX_COUNT,
+    DIAGNOSIS_CANDIDATE_RECOMMENDED_FIX_MAX_CHARS,
+    DIAGNOSIS_CANDIDATE_TITLE_MAX_CHARS,
+    DIAGNOSIS_SUMMARY_MAX_CHARS,
+    DiagnosisCandidateEvidence,
+    DiagnosisEvidenceV1,
+    DiagnosisTruncatedField,
+    EndToEndCaseArtifact,
+    EndToEndCaseResult,
+    EndToEndRunResult,
+)
 
 _BEARER_RE = re.compile(r"(?i)bearer\s+[A-Za-z0-9._~+/=-]{8,}")
+_API_KEY_RE = re.compile(r"(?i)\bsk-[A-Za-z0-9_-]{16,}\b")
 _SECRET_RE = re.compile(
-    r"(?i)(api[_ -]?key|token|secret|password|authorization)(\s*[:=]\s*)[^\s,;]+"
+    r"(?ix)\b(api[_ -]?key|token|secret|password|authorization|credential)\b"
+    r"(\s*[:=]\s*)"
+    r'(?:"[^"\r\n]*"|\'[^\'\r\n]*\'|[^\r\n,;]+)'
 )
 _URL_RE = re.compile(r"(?i)https?://[^\s\]\)}>]+")
 _ABSOLUTE_PATH_RE = re.compile(
-    r"(?i)(?:[a-z]:[\\/]|/(?:tmp|var|home|users?)/)[^\s\r\n,;]+"
+    r"(?i)(?:"
+    r'["\'](?:[a-z]:[\\/]|\\\\|/(?:private/tmp|tmp|var|home|users?|root|workspaces?|opt|mnt)/)[^"\'\r\n]*["\']'
+    r"|(?:[a-z]:[\\/]|\\\\|/(?:private/tmp|tmp|var|home|users?|root|workspaces?|opt|mnt)/)[^\r\n,;]+"
+    r")"
 )
 _ENV_RE = re.compile(r"(?i)(?:^|[\\/])\.env(?:\.[^\s/\\,;]+)?")
 
@@ -25,6 +43,7 @@ _ENV_RE = re.compile(r"(?i)(?:^|[\\/])\.env(?:\.[^\s/\\,;]+)?")
 def _safe_text(value: str) -> str:
     """Remove credentials, URLs, env paths, and machine-specific paths."""
     result = _BEARER_RE.sub("<redacted>", value)
+    result = _API_KEY_RE.sub("<redacted>", result)
     result = _SECRET_RE.sub(r"\1=<redacted>", result)
     result = _URL_RE.sub("<url>", result)
     result = _ENV_RE.sub("/<redacted-env>", result)
@@ -40,6 +59,100 @@ def sanitize_artifact_value(value: Any) -> Any:
     if isinstance(value, Sequence) and not isinstance(value, (bytes, bytearray, str)):
         return [sanitize_artifact_value(item) for item in value]
     return value
+
+
+def _bounded_text(
+    value: object,
+    *,
+    max_chars: int,
+    field_name: DiagnosisTruncatedField,
+    truncated_fields: list[DiagnosisTruncatedField],
+) -> str:
+    if not isinstance(value, str):
+        return ""
+    safe = _safe_text(value)
+    if len(safe) > max_chars:
+        truncated_fields.append(field_name)
+        return safe[:max_chars]
+    return safe
+
+
+def capture_bounded_diagnosis_evidence(
+    summary: str | None,
+    candidates: Sequence[Mapping[str, object]],
+) -> DiagnosisEvidenceV1:
+    """Copy only public semantic result fields into a bounded artifact model."""
+    truncated_fields: list[DiagnosisTruncatedField] = []
+    bounded_summary = _bounded_text(
+        summary,
+        max_chars=DIAGNOSIS_SUMMARY_MAX_CHARS,
+        field_name="summary",
+        truncated_fields=truncated_fields,
+    )
+    if len(candidates) > DIAGNOSIS_CANDIDATE_MAX_COUNT:
+        truncated_fields.append("candidates")
+
+    bounded_candidates: list[DiagnosisCandidateEvidence] = []
+    for index, candidate in enumerate(candidates[:DIAGNOSIS_CANDIDATE_MAX_COUNT]):
+        title_field = cast(DiagnosisTruncatedField, f"candidates[{index}].title")
+        description_field = cast(
+            DiagnosisTruncatedField, f"candidates[{index}].description"
+        )
+        recommended_fix_field = cast(
+            DiagnosisTruncatedField, f"candidates[{index}].recommended_fix"
+        )
+        bounded_candidates.append(
+            DiagnosisCandidateEvidence(
+                title=_bounded_text(
+                    candidate.get("title"),
+                    max_chars=DIAGNOSIS_CANDIDATE_TITLE_MAX_CHARS,
+                    field_name=title_field,
+                    truncated_fields=truncated_fields,
+                ),
+                description=_bounded_text(
+                    candidate.get("description"),
+                    max_chars=DIAGNOSIS_CANDIDATE_DESCRIPTION_MAX_CHARS,
+                    field_name=description_field,
+                    truncated_fields=truncated_fields,
+                ),
+                recommended_fix=_bounded_text(
+                    candidate.get("recommended_fix"),
+                    max_chars=DIAGNOSIS_CANDIDATE_RECOMMENDED_FIX_MAX_CHARS,
+                    field_name=recommended_fix_field,
+                    truncated_fields=truncated_fields,
+                ),
+            )
+        )
+
+    truncated = bool(truncated_fields)
+    return DiagnosisEvidenceV1(
+        summary=bounded_summary or None,
+        candidates=tuple(bounded_candidates),
+        truncated=truncated,
+        truncated_fields=tuple(truncated_fields),
+    )
+
+
+def _case_artifact_payload(case: EndToEndCaseResult) -> dict[str, object]:
+    payload: dict[str, object] = case.model_dump(mode="python")
+    evidence = case.diagnosis_evidence
+    if evidence is None:
+        excluded = {
+            "diagnosis_evidence",
+            "diagnosis_evidence_schema_version",
+            "root_cause_summary",
+            "diagnosis_candidates",
+        }
+    else:
+        payload["diagnosis_evidence_schema_version"] = evidence.schema_version
+        if evidence.evaluation_ready and not evidence.truncated and not evidence.truncated_fields:
+            payload["root_cause_summary"] = evidence.summary
+            payload["diagnosis_candidates"] = evidence.candidates
+            excluded = set()
+        else:
+            excluded = {"root_cause_summary", "diagnosis_candidates"}
+    artifact = EndToEndCaseArtifact.model_validate(payload)
+    return artifact.model_dump(mode="json", exclude=excluded)
 
 
 def _write_json(path: Path, payload: Mapping[str, object]) -> None:
@@ -140,7 +253,7 @@ def write_end_to_end_artifacts(result: EndToEndRunResult, output_dir: Path) -> N
         case_dir.mkdir(parents=True, exist_ok=True)
         _write_json(
             case_dir / "result.json",
-            {"case_id": case.case_id, **case.model_dump(mode="json")},
+            _case_artifact_payload(case),
         )
         if case.patch_diff:
             (case_dir / "patch.diff").write_text(_safe_text(case.patch_diff), encoding="utf-8")
@@ -150,13 +263,14 @@ def write_end_to_end_artifacts(result: EndToEndRunResult, output_dir: Path) -> N
             "mode": result.mode,
             "run_id": result.run_id,
             "aggregate": result.aggregate.model_dump(mode="json"),
-            "cases": [case.model_dump(mode="json") for case in result.cases],
+            "cases": [_case_artifact_payload(case) for case in result.cases],
         },
     )
     (output_dir / "report.md").write_text(render_end_to_end_report(result), encoding="utf-8")
 
 
 __all__ = [
+    "capture_bounded_diagnosis_evidence",
     "render_end_to_end_report",
     "sanitize_artifact_value",
     "write_end_to_end_artifacts",
