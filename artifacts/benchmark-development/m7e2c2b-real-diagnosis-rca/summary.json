@@ -1,0 +1,324 @@
+{
+  "milestone": "M7E-2C2B",
+  "status": "PASS_RCA_COMPLETE",
+  "starting_commit": "d3900482cb7495dac1f949559bec1ed436a298dc",
+  "source_run": "20260820T040110Z-20b0fcf2",
+  "runtime": "0.15.1",
+  "repair_success": "6/6",
+  "diagnosis_v1": "0/6",
+  "diagnosis_v2": "0/6",
+  "diagnosis_v2_evaluated": "6/6",
+  "diagnosis_v2_insufficient_artifact": "0/6",
+  "agent_rerun": false,
+  "llm_calls": 0,
+  "holdout_execution": false,
+  "evaluator_modified": false,
+  "prompt_modified": false,
+  "diagnosis_generation_modified": false,
+  "repair_pipeline_modified": false,
+  "v1_modified": false,
+  "v2_modified": false,
+  "metadata_modified": false,
+  "dev_samples_modified": false,
+  "holdout_modified": false,
+  "preflight": {
+    "head": "d3900482cb7495dac1f949559bec1ed436a298dc",
+    "origin_main": "d3900482cb7495dac1f949559bec1ed436a298dc",
+    "working_tree_clean": true,
+    "semantic_dev_integrity": "PASS",
+    "verify_semantic_dev_samples": "PASS: baseline 6/6, reference fixes 6/6 (--no-artifact)",
+    "holdout_integrity": "PASS",
+    "benchmark_validation": "PASS",
+    "benchmark_sample_verification": "PASS: legacy 3/3, holdout 7/7, total 10/10",
+    "diagnosis_v2_controls": "PASS: 17/17"
+  },
+  "frozen_hashes": {
+    "evaluator": {
+      "path": "src/springfix_agent/benchmark/diagnosis_v2.py",
+      "sha256": "ba7306d02182c81a50b1ab3ec9ce8b59de572987edad8ccd2fcf34ded8d5a060"
+    },
+    "metadata": {
+      "path": "benchmark/dev_semantic_diagnosis_v2.jsonl",
+      "sha256": "7663a5ab72280bb60c368a793189434f845e833af7baa4fee516e32da97ef2d7"
+    },
+    "manifest": {
+      "path": "benchmark/dev_semantic_diagnosis_v2_manifest.json",
+      "sha256": "bb7baee19383ad632d03846fc24ca7be941a9036acfe9a4119eec1ef64716007"
+    },
+    "live_artifact_hash_manifest": {
+      "path": "artifacts/benchmark-development/m7e2c2a-bounded-diagnosis-evidence/live-20260820T040110Z-20b0fcf2-artifact-hashes.json",
+      "sha256": "8f2d5500a49c67a85ef67288c9de24b803064938757d48650fdbfd75a8c5e97b",
+      "raw_files_verified": "15/15",
+      "working_tree_and_committed_bytes_match": true
+    }
+  },
+  "fairness_audit": {
+    "structural_components_passed": "36/36",
+    "required_concepts_passed": "16/20",
+    "required_relations_passed": "0/7",
+    "contradiction_hits": 0,
+    "all_cases_evaluated": true,
+    "all_cases_have_expected_file_hit": true,
+    "all_cases_have_evidence_target_hit": true,
+    "judgment": "TOO_STRICT lexical matching for this live output; the semantic relation contract is directionally valid, but frozen aliases do not cover the observed paraphrases.",
+    "confirmed_v2_false_negatives": 11,
+    "possible_v2_false_negatives": 0,
+    "implicit_only": 0,
+    "true_semantic_omissions": 0,
+    "artifact_ambiguity": 0
+  },
+  "case_rca": [
+    {
+      "case_id": "dev-s1-profile-config-source",
+      "expected_semantic_contract": "application-dev.yml is gated for staging while dev is active, so the profile-specific endpoint is skipped and the default endpoint is used",
+      "actual_bounded_diagnosis": "States on-profile staging, active dev, ignored profile properties, and fallback endpoint; the concept is explicit but backtick punctuation splits the frozen dev-profile alias",
+      "actual_proposal_and_applied_behavior": "One valid edit changed application-dev.yml on-profile from staging to dev; target test passed",
+      "v2_judgment": {
+        "semantic_score": 0.8333,
+        "missing_concept": "active_profile",
+        "missing_relation": "profile_gate_mismatch",
+        "concept_classification": "C3_EXPLICIT_PARAPHRASE_NOT_RECOGNIZED",
+        "relation_classification": "R3_CORRECT_PARAPHRASE_NOT_RECOGNIZED",
+        "confirmed_v2_false_negative": true
+      }
+    },
+    {
+      "case_id": "dev-s2-code-property-override",
+      "expected_semantic_contract": "the code-supplied system property has higher precedence than the application configuration and overrides it",
+      "actual_bounded_diagnosis": "Explicitly says system properties take precedence over application.yml and override the configured channel; the frozen singular alias misses the plural form",
+      "actual_proposal_and_applied_behavior": "One valid edit removed the static system-property initializer in Application.java; target test passed",
+      "v2_judgment": {
+        "semantic_score": 0.9091,
+        "missing_relation": "code_source_overrides_configuration",
+        "relation_classification": "R3_CORRECT_PARAPHRASE_NOT_RECOGNIZED",
+        "confirmed_v2_false_negative": true
+      }
+    },
+    {
+      "case_id": "dev-s3-storage-validation",
+      "expected_semantic_contract": "max-entries 0 is applied to the storage-properties binding target and violates the minimum validation constraint",
+      "actual_bounded_diagnosis": "Explicitly identifies StorageProperties, max-entries set to zero, and the @Min(1) validation failure; camel-case and non-adjacent numeric wording miss frozen aliases",
+      "actual_proposal_and_applied_behavior": "One valid edit changed application.yml max-entries from 0 to 1; target test passed",
+      "v2_judgment": {
+        "semantic_score": 0.8182,
+        "missing_concept": "binding_target",
+        "missing_relation": "configured_capacity_violates_validation",
+        "concept_classification": "C3_EXPLICIT_PARAPHRASE_NOT_RECOGNIZED",
+        "relation_classification": "R3_CORRECT_PARAPHRASE_NOT_RECOGNIZED",
+        "confirmed_v2_false_negative": true
+      }
+    },
+    {
+      "case_id": "dev-s4-conditional-notification",
+      "expected_semantic_contract": "configured email does not satisfy the webhook-only conditional implementation, leaving NotificationSender missing",
+      "actual_bounded_diagnosis": "Explicitly says email is configured while the webhook sender is registered only for webhook; conditional wording is outside frozen relation aliases",
+      "actual_proposal_and_applied_behavior": "One valid edit changed application.yml provider from email to webhook; target test passed",
+      "v2_judgment": {
+        "semantic_score": 0.9091,
+        "missing_relation": "provider_condition_mismatch",
+        "relation_classification": "R3_CORRECT_PARAPHRASE_NOT_RECOGNIZED",
+        "confirmed_v2_false_negative": true
+      }
+    },
+    {
+      "case_id": "dev-s5-cache-binding-key",
+      "expected_semantic_contract": "cache.region-ttl does not bind to the ttlByRegion map, so the observed map remains empty/default",
+      "actual_bounded_diagnosis": "Explicitly says the regional key does not bind to the CacheProperties map because of a name mismatch and that the map retains an empty default; aliases do not cover the wording",
+      "actual_proposal_and_applied_behavior": "One valid edit renamed application.yml region-ttl to ttl-by-region; target test passed",
+      "v2_judgment": {
+        "semantic_score": 0.8182,
+        "missing_concept": "observed_default",
+        "missing_relation": "configuration_key_binding_mismatch",
+        "concept_classification": "C3_EXPLICIT_PARAPHRASE_NOT_RECOGNIZED",
+        "relation_classification": "R3_CORRECT_PARAPHRASE_NOT_RECOGNIZED",
+        "confirmed_v2_false_negative": true
+      }
+    },
+    {
+      "case_id": "dev-s6-local-precedence-conflict",
+      "expected_semantic_contract": "application-local.yml overrides application.yml and its retry-limit 0 violates the minimum validation constraint",
+      "actual_bounded_diagnosis": "Explicitly states local overrides base and value zero violates @Min(1); inflected overriding and non-adjacent retry-limit-to-zero wording miss frozen aliases",
+      "actual_proposal_and_applied_behavior": "One valid edit changed application-local.yml retry-limit from 0 to 1; target test passed",
+      "v2_judgment": {
+        "semantic_score": 0.7692,
+        "missing_concepts": ["invalid_retry_value"],
+        "missing_relations": ["local_source_overrides_base", "local_value_violates_validation"],
+        "concept_classification": "C3_EXPLICIT_PARAPHRASE_NOT_RECOGNIZED",
+        "relation_classification": "R3_CORRECT_PARAPHRASE_NOT_RECOGNIZED",
+        "confirmed_v2_false_negative": true
+      }
+    }
+  ],
+  "missing_relation_classification": {
+    "R1_TRULY_ABSENT": 0,
+    "R2_IMPLICIT_ONLY": 0,
+    "R3_CORRECT_PARAPHRASE_NOT_RECOGNIZED": 7,
+    "R4_PARTIALLY_EXPRESSED": 0,
+    "R5_INCORRECT_RELATION": 0,
+    "R6_ARTIFACT_AMBIGUITY": 0,
+    "confirmed_v2_false_negative": 7,
+    "items": [
+      ["dev-s1", "profile_gate_mismatch", "R3", "on-profile staging plus active dev plus ignored file; alias/clauses do not match"],
+      ["dev-s2", "code_source_overrides_configuration", "R3", "system properties take precedence; plural form misses singular alias"],
+      ["dev-s3", "configured_capacity_violates_validation", "R3", "max-entries set to 0 violates @Min(1); value is not adjacent to alias"],
+      ["dev-s4", "provider_condition_mismatch", "R3", "registered only when provider is webhook; conditional wording is not an alias"],
+      ["dev-s5", "configuration_key_binding_mismatch", "R3", "regional key is not binding to the map because of a name mismatch"],
+      ["dev-s6", "local_source_overrides_base", "R3", "local file overrides base; inflected overriding and lexical variants miss"],
+      ["dev-s6", "local_value_violates_validation", "R3", "retry-limit value 0 violates @Min(1); non-adjacent value misses alias"]
+    ]
+  },
+  "missing_concept_classification": {
+    "C1_TRULY_ABSENT": 0,
+    "C2_IMPLICIT_ONLY": 0,
+    "C3_EXPLICIT_PARAPHRASE_NOT_RECOGNIZED": 4,
+    "C4_PROPOSAL_ONLY": 0,
+    "C5_INCORRECT_CONCEPT": 0,
+    "C6_ARTIFACT_AMBIGUITY": 0,
+    "confirmed_v2_false_negative": 4,
+    "items": [
+      ["dev-s1", "active_profile", "C3", "dev profile is active, but backtick punctuation splits the exact alias"],
+      ["dev-s3", "binding_target", "C3", "StorageProperties is explicit but differs from the spaced alias"],
+      ["dev-s5", "observed_default", "C3", "map retains an empty default value, outside empty-map/map-default aliases"],
+      ["dev-s6", "invalid_retry_value", "C3", "retry-limit is set to/with 0, outside retry-limit-0 adjacency alias"]
+    ]
+  },
+  "rca_a": {
+    "answer": "YES",
+    "conclusion": "The Agent understood the semantic root cause in all six bounded outputs; it did not merely name symptoms or locations.",
+    "evidence": "All six identify the causal source/value/condition, all expected files hit, all evidence targets hit, and all 11 V2 misses are explicit paraphrase/normalization misses rather than absent facts.",
+    "confidence": "high"
+  },
+  "rca_b": {
+    "answer": "NO_AS_PRIMARY_CAUSE",
+    "conclusion": "The live diagnosis text generally contains causal prose. A secondary generation-contract gap exists because the current schema and prompt do not require an explicit source-A -> relation -> source/value-B -> effect field or sentence.",
+    "generation_contract_gap": true,
+    "current_run_primary_effect": "not primary; the observed bounded outputs still state the causal relations",
+    "confidence": "high"
+  },
+  "rca_c": {
+    "answer": "YES",
+    "conclusion": "The frozen V2 matcher produces confirmed false negatives for the observed paraphrases: exact alias spans, directional order, and same-clause matching do not cover the live wording.",
+    "confirmed_false_negative_count": 11,
+    "confidence": "high"
+  },
+  "rca_d": {
+    "answer": "REPAIR_AND_DIAGNOSIS_ARE_SEPARATE_REPRESENTATIONS",
+    "conclusion": "Repair succeeds because the proposal stage receives validated RCA references plus real source snippets and emits concrete edits, while V2 scores only bounded diagnosis text against conjunctive lexical relation variants. A correct edit proves the action path, not that the diagnosis text satisfies the frozen semantic contract.",
+    "proposal_stage_inputs": ["validated root-cause analysis", "validated evidence snippets", "real production-code segments"],
+    "proposal_stage_outcome": "6/6 structured proposals parsed, validated, applied, and target-tested",
+    "bounded_proposal_text_persisted": false,
+    "semantic_enrichment_assessment": "action-level enrichment is evident in the concrete edits; textual enrichment cannot be claimed from forbidden raw provider traces"
+  },
+  "architecture_judgment": {
+    "overall_agent_class": "C",
+    "label": "understood relation, but frozen evaluator did not recognize the paraphrase",
+    "secondary_system_risk": "B-level generation contract gap",
+    "case_mapping": "All six are C3/R3 confirmed paraphrase misses; none are A, R1, R2, R4, R5, or artifact ambiguity in the bounded output."
+  },
+  "diagnosis_v2_primary_rca": {
+    "category": "EVALUATOR_PARAPHRASE_FALSE_NEGATIVE",
+    "summary": "The 0/6 result is caused primarily by a mismatch between correct live causal prose and frozen exact alias/clause matching, amplified by the conjunctive requirement that every relation pass.",
+    "secondary_category": "GENERATION_CONTRACT_GAP",
+    "not_artifact_failure": true,
+    "not_agent_rerun_failure": true,
+    "not_repair_failure": true
+  },
+  "failure_taxonomy": [
+    {
+      "category": "evaluator_paraphrase_matching",
+      "observed_cases": 6,
+      "frequency": 11,
+      "severity": "high",
+      "repair_impact": "0/6 repair loss",
+      "diagnosis_impact": "turns otherwise explicit semantics into 0/6 under frozen V2",
+      "confidence": "high"
+    },
+    {
+      "category": "generation_contract_gap",
+      "observed_cases": 6,
+      "frequency": "systemic schema/prompt gap; no primary live omission",
+      "severity": "medium",
+      "repair_impact": "none observed",
+      "diagnosis_impact": "future risk of symptom/location/fix-only outputs",
+      "confidence": "high"
+    },
+    {
+      "category": "diagnosis_proposal_representation_delta",
+      "observed_cases": 6,
+      "frequency": 6,
+      "severity": "medium",
+      "repair_impact": "repair remains 6/6",
+      "diagnosis_impact": "proposal action cannot backfill the diagnosis metric",
+      "confidence": "medium"
+    },
+    {
+      "category": "conjunctive_gate_amplification",
+      "observed_cases": 6,
+      "frequency": 6,
+      "severity": "high metric impact",
+      "repair_impact": "none observed",
+      "diagnosis_impact": "one missed concept/relation fails the whole case",
+      "confidence": "high"
+    }
+  ],
+  "m7e2c2c_candidates": [
+    {
+      "rank": 1,
+      "candidate": "Diagnosis generation contract with an explicit causal chain",
+      "proposal": "Require source A, relation/precedence/condition, source or value B, and observed failure consequence in diagnosis output while retaining bounded prose.",
+      "evidence": "Current schema/prompt requests root cause, candidate, evidence, and fix but no explicit causal relation representation.",
+      "expected_effect": "Improve real explanation quality and reduce implicit-only diagnoses.",
+      "repair_impact": "should remain orthogonal; no Repair Success change required",
+      "risk": "prompt/schema output drift",
+      "blast_radius": "all future diagnosis calls",
+      "holdout_risk": "medium; must be separately validated",
+      "priority": "P0",
+      "implement_now": false
+    },
+    {
+      "rank": 2,
+      "candidate": "Structured diagnosis relation fields",
+      "proposal": "Add bounded fields such as cause_source, affected_source_or_value, relation_type, and observed_effect, alongside prose.",
+      "evidence": "All seven relation misses are represented in prose but not in a dedicated relation schema.",
+      "expected_effect": "Make causal direction auditable without relying only on lexical sentence matching.",
+      "repair_impact": "no direct repair change intended",
+      "risk": "schema migration and downstream compatibility",
+      "blast_radius": "diagnosis schema, prompts, serializers, evaluators",
+      "holdout_risk": "medium/high",
+      "priority": "P1",
+      "implement_now": false
+    },
+    {
+      "rank": 3,
+      "candidate": "Versioned V2 fairness expansion for confirmed paraphrases",
+      "proposal": "In a separately versioned evaluator contract, consider controlled normalization/variants for pluralization, CamelCase, punctuation, inflection, and non-adjacent numeric expressions.",
+      "evidence": "11 confirmed false negatives are caused by these exact lexical forms; no evaluator change is allowed in M7E-2C2B.",
+      "expected_effect": "Reduce metric false negatives without treating Repair as diagnosis evidence.",
+      "repair_impact": "none",
+      "risk": "overmatching, contradiction leakage, gold/metadata re-baseline",
+      "blast_radius": "V2 evaluator and metadata only",
+      "holdout_risk": "high",
+      "priority": "P2",
+      "implement_now": false
+    },
+    {
+      "rank": 4,
+      "candidate": "Non-gating Diagnosis-to-Proposal semantic consistency audit",
+      "proposal": "Record whether the applied edit addresses the diagnosis relation, without making it a Repair Success gate.",
+      "evidence": "All six applied edits match the bounded recommended fix, while the proposal stage has richer validated source context.",
+      "expected_effect": "Expose semantic enrichment and diagnosis/proposal drift for future RCA.",
+      "repair_impact": "observability-only",
+      "risk": "coupling diagnosis metrics to repair if made gating",
+      "blast_radius": "artifact/reporting layer",
+      "holdout_risk": "low if non-gating",
+      "priority": "P3",
+      "implement_now": false
+    }
+  ],
+  "post_rca_requirements": {
+    "quality_gates_to_rerun": ["semantic_dev_integrity", "verify_semantic_dev_samples", "holdout_integrity", "benchmark validation", "pytest", "ruff", "mypy strict", "uv lock --check"],
+    "expected_result": "PASS",
+    "stop_after_artifact_commit": true,
+    "do_not_enter_m7e2c2c": true
+  }
+}
