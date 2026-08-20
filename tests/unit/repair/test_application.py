@@ -144,6 +144,91 @@ def test_valid_application_is_all_or_nothing_and_preserves_source(tmp_path: Path
     assert compute_sha256_manifest(root) == before
 
 
+@pytest.mark.parametrize(
+    ("content", "line", "old", "new"),
+    [
+        (
+            "shipping:\n  endpoint: https://example.com/api\n",
+            2,
+            "  endpoint: https://example.com/api",
+            "  endpoint: https://example.com/v2",
+        ),
+        (
+            'shipping:\n  endpoint: "http://example.com/api"\n',
+            2,
+            '  endpoint: "http://example.com/api"',
+            '  endpoint: "http://example.com/v2"',
+        ),
+        (
+            "shipping:\n  endpoint: https://example.com/api\n  timeout: 1s\n",
+            3,
+            "  timeout: 1s",
+            "  timeout: 2s",
+        ),
+    ],
+)
+def test_url_forms_do_not_trigger_sensitive_diff_rejection(
+    tmp_path: Path, content: str, line: int, old: str, new: str
+) -> None:
+    root = _repository(tmp_path)
+    resource = root / "src/main/resources/application.yml"
+    resource.write_text(content, encoding="utf-8")
+
+    result = _apply(
+        root,
+        _manual_validation(_edit("src/main/resources/application.yml", line, line, old, new)),
+    )
+
+    assert result.status == "applied"
+    assert result.application_error is None
+    assert result.changed_files == ["src/main/resources/application.yml"]
+
+
+def test_s1_canonical_reference_edit_applies_without_unsafe_diff_rejection() -> None:
+    root = PROJECT_ROOT / "samples" / "sample-springboot-dev-s1-profile-config-source"
+    edit = _edit(
+        "src/main/resources/application-dev.yml",
+        4,
+        4,
+        "      on-profile: staging",
+        "      on-profile: dev",
+    )
+
+    result = _apply(root, _validated(root, edit))
+
+    assert result.status == "applied"
+    assert result.application_error is None
+    assert result.changed_files == ["src/main/resources/application-dev.yml"]
+
+
+@pytest.mark.parametrize(
+    "windows_path",
+    [
+        "C:/Users/example/file.txt",
+        r"C:\Users\example\file.txt",
+        "D:/temp/test",
+        r"d:\work\test",
+    ],
+)
+def test_windows_drive_paths_remain_rejected(
+    tmp_path: Path, windows_path: str
+) -> None:
+    root = _repository(tmp_path)
+    edit = _edit(
+        "src/main/resources/application.yml",
+        2,
+        2,
+        "  mail:",
+        f"  endpoint: {windows_path}",
+    )
+
+    result = _apply(root, _manual_validation(edit))
+
+    assert result.status == "rejected"
+    assert result.application_error == "unsafe_diff"
+    assert result.rejected_edits[0].reason == "unsafe_diff"
+
+
 def test_unvalidated_proposal_is_rejected_without_writes(tmp_path: Path) -> None:
     root = _repository(tmp_path)
     before = (root / "src/main/java/App.java").read_bytes()

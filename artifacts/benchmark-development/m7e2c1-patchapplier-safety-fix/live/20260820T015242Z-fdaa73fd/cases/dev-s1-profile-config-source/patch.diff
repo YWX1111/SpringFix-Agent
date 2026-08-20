@@ -1,0 +1,10 @@
+--- a/src/main/resources/application-dev.yml
++++ b/src/main/resources/application-dev.yml
+@@ -1,6 +1,6 @@
+ spring:
+   config:
+     activate:
+-      on-profile: staging
++      on-profile: dev
+ shipping:
+   endpoint: <url>

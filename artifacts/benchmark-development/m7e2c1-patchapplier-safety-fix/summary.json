@@ -1,0 +1,89 @@
+{
+  "milestone": "M7E-2C1",
+  "title": "PatchApplier Safety Classification Fix",
+  "runtime": "0.15.1",
+  "starting_commit": "5176c96d00ca78716e178ca2b394071e41f9f9cb",
+  "frozen_baseline_run_id": "20260819T085438Z-4c89fc32",
+  "pre_fix_semantic_dev_repair_success": "5/6",
+  "primary_rca": "PATCH_APPLICATION_UNSAFE_DIFF_FALSE_POSITIVE",
+  "implementation": {
+    "production_file": "src/springfix_agent/repair/applier.py",
+    "test_file": "tests/unit/repair/test_application.py",
+    "scope": "PatchApplier sensitive-diff Windows drive-path classification",
+    "direct_https_exception": false,
+    "secondary_stale_patch_gap_modified": false
+  },
+  "deterministic_regression": {
+    "url_false_positive_fixed": true,
+    "windows_drive_path_rejection_preserved": true,
+    "canonical_s1_validator": "PASS",
+    "canonical_s1_patch_application": "PASS",
+    "canonical_s1_maven_target_test": "PASS",
+    "s1_canonical_application_regression": "PASS"
+  },
+  "local_gates": {
+    "pytest": "PASS",
+    "ruff": "PASS",
+    "mypy_strict": "PASS",
+    "uv_lock_check": "PASS",
+    "benchmark_validation": "PASS",
+    "semantic_dev_integrity": "PASS",
+    "verify_semantic_dev_samples": "PASS 6/6 baseline, 6/6 reference fixes",
+    "holdout_integrity": "PASS",
+    "holdout_execution": {
+      "agent": false,
+      "mock": false,
+      "live": false
+    }
+  },
+  "post_fix_live": {
+    "run_id": "20260820T015242Z-fdaa73fd",
+    "mode": "live",
+    "split": "dev_semantic_v1",
+    "provider": "openai_compatible",
+    "model": "qwen3.7-plus",
+    "temperature": 0.0,
+    "timeout_seconds": 60,
+    "max_retries": 2,
+    "max_output_tokens": 2000,
+    "sample_size": 6,
+    "repair_success_count": 6,
+    "repair_success": "6/6",
+    "diagnosis_benchmark": "0/6 unchanged",
+    "all_cases": {
+      "dev-s1-profile-config-source": "PASS",
+      "dev-s2-code-property-override": "PASS",
+      "dev-s3-storage-validation": "PASS",
+      "dev-s4-conditional-notification": "PASS",
+      "dev-s5-cache-binding-key": "PASS",
+      "dev-s6-local-precedence-conflict": "PASS"
+    }
+  },
+  "unchanged_components": {
+    "diagnosis_evaluator": false,
+    "prompt": false,
+    "retrieval": false,
+    "validator": false,
+    "maven_verifier": false,
+    "dev_samples": false,
+    "dev_gold": false,
+    "reference_fixes": false,
+    "holdout": false
+  },
+  "artifact_safety": {
+    "secrets_or_keys": false,
+    "machine_absolute_paths": false,
+    "temporary_paths": false,
+    "complete_model_output": false,
+    "complete_build_transcripts": false,
+    "complete_prompt_material": false,
+    "holdout_answer_material": false,
+    "reference_patch_dump": false,
+    "status": "PASS"
+  },
+  "status": "M7E-2C1 PASS",
+  "m7e2c2_entered": false,
+  "ending_commit": "recorded in final handoff after commit finalization",
+  "push_status": "pending",
+  "ci_status": "pending"
+}

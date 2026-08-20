@@ -34,7 +34,10 @@ _FORBIDDEN_PARTS = frozenset(
 )
 _SENSITIVE_DIFF_PATTERN = re.compile(
     r"(?i)(?:\.env(?:\.|$)|benchmark|readme|api[_ -]?key|authorization\s*:\s*bearer|"
-    r"[a-z]:[\\/]|\\\\[a-z]|/(?:tmp|var|home|users?)/|\bsk-[a-z0-9]{16,}\b)"
+    r"\\\\[a-z]|/(?:tmp|var|home|users?)/|\bsk-[a-z0-9]{16,}\b)"
+)
+_WINDOWS_DRIVE_PATH_PATTERN = re.compile(
+    r"(?i)(?<![a-z0-9_])[a-z]:[\\/](?=[^\\/\s]|$)"
 )
 
 
@@ -56,6 +59,14 @@ def _code_equal(left: str, right: str) -> bool:
 
 def _normalise_path(value: str) -> str:
     return value.replace("\\", "/")
+
+
+def _contains_sensitive_diff(value: str) -> bool:
+    """Return whether a diff contains a forbidden artifact or path token."""
+    return bool(
+        _SENSITIVE_DIFF_PATTERN.search(value)
+        or _WINDOWS_DRIVE_PATH_PATTERN.search(value)
+    )
 
 
 def _allowed_path(file: str, root: Path) -> tuple[str, Path | None]:
@@ -325,7 +336,7 @@ class PatchApplier:
         changed_files = sorted(
             file for file in patched_texts if original_texts[file] != patched_texts[file]
         )
-        if _SENSITIVE_DIFF_PATTERN.search(unified_diff):
+        if _contains_sensitive_diff(unified_diff):
             return self._result(
                 validation,
                 status="rejected",

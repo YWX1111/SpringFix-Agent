@@ -1,0 +1,6 @@
+--- a/src/main/resources/application.yml
++++ b/src/main/resources/application.yml
+@@ -1,2 +1,2 @@
+ alerts:
+-  provider: email
++  provider: webhook

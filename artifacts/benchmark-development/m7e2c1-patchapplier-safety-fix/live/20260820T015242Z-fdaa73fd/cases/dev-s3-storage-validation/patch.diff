@@ -1,0 +1,8 @@
+--- a/src/main/resources/application.yml
++++ b/src/main/resources/application.yml
+@@ -1,4 +1,4 @@
+ storage:
+   container-name: archive
+   connection-timeout: 250ms
+-  max-entries: 0
++  max-entries: 100

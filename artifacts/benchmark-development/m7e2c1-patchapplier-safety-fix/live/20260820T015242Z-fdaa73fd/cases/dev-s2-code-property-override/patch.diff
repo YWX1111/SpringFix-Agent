@@ -1,0 +1,11 @@
+--- a/src/main/java/com/springfix/dev/s2/notification/Application.java
++++ b/src/main/java/com/springfix/dev/s2/notification/Application.java
+@@ -8,7 +8,7 @@
+ @EnableConfigurationProperties(NotificationProperties.class)
+ public class Application {
+     static {
+-        System.setProperty("notification.channel", "legacy");
++        // Property setting removed to rely on application.yml
+     }
+
+     public static void main(String[] args) {
