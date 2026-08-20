@@ -18,6 +18,11 @@ from springfix_agent.benchmark.diagnosis_v2 import (
     DIAGNOSIS_V2_SCHEMA_VERSION,
     load_diagnosis_v2_specs,
 )
+from springfix_agent.benchmark.diagnosis_v21 import (
+    DIAGNOSIS_V21_SCHEMA_VERSION,
+    load_diagnosis_v21_regressions,
+    load_diagnosis_v21_specs,
+)
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DEV_SPLIT = "dev_semantic_v1"
@@ -27,6 +32,13 @@ DEV_FREEZE = PROJECT_ROOT / "benchmark" / "dev_semantic_manifest.json"
 DIAGNOSIS_V2_METADATA = PROJECT_ROOT / "benchmark" / "dev_semantic_diagnosis_v2.jsonl"
 DIAGNOSIS_V2_FREEZE = (
     PROJECT_ROOT / "benchmark" / "dev_semantic_diagnosis_v2_manifest.json"
+)
+DIAGNOSIS_V21_METADATA = PROJECT_ROOT / "benchmark" / "dev_semantic_diagnosis_v2_1.jsonl"
+DIAGNOSIS_V21_FREEZE = (
+    PROJECT_ROOT / "benchmark" / "dev_semantic_diagnosis_v2_1_manifest.json"
+)
+DIAGNOSIS_V21_REGRESSIONS = (
+    PROJECT_ROOT / "benchmark" / "dev_semantic_diagnosis_v2_1_regressions.jsonl"
 )
 SPLITS = PROJECT_ROOT / "benchmark" / "splits.json"
 HASH_ALGORITHM = "sha256"
@@ -155,6 +167,10 @@ def _diagnosis_v2_hashes(path: Path) -> dict[str, str]:
     return _gold_hashes(path)
 
 
+def _sha256_file(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
 def compute_hashes(project_root: Path = PROJECT_ROOT) -> dict[str, dict[str, str]]:
     """Compute development sample source, test, sample, and Gold hashes."""
     sample_hashes: dict[str, str] = {}
@@ -209,6 +225,15 @@ def verify_dev_split(project_root: Path = PROJECT_ROOT) -> tuple[bool, list[str]
         diagnosis_v2_specs = load_diagnosis_v2_specs(
             project_root / "benchmark" / "dev_semantic_diagnosis_v2.jsonl"
         )
+        diagnosis_v21_frozen = _load_json(
+            project_root / "benchmark" / "dev_semantic_diagnosis_v2_1_manifest.json"
+        )
+        diagnosis_v21_specs = load_diagnosis_v21_specs(
+            project_root / "benchmark" / "dev_semantic_diagnosis_v2_1.jsonl"
+        )
+        diagnosis_v21_regressions = load_diagnosis_v21_regressions(
+            project_root / "benchmark" / "dev_semantic_diagnosis_v2_1_regressions.jsonl"
+        )
     except (OSError, json.JSONDecodeError, KeyError, TypeError) as exc:
         return False, [f"[FAIL] development metadata load: {exc}"]
 
@@ -256,6 +281,30 @@ def verify_dev_split(project_root: Path = PROJECT_ROOT) -> tuple[bool, list[str]
             "Diagnosis V2 content normalization",
             diagnosis_v2_frozen.get("content_normalization") == "canonical-json-v1",
         ),
+        (
+            "Diagnosis V2.1 schema version",
+            diagnosis_v21_frozen.get("schema_version") == DIAGNOSIS_V21_SCHEMA_VERSION
+            and all(spec.schema_version == DIAGNOSIS_V21_SCHEMA_VERSION for spec in diagnosis_v21_specs),
+        ),
+        (
+            "Diagnosis V2.1 split",
+            diagnosis_v21_frozen.get("split") == DEV_SPLIT,
+        ),
+        (
+            "Diagnosis V2.1 case IDs",
+            diagnosis_v21_frozen.get("case_ids") == list(DEV_CASE_IDS)
+            and [spec.case_id for spec in diagnosis_v21_specs] == list(DEV_CASE_IDS),
+        ),
+        (
+            "Diagnosis V2.1 content normalization",
+            diagnosis_v21_frozen.get("content_normalization") == "canonical-json-v1",
+        ),
+        (
+            "Diagnosis V2.1 confirmed-FN regression corpus",
+            len(diagnosis_v21_regressions) == 11
+            and all(item.expected_v2_0.get("matched") is False for item in diagnosis_v21_regressions)
+            and all(item.expected_v2_1.get("matched") is True for item in diagnosis_v21_regressions),
+        ),
     ]
     for label, passed in checks:
         diagnostics.append(f"[{'PASS' if passed else 'FAIL'}] {label}")
@@ -278,6 +327,7 @@ def verify_dev_split(project_root: Path = PROJECT_ROOT) -> tuple[bool, list[str]
         ok = ok and projection_ok
         v2_projection_ok = projection_ok and not {
             "diagnosis_semantic_v2",
+            "diagnosis_semantic_v2_1",
             "required_concepts",
             "required_relations",
             "forbidden_relations",
@@ -362,6 +412,39 @@ def verify_dev_split(project_root: Path = PROJECT_ROOT) -> tuple[bool, list[str]
         f"[{'PASS' if diagnosis_v2_hashes_ok else 'FAIL'}] Diagnosis V2 metadata hashes"
     )
     ok = ok and diagnosis_v2_hashes_ok
+    diagnosis_v21_hashes = _diagnosis_v2_hashes(
+        project_root / "benchmark" / "dev_semantic_diagnosis_v2_1.jsonl"
+    )
+    diagnosis_v21_hashes_ok = diagnosis_v21_hashes == diagnosis_v21_frozen.get(
+        "metadata_hashes"
+    )
+    diagnostics.append(
+        f"[{'PASS' if diagnosis_v21_hashes_ok else 'FAIL'}] Diagnosis V2.1 metadata hashes"
+    )
+    ok = ok and diagnosis_v21_hashes_ok
+    regression_hash_ok = _sha256_file(
+        project_root / "benchmark" / "dev_semantic_diagnosis_v2_1_regressions.jsonl"
+    ) == diagnosis_v21_frozen.get("regression_corpus_sha256")
+    diagnostics.append(
+        f"[{'PASS' if regression_hash_ok else 'FAIL'}] Diagnosis V2.1 regression corpus hash"
+    )
+    ok = ok and regression_hash_ok
+    v2_bytes_ok = all(
+        _sha256_file(project_root / path) == expected
+        for path, expected in {
+            "src/springfix_agent/benchmark/diagnosis_v2.py": diagnosis_v21_frozen.get(
+                "v2_0_evaluator_sha256"
+            ),
+            "benchmark/dev_semantic_diagnosis_v2.jsonl": diagnosis_v21_frozen.get(
+                "v2_0_metadata_sha256"
+            ),
+            "benchmark/dev_semantic_diagnosis_v2_manifest.json": diagnosis_v21_frozen.get(
+                "v2_0_manifest_sha256"
+            ),
+        }.items()
+    )
+    diagnostics.append(f"[{'PASS' if v2_bytes_ok else 'FAIL'}] Diagnosis V2.0 bytes preserved")
+    ok = ok and v2_bytes_ok
     return ok, diagnostics
 
 

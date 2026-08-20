@@ -1,0 +1,405 @@
+{
+  "schema_version": "diagnosis-v21-frozen-replay.1",
+  "source_run_id": "20260820T040110Z-20b0fcf2",
+  "agent_rerun": false,
+  "new_llm_calls": 0,
+  "diagnosis_v1": {
+    "passed": 0,
+    "total": 6,
+    "cases": [
+      {
+        "case_id": "dev-s1-profile-config-source",
+        "keyword_coverage": 0.6,
+        "keyword_pass": false
+      },
+      {
+        "case_id": "dev-s2-code-property-override",
+        "keyword_coverage": 0.6,
+        "keyword_pass": false
+      },
+      {
+        "case_id": "dev-s3-storage-validation",
+        "keyword_coverage": 0.5,
+        "keyword_pass": false
+      },
+      {
+        "case_id": "dev-s4-conditional-notification",
+        "keyword_coverage": 0.6,
+        "keyword_pass": false
+      },
+      {
+        "case_id": "dev-s5-cache-binding-key",
+        "keyword_coverage": 0.3333,
+        "keyword_pass": false
+      },
+      {
+        "case_id": "dev-s6-local-precedence-conflict",
+        "keyword_coverage": 0.2,
+        "keyword_pass": false
+      }
+    ]
+  },
+  "diagnosis_v2_0": {
+    "aggregate": {
+      "schema_version": "diagnosis-semantic-v2.0",
+      "cases_total": 6,
+      "cases_evaluated": 6,
+      "cases_passed": 0,
+      "cases_failed": 6,
+      "cases_insufficient_artifact": 0,
+      "pass_rate_over_evaluated": 0.0,
+      "mean_semantic_score_over_evaluated": 0.8428
+    },
+    "cases": [
+      {
+        "schema_version": "diagnosis-semantic-v2.0",
+        "case_id": "dev-s1-profile-config-source",
+        "evaluation_status": "evaluated",
+        "semantic_pass": false,
+        "semantic_score": 0.8333,
+        "structural_conditions": {
+          "agent_completed": true,
+          "diagnosis_status_match": true,
+          "issue_category_match": true,
+          "expected_source_file_hit": true,
+          "evidence_target_hit": true,
+          "no_invalid_rejected_evidence": true
+        },
+        "required_concept_hits": {
+          "active_profile": false,
+          "profile_specific_source": true,
+          "profile_activation_gate": true,
+          "affected_endpoint": true
+        },
+        "required_relation_hits": {
+          "profile_gate_mismatch": false
+        },
+        "contradiction_hits": [],
+        "failure_reasons": [
+          "missing_concept:active_profile",
+          "missing_relation:profile_gate_mismatch"
+        ],
+        "evidence_limitation": null
+      },
+      {
+        "schema_version": "diagnosis-semantic-v2.0",
+        "case_id": "dev-s2-code-property-override",
+        "evaluation_status": "evaluated",
+        "semantic_pass": false,
+        "semantic_score": 0.9091,
+        "structural_conditions": {
+          "agent_completed": true,
+          "diagnosis_status_match": true,
+          "issue_category_match": true,
+          "expected_source_file_hit": true,
+          "evidence_target_hit": true,
+          "no_invalid_rejected_evidence": true
+        },
+        "required_concept_hits": {
+          "higher_precedence_source": true,
+          "configured_source": true,
+          "affected_property": true
+        },
+        "required_relation_hits": {
+          "code_source_overrides_configuration": false
+        },
+        "contradiction_hits": [],
+        "failure_reasons": [
+          "missing_relation:code_source_overrides_configuration"
+        ],
+        "evidence_limitation": null
+      },
+      {
+        "schema_version": "diagnosis-semantic-v2.0",
+        "case_id": "dev-s3-storage-validation",
+        "evaluation_status": "evaluated",
+        "semantic_pass": false,
+        "semantic_score": 0.8182,
+        "structural_conditions": {
+          "agent_completed": true,
+          "diagnosis_status_match": true,
+          "issue_category_match": true,
+          "expected_source_file_hit": true,
+          "evidence_target_hit": true,
+          "no_invalid_rejected_evidence": true
+        },
+        "required_concept_hits": {
+          "binding_target": false,
+          "invalid_capacity": true,
+          "validation_constraint": true
+        },
+        "required_relation_hits": {
+          "configured_capacity_violates_validation": false
+        },
+        "contradiction_hits": [],
+        "failure_reasons": [
+          "missing_concept:binding_target",
+          "missing_relation:configured_capacity_violates_validation"
+        ],
+        "evidence_limitation": null
+      },
+      {
+        "schema_version": "diagnosis-semantic-v2.0",
+        "case_id": "dev-s4-conditional-notification",
+        "evaluation_status": "evaluated",
+        "semantic_pass": false,
+        "semantic_score": 0.9091,
+        "structural_conditions": {
+          "agent_completed": true,
+          "diagnosis_status_match": true,
+          "issue_category_match": true,
+          "expected_source_file_hit": true,
+          "evidence_target_hit": true,
+          "no_invalid_rejected_evidence": true
+        },
+        "required_concept_hits": {
+          "configured_provider": true,
+          "conditional_implementation": true,
+          "missing_dependency": true
+        },
+        "required_relation_hits": {
+          "provider_condition_mismatch": false
+        },
+        "contradiction_hits": [],
+        "failure_reasons": [
+          "missing_relation:provider_condition_mismatch"
+        ],
+        "evidence_limitation": null
+      },
+      {
+        "schema_version": "diagnosis-semantic-v2.0",
+        "case_id": "dev-s5-cache-binding-key",
+        "evaluation_status": "evaluated",
+        "semantic_pass": false,
+        "semantic_score": 0.8182,
+        "structural_conditions": {
+          "agent_completed": true,
+          "diagnosis_status_match": true,
+          "issue_category_match": true,
+          "expected_source_file_hit": true,
+          "evidence_target_hit": true,
+          "no_invalid_rejected_evidence": true
+        },
+        "required_concept_hits": {
+          "configured_key": true,
+          "binding_target": true,
+          "observed_default": false
+        },
+        "required_relation_hits": {
+          "configuration_key_binding_mismatch": false
+        },
+        "contradiction_hits": [],
+        "failure_reasons": [
+          "missing_concept:observed_default",
+          "missing_relation:configuration_key_binding_mismatch"
+        ],
+        "evidence_limitation": null
+      },
+      {
+        "schema_version": "diagnosis-semantic-v2.0",
+        "case_id": "dev-s6-local-precedence-conflict",
+        "evaluation_status": "evaluated",
+        "semantic_pass": false,
+        "semantic_score": 0.7692,
+        "structural_conditions": {
+          "agent_completed": true,
+          "diagnosis_status_match": true,
+          "issue_category_match": true,
+          "expected_source_file_hit": true,
+          "evidence_target_hit": true,
+          "no_invalid_rejected_evidence": true
+        },
+        "required_concept_hits": {
+          "active_profile": true,
+          "higher_precedence_source": true,
+          "base_source": true,
+          "invalid_retry_value": false
+        },
+        "required_relation_hits": {
+          "local_source_overrides_base": false,
+          "local_value_violates_validation": false
+        },
+        "contradiction_hits": [],
+        "failure_reasons": [
+          "missing_concept:invalid_retry_value",
+          "missing_relation:local_source_overrides_base",
+          "missing_relation:local_value_violates_validation"
+        ],
+        "evidence_limitation": null
+      }
+    ]
+  },
+  "diagnosis_v2_1": {
+    "aggregate": {
+      "schema_version": "diagnosis-semantic-v2.1",
+      "cases_total": 6,
+      "cases_evaluated": 6,
+      "cases_passed": 6,
+      "cases_failed": 0,
+      "cases_insufficient_artifact": 0,
+      "pass_rate_over_evaluated": 1.0,
+      "mean_semantic_score_over_evaluated": 1.0
+    },
+    "cases": [
+      {
+        "schema_version": "diagnosis-semantic-v2.1",
+        "case_id": "dev-s1-profile-config-source",
+        "evaluation_status": "evaluated",
+        "semantic_pass": true,
+        "semantic_score": 1.0,
+        "structural_conditions": {
+          "agent_completed": true,
+          "diagnosis_status_match": true,
+          "issue_category_match": true,
+          "expected_source_file_hit": true,
+          "evidence_target_hit": true,
+          "no_invalid_rejected_evidence": true
+        },
+        "required_concept_hits": {
+          "active_profile": true,
+          "profile_specific_source": true,
+          "profile_activation_gate": true,
+          "affected_endpoint": true
+        },
+        "required_relation_hits": {
+          "profile_gate_mismatch": true
+        },
+        "contradiction_hits": [],
+        "failure_reasons": [],
+        "evidence_limitation": null
+      },
+      {
+        "schema_version": "diagnosis-semantic-v2.1",
+        "case_id": "dev-s2-code-property-override",
+        "evaluation_status": "evaluated",
+        "semantic_pass": true,
+        "semantic_score": 1.0,
+        "structural_conditions": {
+          "agent_completed": true,
+          "diagnosis_status_match": true,
+          "issue_category_match": true,
+          "expected_source_file_hit": true,
+          "evidence_target_hit": true,
+          "no_invalid_rejected_evidence": true
+        },
+        "required_concept_hits": {
+          "higher_precedence_source": true,
+          "configured_source": true,
+          "affected_property": true
+        },
+        "required_relation_hits": {
+          "code_source_overrides_configuration": true
+        },
+        "contradiction_hits": [],
+        "failure_reasons": [],
+        "evidence_limitation": null
+      },
+      {
+        "schema_version": "diagnosis-semantic-v2.1",
+        "case_id": "dev-s3-storage-validation",
+        "evaluation_status": "evaluated",
+        "semantic_pass": true,
+        "semantic_score": 1.0,
+        "structural_conditions": {
+          "agent_completed": true,
+          "diagnosis_status_match": true,
+          "issue_category_match": true,
+          "expected_source_file_hit": true,
+          "evidence_target_hit": true,
+          "no_invalid_rejected_evidence": true
+        },
+        "required_concept_hits": {
+          "binding_target": true,
+          "invalid_capacity": true,
+          "validation_constraint": true
+        },
+        "required_relation_hits": {
+          "configured_capacity_violates_validation": true
+        },
+        "contradiction_hits": [],
+        "failure_reasons": [],
+        "evidence_limitation": null
+      },
+      {
+        "schema_version": "diagnosis-semantic-v2.1",
+        "case_id": "dev-s4-conditional-notification",
+        "evaluation_status": "evaluated",
+        "semantic_pass": true,
+        "semantic_score": 1.0,
+        "structural_conditions": {
+          "agent_completed": true,
+          "diagnosis_status_match": true,
+          "issue_category_match": true,
+          "expected_source_file_hit": true,
+          "evidence_target_hit": true,
+          "no_invalid_rejected_evidence": true
+        },
+        "required_concept_hits": {
+          "configured_provider": true,
+          "conditional_implementation": true,
+          "missing_dependency": true
+        },
+        "required_relation_hits": {
+          "provider_condition_mismatch": true
+        },
+        "contradiction_hits": [],
+        "failure_reasons": [],
+        "evidence_limitation": null
+      },
+      {
+        "schema_version": "diagnosis-semantic-v2.1",
+        "case_id": "dev-s5-cache-binding-key",
+        "evaluation_status": "evaluated",
+        "semantic_pass": true,
+        "semantic_score": 1.0,
+        "structural_conditions": {
+          "agent_completed": true,
+          "diagnosis_status_match": true,
+          "issue_category_match": true,
+          "expected_source_file_hit": true,
+          "evidence_target_hit": true,
+          "no_invalid_rejected_evidence": true
+        },
+        "required_concept_hits": {
+          "configured_key": true,
+          "binding_target": true,
+          "observed_default": true
+        },
+        "required_relation_hits": {
+          "configuration_key_binding_mismatch": true
+        },
+        "contradiction_hits": [],
+        "failure_reasons": [],
+        "evidence_limitation": null
+      },
+      {
+        "schema_version": "diagnosis-semantic-v2.1",
+        "case_id": "dev-s6-local-precedence-conflict",
+        "evaluation_status": "evaluated",
+        "semantic_pass": true,
+        "semantic_score": 1.0,
+        "structural_conditions": {
+          "agent_completed": true,
+          "diagnosis_status_match": true,
+          "issue_category_match": true,
+          "expected_source_file_hit": true,
+          "evidence_target_hit": true,
+          "no_invalid_rejected_evidence": true
+        },
+        "required_concept_hits": {
+          "active_profile": true,
+          "higher_precedence_source": true,
+          "base_source": true,
+          "invalid_retry_value": true
+        },
+        "required_relation_hits": {
+          "local_source_overrides_base": true,
+          "local_value_violates_validation": true
+        },
+        "contradiction_hits": [],
+        "failure_reasons": [],
+        "evidence_limitation": null
+      }
+    ]
+  }
+}

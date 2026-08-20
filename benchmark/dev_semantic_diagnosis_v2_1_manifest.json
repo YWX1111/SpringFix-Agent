@@ -1,0 +1,31 @@
+{
+  "schema_version": "diagnosis-semantic-v2.1",
+  "split": "dev_semantic_v1",
+  "hash_algorithm": "sha256",
+  "content_normalization": "canonical-json-v1",
+  "case_ids": [
+    "dev-s1-profile-config-source",
+    "dev-s2-code-property-override",
+    "dev-s3-storage-validation",
+    "dev-s4-conditional-notification",
+    "dev-s5-cache-binding-key",
+    "dev-s6-local-precedence-conflict"
+  ],
+  "metadata_path": "benchmark/dev_semantic_diagnosis_v2_1.jsonl",
+  "metadata_hashes": {
+    "dev-s1-profile-config-source": "13caa9825a71025d980d942a2d4fc67bc8be7e5e6fd02c47b45d15dd342db7b1",
+    "dev-s2-code-property-override": "e15f0ecc6355d25713ae9af144ce62a0c2f0721c48aac27baf02ad61e14ecd6a",
+    "dev-s3-storage-validation": "69fdc4a697eff86273f2b122534b9fbde97e661ed1021f7303267cee9b9e7626",
+    "dev-s4-conditional-notification": "d60a475485216cd31e6f2dc9059a82b2a1491170a8f8dd0c039a32a977c50c2d",
+    "dev-s5-cache-binding-key": "100c353a81a959f60746cd99e12623fe3e6202651667535f0a67d3c61ddbdaf9",
+    "dev-s6-local-precedence-conflict": "cc1dde2dadc9f198b5f8080c7fd6b5a781b0f89a1489fc38bd1c8353c1faf212"
+  },
+  "regression_corpus_path": "benchmark/dev_semantic_diagnosis_v2_1_regressions.jsonl",
+  "regression_corpus_sha256": "1e87d32941da83d4797df0c7bcd778e544b8bd1d8624ff54acfbaacae0048bbc",
+  "regression_count": 11,
+  "v2_0_contract": "diagnosis-semantic-v2.0",
+  "v2_0_evaluator_sha256": "ba7306d02182c81a50b1ab3ec9ce8b59de572987edad8ccd2fcf34ded8d5a060",
+  "v2_0_metadata_sha256": "7663a5ab72280bb60c368a793189434f845e833af7baa4fee516e32da97ef2d7",
+  "v2_0_manifest_sha256": "bb7baee19383ad632d03846fc24ca7be941a9036acfe9a4119eec1ef64716007",
+  "agent_projection_isolated": true
+}
