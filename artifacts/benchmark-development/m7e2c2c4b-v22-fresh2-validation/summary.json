@@ -1,0 +1,110 @@
+{
+  "milestone": "M7E-2C2C4B",
+  "status": "NEEDS_RCA",
+  "decision": "Fresh-2 V2.2 semantic generalization is 3/6; artifact capture is valid and no rerun is authorized.",
+  "starting_commit": "2ad03aee7d54ab40e543802b1dbc2eb437ef9c8b",
+  "live_run_id": "20260820T075619Z-3bb64f39",
+  "run_count": 1,
+  "infrastructure_failure": false,
+  "agent_reruns": 0,
+  "runtime": "0.15.1",
+  "configuration": {
+    "mode": "live",
+    "split": "dev_semantic_v1",
+    "provider": "openai_compatible",
+    "model": "qwen3.7-plus",
+    "temperature": 0.0,
+    "timeout_seconds": 60,
+    "max_retries": 2,
+    "max_output_tokens": 2000,
+    "evidence_schema": "diagnosis-evidence-v1.0"
+  },
+  "preflight": {
+    "head": "2ad03aee7d54ab40e543802b1dbc2eb437ef9c8b",
+    "origin_main": "2ad03aee7d54ab40e543802b1dbc2eb437ef9c8b",
+    "worktree_clean": true,
+    "semantic_dev_integrity": "PASS",
+    "semantic_dev_samples": "PASS: baseline 6/6, reference fixes 6/6",
+    "holdout_integrity": "PASS",
+    "benchmark_validation": "PASS: legacy 3/3, holdout 7/7, total 10/10",
+    "v20_controls": "PASS: 17/17",
+    "v21_controls": "PASS: 24/24",
+    "v22_controls": "PASS: 29/29; confirmed regressions 15/15; adversarial negatives 12/12",
+    "lock_check": "PASS",
+    "ruff": "PASS",
+    "mypy_strict": "PASS"
+  },
+  "live": {
+    "cases_total": 6,
+    "cases_completed": 6,
+    "evidence_ready": 6,
+    "truncated": 0,
+    "insufficient_artifact": 0,
+    "artifact_file_count": 15,
+    "artifact_hashes_frozen_before_scoring": true,
+    "artifact_hash_mismatches_after_scoring": 0
+  },
+  "repair": {
+    "passed": 6,
+    "total": 6,
+    "cases": [
+      {"case_id": "dev-s1-profile-config-source", "passed": true},
+      {"case_id": "dev-s2-code-property-override", "passed": true},
+      {"case_id": "dev-s3-storage-validation", "passed": true},
+      {"case_id": "dev-s4-conditional-notification", "passed": true},
+      {"case_id": "dev-s5-cache-binding-key", "passed": true},
+      {"case_id": "dev-s6-local-precedence-conflict", "passed": true}
+    ]
+  },
+  "diagnosis_v1": {
+    "passed": 0,
+    "total": 6,
+    "cases": [
+      {"case_id": "dev-s1-profile-config-source", "passed": false, "keyword_coverage": 0.6},
+      {"case_id": "dev-s2-code-property-override", "passed": false, "keyword_coverage": 0.4},
+      {"case_id": "dev-s3-storage-validation", "passed": false, "keyword_coverage": 0.5},
+      {"case_id": "dev-s4-conditional-notification", "passed": false, "keyword_coverage": 0.6},
+      {"case_id": "dev-s5-cache-binding-key", "passed": false, "keyword_coverage": 0.3333},
+      {"case_id": "dev-s6-local-precedence-conflict", "passed": false, "keyword_coverage": 0.2}
+    ]
+  },
+  "diagnosis_v2_0": {"passed": 0, "evaluated": 6, "insufficient_artifact": 0, "mean_score": 0.858},
+  "diagnosis_v2_1": {"passed": 3, "evaluated": 6, "insufficient_artifact": 0, "mean_score": 0.9453},
+  "diagnosis_v2_2": {
+    "passed": 3,
+    "evaluated": 6,
+    "insufficient_artifact": 0,
+    "mean_score": 0.9453,
+    "cases": [
+      {"case_id": "dev-s1-profile-config-source", "passed": false, "score": 0.9167, "failure_reasons": ["missing_relation:profile_gate_mismatch"]},
+      {"case_id": "dev-s2-code-property-override", "passed": true, "score": 1.0, "failure_reasons": []},
+      {"case_id": "dev-s3-storage-validation", "passed": true, "score": 1.0, "failure_reasons": []},
+      {"case_id": "dev-s4-conditional-notification", "passed": true, "score": 1.0, "failure_reasons": []},
+      {"case_id": "dev-s5-cache-binding-key", "passed": false, "score": 0.9091, "failure_reasons": ["missing_concept:observed_default"]},
+      {"case_id": "dev-s6-local-precedence-conflict", "passed": false, "score": 0.8462, "failure_reasons": ["missing_relation:local_source_overrides_base", "missing_relation:local_value_violates_validation"]}
+    ]
+  },
+  "post_run_controls": {
+    "full_pytest": "PASS: 561 passed, 1 skipped",
+    "semantic_dev_integrity": "PASS",
+    "semantic_dev_samples": "PASS: baseline 6/6, reference fixes 6/6",
+    "holdout_integrity": "PASS",
+    "benchmark_validation": "PASS: legacy 3/3, holdout 7/7, total 10/10",
+    "frozen_core_hashes_unchanged": true
+  },
+  "artifacts": {
+    "live_summary": "live/20260820T075619Z-3bb64f39/summary.json",
+    "live_report": "live/20260820T075619Z-3bb64f39/report.md",
+    "pre_live_freeze": "pre-live-freeze.json",
+    "live_hash_manifest": "fresh2-live-artifact-hashes.json",
+    "diagnosis_replay": "fresh2-live-diagnosis-replay.json"
+  },
+  "scope": {
+    "evaluator_changed": false,
+    "agent_or_prompt_changed": false,
+    "generation_or_repair_changed": false,
+    "holdout_executed": false,
+    "tuning_performed": false,
+    "next_milestone_entered": false
+  }
+}

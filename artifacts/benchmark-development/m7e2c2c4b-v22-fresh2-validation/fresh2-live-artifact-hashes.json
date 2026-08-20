@@ -1,0 +1,85 @@
+{
+  "milestone": "M7E-2C2C4B",
+  "run_id": "20260820T075619Z-3bb64f39",
+  "hash_algorithm": "sha256",
+  "frozen_before_scoring": true,
+  "recorded_at_utc": "2026-08-20T07:57:02Z",
+  "file_count": 15,
+  "files": [
+    {
+      "path": "cases/dev-s1-profile-config-source/patch.diff",
+      "sha256": "d7044dc686e293d47bb6a3436aa11bc4d6d6a73ef61f1c8b99376f79ca76eaa5",
+      "bytes": 231
+    },
+    {
+      "path": "cases/dev-s1-profile-config-source/result.json",
+      "sha256": "ade0b2c8ad75eddbff05bff50d3b0803f03e6bbb71dd76f4045a35f85bf8194c",
+      "bytes": 11857
+    },
+    {
+      "path": "cases/dev-s2-code-property-override/patch.diff",
+      "sha256": "4682469037be1e1a5d56eb3ca3d9d786e7d7960bf4214fc2bd13e29119302af4",
+      "bytes": 457
+    },
+    {
+      "path": "cases/dev-s2-code-property-override/result.json",
+      "sha256": "5d1ef3490fa2c1eb9d4a22a8bb82634433c590d4d176ae3c2bd976706cc5f1e3",
+      "bytes": 12077
+    },
+    {
+      "path": "cases/dev-s3-storage-validation/patch.diff",
+      "sha256": "9bb81c117ef7358aa1c6b4155a08bd858f67b676db5074d1fc63372bdaeb84a5",
+      "bytes": 208
+    },
+    {
+      "path": "cases/dev-s3-storage-validation/result.json",
+      "sha256": "328eeed6158b9cb53633a7d7abfdc1850022833dfedb9a1b3ee3877ffa630fa8",
+      "bytes": 11773
+    },
+    {
+      "path": "cases/dev-s4-conditional-notification/patch.diff",
+      "sha256": "0527dd3d5ee25896231c8feac9e37af8bc51dec8c60aec44a02d7519fe0c403c",
+      "bytes": 153
+    },
+    {
+      "path": "cases/dev-s4-conditional-notification/result.json",
+      "sha256": "16c93638565369e804b7a64bf26280a17f0304b40b01c44cf6cb0a1d63531405",
+      "bytes": 12274
+    },
+    {
+      "path": "cases/dev-s5-cache-binding-key/patch.diff",
+      "sha256": "a4f3cccd73acd21706ee85561f1651edf19ccb6f0497172a4839c7739fbf8fba",
+      "bytes": 164
+    },
+    {
+      "path": "cases/dev-s5-cache-binding-key/result.json",
+      "sha256": "fc54d2d3f5740ecb1b81cfc24962dd21bbef651d0bbac20cad3fe03f84abc212",
+      "bytes": 11790
+    },
+    {
+      "path": "cases/dev-s6-local-precedence-conflict/patch.diff",
+      "sha256": "e0067acd90f1e476ccba1cb637393957e2a35a7c2adeb988b9c4237add07534a",
+      "bytes": 164
+    },
+    {
+      "path": "cases/dev-s6-local-precedence-conflict/result.json",
+      "sha256": "c9b8dd2f83c9bbfd80f0e8093860ac783efa45e67f90d6641f7d1b0106826c11",
+      "bytes": 11955
+    },
+    {
+      "path": "report.md",
+      "sha256": "a3341c65791aafd29db7acda9220e9a82e3173d051913a372689a2a5e4dcf910",
+      "bytes": 3739
+    },
+    {
+      "path": "run_metadata.json",
+      "sha256": "666e6f5a04ce1cb900ab7d9ea4512634f115f456af88e3fbc8dc01cdf2395d99",
+      "bytes": 583
+    },
+    {
+      "path": "summary.json",
+      "sha256": "88d16b2aeb3d087dc1901f119d8a341832fc962b89f3cdee8d3fdffa2c4e88d9",
+      "bytes": 77735
+    }
+  ]
+}

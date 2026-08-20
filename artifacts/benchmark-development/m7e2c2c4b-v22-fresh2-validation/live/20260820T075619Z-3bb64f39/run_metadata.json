@@ -1,0 +1,21 @@
+{
+  "api_key_configured": true,
+  "base_url_host": "wincode.winning.com.cn",
+  "duration_ms": 892467,
+  "git_commit": "2ad03aee7d54ab40e543802b1dbc2eb437ef9c8b",
+  "git_tag": "v0.15.1-m7d2-13-g2ad03ae",
+  "include_tests": false,
+  "java_version": 17,
+  "maven_version": "3.9.4",
+  "max_output_tokens": 2000,
+  "max_retries": 2,
+  "mode": "live",
+  "model": "qwen3.7-plus",
+  "provider": "openai_compatible",
+  "run_id": "20260820T075619Z-3bb64f39",
+  "sample_size": 6,
+  "split": "dev_semantic_v1",
+  "temperature": 0.0,
+  "timeout": 60,
+  "version": "0.15.1"
+}

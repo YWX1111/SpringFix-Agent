@@ -1,0 +1,61 @@
+{
+  "milestone": "M7E-2C2C4B",
+  "purpose": "fresh-2-generalization-validation",
+  "recorded_at_utc": "2026-08-20T07:41:11Z",
+  "starting_commit": "2ad03aee7d54ab40e543802b1dbc2eb437ef9c8b",
+  "origin_main": "2ad03aee7d54ab40e543802b1dbc2eb437ef9c8b",
+  "runtime": "0.15.1",
+  "frozen_files": {
+    "v20_evaluator": {
+      "path": "src/springfix_agent/benchmark/diagnosis_v2.py",
+      "sha256": "ba7306d02182c81a50b1ab3ec9ce8b59de572987edad8ccd2fcf34ded8d5a060"
+    },
+    "v21_evaluator": {
+      "path": "src/springfix_agent/benchmark/diagnosis_v21.py",
+      "sha256": "33e9fa4262ed14e4ef5e58bc4259b619839740e55234828b232a6e2bc3621403"
+    },
+    "v22_evaluator": {
+      "path": "src/springfix_agent/benchmark/diagnosis_v22.py",
+      "sha256": "cd9c5f0113d2ed91a143d2d257a961a8642d74744e063c70eece1f419331a9b1"
+    },
+    "v22_metadata": {
+      "path": "benchmark/dev_semantic_diagnosis_v2_2.jsonl",
+      "sha256": "113d608a00f9ebf439c73201e5c48f702a87734fec5d5f2b8f16a9f3a3df9dbd"
+    },
+    "v22_manifest": {
+      "path": "benchmark/dev_semantic_diagnosis_v2_2_manifest.json",
+      "sha256": "1e9cb793f565322cbd0981f5c47ec614e3c87e0494756803e09b2d3d6a692dbe"
+    },
+    "v22_regression_corpus": {
+      "path": "benchmark/dev_semantic_diagnosis_v2_2_regressions.jsonl",
+      "sha256": "45fd7789504dcaaa411bc45e2b2affc0a3f6b2d9ae8e1bd176efa7945c755bc9"
+    }
+  },
+  "live_configuration": {
+    "mode": "live",
+    "split": "dev_semantic_v1",
+    "provider": "openai_compatible",
+    "model": "qwen3.7-plus",
+    "temperature": 0.0,
+    "timeout_seconds": 60,
+    "max_retries": 2,
+    "max_output_tokens": 2000,
+    "evidence_schema": "diagnosis-evidence-v1.0"
+  },
+  "preflight": {
+    "worktree_clean": true,
+    "semantic_dev_integrity": "PASS",
+    "verify_semantic_dev_samples": "PASS: baseline 6/6, reference fixes 6/6 (--no-artifact)",
+    "holdout_integrity": "PASS",
+    "benchmark_structural_validation": "PASS",
+    "benchmark_sample_verification": "PASS: legacy 3/3, holdout 7/7, total 10/10",
+    "diagnosis_v2_controls": "PASS: 17/17",
+    "diagnosis_v2_1_controls": "PASS: 24/24",
+    "diagnosis_v2_2_controls": "PASS: 29/29 (includes 15 confirmed regressions and 12 adversarial negatives)",
+    "ruff": "PASS",
+    "mypy_strict": "PASS: 97 source files",
+    "uv_lock_check": "PASS"
+  },
+  "run_count_before_live": 0,
+  "agent_reruns_authorized": 1
+}
