@@ -1,0 +1,263 @@
+{
+  "milestone": "M7E-2C2C2",
+  "status": "NEEDS_RCA",
+  "status_note": "Fresh-output validation completed with valid bounded evidence and no infrastructure failure, but Diagnosis V2.1 passed 3/6 rather than the required 6/6. Stop after recording the result; no evaluator tuning or live rerun is permitted.",
+  "starting_commit": "9ce8747f5d39412480cb34e0e365fde706f1ef3e",
+  "ending_commit": "recorded in final Git handoff",
+  "runtime": "0.15.1",
+  "split": "dev_semantic_v1",
+  "sample_size": 6,
+  "fresh_run_id": "20260820T060935Z-fb5af9c3",
+  "run_count": 1,
+  "exactly_one_fresh_run": true,
+  "mode": "live",
+  "provider": "openai_compatible",
+  "model": "qwen3.7-plus",
+  "temperature": 0.0,
+  "timeout_seconds": 60,
+  "max_retries": 2,
+  "max_output_tokens": 2000,
+  "evidence_schema": "diagnosis-evidence-v1.0",
+  "agent_execution_count": 1,
+  "new_llm_calls_during_replay": 0,
+  "holdout_agent_execution": false,
+  "holdout_mock_execution": false,
+  "holdout_live_execution": false,
+  "infrastructure": {
+    "runner_completed": true,
+    "provider_or_network_outage": false,
+    "runner_crash": false,
+    "artifact_corruption": false,
+    "invalid_run": false,
+    "execution_validity": "valid"
+  },
+  "repair_success": {
+    "passed": 6,
+    "total": 6,
+    "rate": 1.0,
+    "regression_observed": false
+  },
+  "diagnosis_v1": {
+    "passed": 1,
+    "total": 6,
+    "rate": 0.1667
+  },
+  "v2_0": {
+    "contract": "diagnosis-semantic-v2.0",
+    "passed": 1,
+    "total": 6,
+    "evaluated": 6,
+    "insufficient_artifact": 0,
+    "mean_semantic_score": 0.886,
+    "evaluator_sha256": "ba7306d02182c81a50b1ab3ec9ce8b59de572987edad8ccd2fcf34ded8d5a060",
+    "metadata_sha256": "7663a5ab72280bb60c368a793189434f845e833af7baa4fee516e32da97ef2d7",
+    "manifest_sha256": "bb7baee19383ad632d03846fc24ca7be941a9036acfe9a4119eec1ef64716007",
+    "byte_preserved": true
+  },
+  "v2_1": {
+    "contract": "diagnosis-semantic-v2.1",
+    "passed": 3,
+    "total": 6,
+    "evaluated": 6,
+    "insufficient_artifact": 0,
+    "failed": 3,
+    "pass_rate_over_evaluated": 0.5,
+    "mean_semantic_score": 0.9558,
+    "evaluator_path": "src/springfix_agent/benchmark/diagnosis_v21.py",
+    "evaluator_sha256": "33e9fa4262ed14e4ef5e58bc4259b619839740e55234828b232a6e2bc3621403",
+    "metadata_path": "benchmark/dev_semantic_diagnosis_v2_1.jsonl",
+    "metadata_sha256": "3ab66235ae1127290a90cf07bd40c1f48b25f1219959f9e897c19e83361404a7",
+    "manifest_path": "benchmark/dev_semantic_diagnosis_v2_1_manifest.json",
+    "manifest_sha256": "ac7f37668961f47d61039a2150db686cc1c0d926681baa0655529b028473f37d",
+    "regression_corpus_path": "benchmark/dev_semantic_diagnosis_v2_1_regressions.jsonl",
+    "regression_corpus_sha256": "1e87d32941da83d4797df0c7bcd778e544b8bd1d8624ff54acfbaacae0048bbc",
+    "regression_count": 11,
+    "byte_preserved": true
+  },
+  "evidence_capture": {
+    "cases_schema_valid": "6/6",
+    "all_cases_evaluation_ready": true,
+    "all_cases_untruncated": true,
+    "all_cases_sanitized": true,
+    "flat_compatibility_projection_present": "6/6",
+    "bounded_total_candidate_text_chars": 3856,
+    "raw_artifact_file_count": 15,
+    "raw_artifact_hashes_frozen_before_scoring": true,
+    "raw_artifact_hashes_verified_after_scoring": "15/15",
+    "raw_artifact_hash_mismatches": 0
+  },
+  "fresh_artifact": {
+    "raw_run_directory": "artifacts/benchmark-development/m7e2c2c2-v21-fresh-validation/live/20260820T060935Z-fb5af9c3",
+    "hash_manifest": "artifacts/benchmark-development/m7e2c2c2-v21-fresh-validation/fresh-live-artifact-hashes.json",
+    "hash_manifest_sha256": "8a0a07739456c4a098bbebaffdd6dcb8227b272a7d2feb12ba9ed491a74fafe7",
+    "summary_source": "artifacts/benchmark-development/m7e2c2c2-v21-fresh-validation/live/20260820T060935Z-fb5af9c3/summary.json",
+    "replay_output": "artifacts/benchmark-development/m7e2c2c2-v21-fresh-validation/fresh-live-diagnosis-replay.json",
+    "replay_sha256": "ce7a84cee686e4386ba73d033ee98bea72545178684fedbf92d9fb1f68127236"
+  },
+  "per_case": {
+    "dev-s1-profile-config-source": {
+      "repair_success": true,
+      "v1_pass": false,
+      "v2_0_pass": false,
+      "v2_1_pass": false,
+      "v2_1_score": 0.9167,
+      "failure_components": ["missing_relation:profile_gate_mismatch"],
+      "contradictions": []
+    },
+    "dev-s2-code-property-override": {
+      "repair_success": true,
+      "v1_pass": false,
+      "v2_0_pass": false,
+      "v2_1_pass": true,
+      "v2_1_score": 1.0,
+      "failure_components": [],
+      "contradictions": []
+    },
+    "dev-s3-storage-validation": {
+      "repair_success": true,
+      "v1_pass": false,
+      "v2_0_pass": false,
+      "v2_1_pass": true,
+      "v2_1_score": 1.0,
+      "failure_components": [],
+      "contradictions": []
+    },
+    "dev-s4-conditional-notification": {
+      "repair_success": true,
+      "v1_pass": true,
+      "v2_0_pass": false,
+      "v2_1_pass": false,
+      "v2_1_score": 0.9091,
+      "failure_components": ["missing_relation:provider_condition_mismatch"],
+      "contradictions": []
+    },
+    "dev-s5-cache-binding-key": {
+      "repair_success": true,
+      "v1_pass": false,
+      "v2_0_pass": true,
+      "v2_1_pass": false,
+      "v2_1_score": 0.9091,
+      "failure_components": ["contradiction:incorrect_key_binds_successfully"],
+      "contradictions": ["incorrect_key_binds_successfully"]
+    },
+    "dev-s6-local-precedence-conflict": {
+      "repair_success": true,
+      "v1_pass": false,
+      "v2_0_pass": false,
+      "v2_1_pass": true,
+      "v2_1_score": 1.0,
+      "failure_components": [],
+      "contradictions": []
+    }
+  },
+  "fresh_v21_failure_classification": {
+    "classification": "fresh-output semantic generalization incomplete; evidence capture valid",
+    "failure_cases": 3,
+    "missing_or_contradictory_components": [
+      "dev-s1-profile-config-source: profile_gate_mismatch",
+      "dev-s4-conditional-notification: provider_condition_mismatch",
+      "dev-s5-cache-binding-key: contradiction incorrect_key_binds_successfully"
+    ],
+    "artifact_limitation": false,
+    "provider_failure": false,
+    "repair_failure": false
+  },
+  "controls": {
+    "v2_0_controls": "17/17 PASS",
+    "v2_1_controls": "24/24 PASS",
+    "confirmed_fn_regressions": "11/11 PASS",
+    "adversarial_negatives": "12/12 rejected",
+    "false_positive_findings": []
+  },
+  "preflight": {
+    "head": "9ce8747f5d39412480cb34e0e365fde706f1ef3e",
+    "origin_main": "9ce8747f5d39412480cb34e0e365fde706f1ef3e",
+    "working_tree_clean": true,
+    "semantic_dev_integrity": "PASS",
+    "verify_semantic_dev_samples": "PASS: baseline 6/6, reference fixes 6/6 (--no-artifact)",
+    "holdout_integrity": "PASS",
+    "benchmark_validation": "PASS",
+    "benchmark_sample_verification": "PASS: legacy 3/3, holdout 7/7, total 10/10",
+    "pytest": "PASS: 532 passed, 1 skipped",
+    "ruff": "PASS",
+    "mypy_strict": "PASS: 96 source files",
+    "uv_lock_check": "PASS"
+  },
+  "post_run": {
+    "v2_0_controls": "PASS: 17/17",
+    "v2_1_controls": "PASS: 24/24",
+    "semantic_dev_integrity": "PASS",
+    "verify_semantic_dev_samples": "PASS: baseline 6/6, reference fixes 6/6 (--no-artifact)",
+    "holdout_integrity": "PASS",
+    "benchmark_validation": "PASS",
+    "benchmark_sample_verification": "PASS: legacy 3/3, holdout 7/7, total 10/10",
+    "hashes_unchanged": true,
+    "raw_artifact_hashes_unchanged": true
+  },
+  "modified_files": {
+    "production_files": [],
+    "evaluator_files": [],
+    "metadata_files": [],
+    "tests_added": [],
+    "prompt_modified": false,
+    "agent_workflow_modified": false,
+    "diagnosis_generation_modified": false,
+    "diagnosis_schema_modified": false,
+    "retrieval_modified": false,
+    "proposal_generation_modified": false,
+    "validator_modified": false,
+    "patch_applier_modified": false,
+    "maven_modified": false,
+    "repair_success_predicate_modified": false,
+    "dev_samples_modified": false,
+    "reference_fixes_modified": false,
+    "holdout_modified": false,
+    "model_provider_configuration_modified": false,
+    "evidence_capture_modified": false
+  },
+  "prohibited_actions_taken": {
+    "evaluator_tuning": false,
+    "metadata_tuning": false,
+    "case_exception": false,
+    "successful_run_cherry_pick": false,
+    "semantic_rerun": false,
+    "holdout_v21_scoring": false,
+    "generation_contract_improvement_entered": false
+  },
+  "promotion": {
+    "v21_primary_metric_recommendation": false,
+    "recommendation": "Do not promote as primary metric until RCA and a separately authorized validation; preserve the calibrated evaluator unchanged.",
+    "diagnosis_is_repair_gate": false
+  },
+  "artifact_safety": {
+    "secrets": false,
+    "api_keys": false,
+    "machine_absolute_paths": false,
+    "raw_model_response": false,
+    "prompt_dump": false,
+    "hidden_reasoning": false,
+    "full_source": false,
+    "full_maven_output": false,
+    "reference_patch": false,
+    "holdout_answer_material": false,
+    "forbidden_key_findings": 0
+  },
+  "artifact_paths": [
+    "artifacts/benchmark-development/m7e2c2c2-v21-fresh-validation/report.md",
+    "artifacts/benchmark-development/m7e2c2c2-v21-fresh-validation/summary.json",
+    "artifacts/benchmark-development/m7e2c2c2-v21-fresh-validation/fresh-live-artifact-hashes.json",
+    "artifacts/benchmark-development/m7e2c2c2-v21-fresh-validation/fresh-live-diagnosis-replay.json",
+    "artifacts/benchmark-development/m7e2c2c2-v21-fresh-validation/live/20260820T060935Z-fb5af9c3/"
+  ],
+  "commit": {
+    "policy": "artifact-only",
+    "message": "test: validate diagnosis v2.1 on fresh agent output",
+    "sha": "recorded in final Git handoff",
+    "push": "recorded in final Git handoff",
+    "ci": "recorded in final Git handoff"
+  },
+  "git_status": "clean at preflight; final clean status recorded in handoff",
+  "milestone_result": "NEEDS_RCA",
+  "stop_after_milestone": true,
+  "next_action": "RCA required; do not tune evaluator or enter generation-contract improvement"
+}

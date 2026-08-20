@@ -1,0 +1,63 @@
+{
+  "milestone": "M7E-2C2C2",
+  "purpose": "fresh-output-generalization-validation",
+  "recorded_at_utc": "2026-08-20T05:53:46Z",
+  "starting_commit": "9ce8747f5d39412480cb34e0e365fde706f1ef3e",
+  "origin_main": "9ce8747f5d39412480cb34e0e365fde706f1ef3e",
+  "runtime": "0.15.1",
+  "v2_frozen_files": {
+    "evaluator": {
+      "path": "src/springfix_agent/benchmark/diagnosis_v2.py",
+      "sha256": "ba7306d02182c81a50b1ab3ec9ce8b59de572987edad8ccd2fcf34ded8d5a060"
+    },
+    "metadata": {
+      "path": "benchmark/dev_semantic_diagnosis_v2.jsonl",
+      "sha256": "7663a5ab72280bb60c368a793189434f845e833af7baa4fee516e32da97ef2d7"
+    },
+    "metadata_manifest": {
+      "path": "benchmark/dev_semantic_diagnosis_v2_manifest.json",
+      "sha256": "bb7baee19383ad632d03846fc24ca7be941a9036acfe9a4119eec1ef64716007"
+    }
+  },
+  "v21_frozen_files": {
+    "evaluator": {
+      "path": "src/springfix_agent/benchmark/diagnosis_v21.py",
+      "sha256": "33e9fa4262ed14e4ef5e58bc4259b619839740e55234828b232a6e2bc3621403"
+    },
+    "metadata": {
+      "path": "benchmark/dev_semantic_diagnosis_v2_1.jsonl",
+      "sha256": "3ab66235ae1127290a90cf07bd40c1f48b25f1219959f9e897c19e83361404a7"
+    },
+    "metadata_manifest": {
+      "path": "benchmark/dev_semantic_diagnosis_v2_1_manifest.json",
+      "sha256": "ac7f37668961f47d61039a2150db686cc1c0d926681baa0655529b028473f37d"
+    }
+  },
+  "live_configuration": {
+    "mode": "live",
+    "split": "dev_semantic_v1",
+    "provider": "openai_compatible",
+    "model": "qwen3.7-plus",
+    "temperature": 0.0,
+    "timeout_seconds": 60,
+    "max_retries": 2,
+    "max_output_tokens": 2000,
+    "evidence_schema": "diagnosis-evidence-v1.0"
+  },
+  "preflight": {
+    "worktree_clean": true,
+    "semantic_dev_integrity": "PASS",
+    "verify_semantic_dev_samples": "PASS: baseline 6/6, reference fixes 6/6 (--no-artifact)",
+    "holdout_integrity": "PASS",
+    "benchmark_structural_validation": "PASS",
+    "benchmark_sample_verification": "PASS: legacy 3/3, holdout 7/7, total 10/10",
+    "diagnosis_v2_controls": "PASS: 17/17",
+    "diagnosis_v2_1_controls": "PASS: 24/24",
+    "pytest": "PASS: 532 passed, 1 skipped",
+    "ruff": "PASS",
+    "mypy_strict": "PASS: 96 source files",
+    "uv_lock_check": "PASS"
+  },
+  "run_count_before_live": 0,
+  "agent_reruns_authorized": 1
+}
