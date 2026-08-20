@@ -1,0 +1,254 @@
+{
+  "milestone": "M7E-2B",
+  "baseline_run_id": "20260819T085438Z-4c89fc32",
+  "starting_commit": "a5ec9ec296c50da51dd2d952b30733b2a2632b8b",
+  "ending_commit_before_evidence_commit": "a5ec9ec296c50da51dd2d952b30733b2a2632b8b",
+  "runtime": "0.15.1",
+  "split": "dev_semantic_v1",
+  "semantic_dev_baseline": "5/6",
+  "repair_failure_cases": [
+    "dev-s1-profile-config-source"
+  ],
+  "agent_rerun": false,
+  "llm_calls": 0,
+  "holdout_agent_execution": false,
+  "holdout_mock_execution": false,
+  "holdout_live_execution": false,
+  "production_code_modified": false,
+  "primary_repair_failure_rca": {
+    "label": "PATCH_APPLICATION_UNSAFE_DIFF_FALSE_POSITIVE",
+    "finding": "The current PatchApplier scans the generated unified diff before writing. Its absolute-path alternative [a-z]:[\\\\/] also matches the s:/ substring inside https://. The URL is present in the changed s1 configuration diff context, so the safe reference edit is rejected as unsafe_diff before any file write or Maven run.",
+    "mechanism_confidence": "HIGH",
+    "historical_payload_attribution_confidence": "MEDIUM",
+    "historical_payload_preserved": false,
+    "deterministic_probe": {
+      "reference_edit": {
+        "validator": "PASS",
+        "accepted_edits": 1,
+        "patch_applier": "REJECTED",
+        "application_error": "unsafe_diff",
+        "rejected_reason": "unsafe_diff",
+        "changed_files": 0,
+        "source_unchanged": true
+      },
+      "boundary_newline_probe": {
+        "validator": "PASS",
+        "patch_applier": "REJECTED",
+        "application_error": "preflight_failed",
+        "rejected_reason": "stale_patch",
+        "status": "secondary implementation gap; not attributed to historical s1"
+      }
+    },
+    "evidence_limit": "The M7E-2A e2e artifact keeps the s1 edit count and stage metrics but does not keep its file, line range, old text, new text, or PatchApplier rejection detail; no s1 patch.diff exists. The failure mechanism is therefore directly reproduced on the canonical s1 reference edit, while exact historical payload identity is not provable."
+  },
+  "diagnosis_metric": {
+    "passed": 0,
+    "total": 6,
+    "rca": "All six cases completed with matching diagnosis status and category, hit at least one expected file, hit every evidence target, and had zero rejected evidence. Each nevertheless failed the deterministic case_pass rule because root_cause_keyword_coverage was below the fixed 0.66 threshold: s1 0.6, s2 0.4, s3 0.5, s4 0.6, s5 0.3333, s6 0.2.",
+    "evaluator_contract": "The diagnosis benchmark is an independent observational quality metric. It is not a prerequisite enforced by the repair-success predicate in the current runner."
+  },
+  "case_rca": [
+    {
+      "case_id": "dev-s1-profile-config-source",
+      "classification": "D2",
+      "expected_semantics": "Active dev profile must select the profile-specific shipping configuration source.",
+      "actual_saved_evidence": "category/status match; expected file hit; expected file recall 0.5; evidence target recall 1.0; keyword coverage 0.6; zero rejected evidence; one validated proposal edit; application rejected.",
+      "proposal_semantics": "Canonical sample fix confirms the intended one-line profile activation change. Historical Agent file/value is not preserved.",
+      "diagnosis_outcome": "FAIL by keyword threshold only.",
+      "repair_outcome": "FAIL at application; Maven not run.",
+      "confidence": "MEDIUM"
+    },
+    {
+      "case_id": "dev-s2-code-property-override",
+      "classification": "D4",
+      "expected_semantics": "Remove the higher-precedence application-code property assignment so visible configuration is effective.",
+      "actual_saved_evidence": "category/status match; expected file hit; expected file recall 0.75; evidence target recall 1.0; keyword coverage 0.4; zero rejected evidence.",
+      "proposal_semantics": "Applied patch changes Application.java and the target test passes.",
+      "diagnosis_outcome": "FAIL by keyword threshold only.",
+      "repair_outcome": "PASS.",
+      "confidence": "HIGH"
+    },
+    {
+      "case_id": "dev-s3-storage-validation",
+      "classification": "D4",
+      "expected_semantics": "Supply a storage value satisfying the declared validation bounds and binding contract.",
+      "actual_saved_evidence": "category/status match; expected file hit; expected file recall 0.6667; evidence target recall 1.0; keyword coverage 0.5; zero rejected evidence.",
+      "proposal_semantics": "Applied patch changes the storage configuration value and the target test passes.",
+      "diagnosis_outcome": "FAIL by keyword threshold only.",
+      "repair_outcome": "PASS.",
+      "confidence": "HIGH"
+    },
+    {
+      "case_id": "dev-s4-conditional-notification",
+      "classification": "D4",
+      "expected_semantics": "Align the provider configuration with the conditional notification implementation.",
+      "actual_saved_evidence": "category/status match; expected file recall 1.0; evidence target recall 1.0; keyword coverage 0.6; zero rejected evidence.",
+      "proposal_semantics": "Applied patch changes the provider value and the target test passes.",
+      "diagnosis_outcome": "FAIL by keyword threshold only.",
+      "repair_outcome": "PASS.",
+      "confidence": "HIGH"
+    },
+    {
+      "case_id": "dev-s5-cache-binding-key",
+      "classification": "D4",
+      "expected_semantics": "Align the nested configuration key with the Java binding path for the regional Duration map.",
+      "actual_saved_evidence": "category/status match; expected file hit; expected file recall 0.6667; evidence target recall 1.0; keyword coverage 0.3333; zero rejected evidence.",
+      "proposal_semantics": "Applied patch changes the nested configuration key and the target test passes.",
+      "diagnosis_outcome": "FAIL by keyword threshold only.",
+      "repair_outcome": "PASS.",
+      "confidence": "HIGH"
+    },
+    {
+      "case_id": "dev-s6-local-precedence-conflict",
+      "classification": "D4",
+      "expected_semantics": "Repair the higher-precedence local value while preserving the active local source.",
+      "actual_saved_evidence": "category/status match; expected file hit; expected file recall 0.75; evidence target recall 1.0; keyword coverage 0.2; zero rejected evidence.",
+      "proposal_semantics": "Applied patch changes application-local.yml and the target test passes.",
+      "diagnosis_outcome": "FAIL by keyword threshold only.",
+      "repair_outcome": "PASS.",
+      "confidence": "HIGH"
+    }
+  ],
+  "failure_taxonomy": [
+    {
+      "category": "semantic_understanding",
+      "status": "not observed as the confirmed cause",
+      "observed_cases": "s2-s6 produce test-passing semantic repairs; s1 Agent payload is unavailable",
+      "repair_impact": "s1 impact cannot be separated from application failure from the saved payload",
+      "severity": "medium",
+      "improvement_surface": "proposal/application boundary first; diagnosis content second"
+    },
+    {
+      "category": "source_precedence_reasoning",
+      "status": "observed as benchmark subject, not as a confirmed Agent failure",
+      "observed_cases": "s1, s2, s6",
+      "repair_impact": "s2 and s6 repaired successfully",
+      "severity": "low",
+      "improvement_surface": "diagnosis evidence and semantic assertions"
+    },
+    {
+      "category": "target_selection",
+      "status": "not observed as a confirmed defect",
+      "observed_cases": "all six expected-file-hit flags true; s1 exact changed file absent from saved artifact",
+      "repair_impact": "no confirmed target-selection failure",
+      "severity": "low",
+      "improvement_surface": "forensic metadata only"
+    },
+    {
+      "category": "proposal_generation",
+      "status": "not observed",
+      "observed_cases": "6/6 generated; 6/6 structured parse/schema audits succeeded",
+      "repair_impact": "none confirmed",
+      "severity": "low",
+      "improvement_surface": "no immediate change"
+    },
+    {
+      "category": "proposal_validation",
+      "status": "observed coverage boundary, not a failed validation stage",
+      "observed_cases": "6/6 proposal_valid; all six had one accepted edit and zero validator rejections",
+      "repair_impact": "s1 proceeded to application despite later diff-safety rejection",
+      "severity": "medium",
+      "improvement_surface": "shared canonical edit normalization or preflight parity"
+    },
+    {
+      "category": "patch_representation",
+      "status": "observed as a possible secondary gap; historical s1 payload unavailable",
+      "observed_cases": "deterministic extra-boundary-newline probe gives Validator PASS and PatchApplier stale_patch",
+      "repair_impact": "not attributed to s1 historical run",
+      "severity": "medium",
+      "improvement_surface": "shared old-text normalization"
+    },
+    {
+      "category": "patch_application",
+      "status": "observed",
+      "observed_cases": "s1 only; one requested edit, zero applied, one rejected, no changed files, unsafe_diff reproduced",
+      "repair_impact": "direct cause of 5/6 rather than 6/6",
+      "severity": "high",
+      "improvement_surface": "PatchApplier diff safety classification"
+    },
+    {
+      "category": "build_verification",
+      "status": "not observed as a failure",
+      "observed_cases": "s2-s6 target tests pass; s1 Maven was correctly skipped after application rejection",
+      "repair_impact": "none beyond the upstream application stop",
+      "severity": "low",
+      "improvement_surface": "none"
+    },
+    {
+      "category": "diagnosis_evaluation",
+      "status": "observed",
+      "observed_cases": "all six fail the 0.66 keyword-coverage gate despite category/status/evidence success",
+      "repair_impact": "does not block current Repair Success; obscures diagnostic quality",
+      "severity": "high for metric interpretation",
+      "improvement_surface": "diagnosis semantic scoring contract"
+    },
+    {
+      "category": "benchmark_evaluation",
+      "status": "observed metric-to-outcome separation; no evaluator defect proven",
+      "observed_cases": "0/6 diagnosis metric versus 5/6 repair; deterministic evaluator rule is code-consistent",
+      "repair_impact": "metric miss does not predict repair failure in s2-s6",
+      "severity": "medium",
+      "improvement_surface": "metric design/reporting, not sample or Gold changes"
+    }
+  ],
+  "m7e2c_candidates": [
+    {
+      "id": 1,
+      "candidate": "Align PatchApplier sensitive-diff detection with its actual path grammar and add deterministic URL/path regression tests.",
+      "evidence": "s1 reference edit: Validator PASS, PatchApplier unsafe_diff; [a-z]:[\\\\/] matches s:/ inside https://.",
+      "expected_benefit": "Repair Success: directly targets the only observed 5/6 failure.",
+      "risk": "A looser safety rule must not weaken credential or absolute-path protections.",
+      "blast_radius": "all changed diffs entering PatchApplier",
+      "holdout_impact": "could affect Holdout application behavior; must be validated without exposing Holdout answers",
+      "priority": "P0"
+    },
+    {
+      "id": 2,
+      "candidate": "Replace raw keyword-threshold diagnosis gating with structured semantic concept groups plus evidence/source assertions, while reporting lexical coverage separately.",
+      "evidence": "All six category/status/evidence checks pass, but keyword coverage is 0.2-0.6 and diagnosis pass is 0/6; s2-s6 still repair successfully.",
+      "expected_benefit": "Diagnosis metric: reduces false misses; Repair Success: indirect and unproven.",
+      "risk": "May change historical comparability and can over-credit vague diagnoses if groups are weak.",
+      "blast_radius": "diagnosis evaluator and benchmark reporting",
+      "holdout_impact": "semantic scoring changes would require protected Holdout integrity/evaluation review",
+      "priority": "P1"
+    },
+    {
+      "id": 3,
+      "candidate": "Persist a bounded, sanitized patch forensic record including normalized file, line range, old/new hashes, and PatchApplier rejection category.",
+      "evidence": "s1 result omits the edit payload and rejection reason, preventing exact historical replay; the current application result model already has bounded audit fields internally.",
+      "expected_benefit": "Repair Success: no direct behavior change; Diagnosis/RCA: materially improves attribution and regression detection.",
+      "risk": "Sanitization mistakes could expose source or sensitive values; hashes and bounded enums must remain the default.",
+      "blast_radius": "artifact schema and RCA tooling",
+      "holdout_impact": "must not serialize Holdout answer-key content",
+      "priority": "P1"
+    },
+    {
+      "id": 4,
+      "candidate": "Normalize proposal concept matching across summary, rationale, and applied behavior instead of exact substring matching against long concept phrases.",
+      "evidence": "acceptable_change_concept_hit is false for s1-s6, while s2-s6 patches are applied and their target tests pass.",
+      "expected_benefit": "Diagnosis/repair proposal metric: fewer concept false negatives; Repair Success: no direct improvement proven.",
+      "risk": "Semantic matching may introduce judge variance or Gold leakage if implemented carelessly.",
+      "blast_radius": "repair proposal evaluator and reporting",
+      "holdout_impact": "must preserve Holdout separation and avoid using hidden answer material",
+      "priority": "P2"
+    }
+  ],
+  "post_rca_integrity": {
+    "semantic_dev_integrity": "PASS",
+    "verify_semantic_dev_samples": "PASS: baseline 6/6; canonical fixes 6/6",
+    "holdout_integrity": "PASS",
+    "benchmark_validation": "PASS: legacy 3/3; holdout 7/7; total 10/10",
+    "samples_gold_holdout_runtime_unchanged": true,
+    "prompt_runtime_validator_retrieval_applier_verifier_unchanged": true
+  },
+  "artifact_safety": {
+    "credentials_or_keys": false,
+    "machine_specific_paths": false,
+    "scratch_paths": false,
+    "unprocessed_model_output": false,
+    "complete_build_transcripts": false,
+    "complete_prompt": false,
+    "holdout_answer_key": false,
+    "sample_solution_dump": false
+  }
+}
