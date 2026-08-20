@@ -1,0 +1,113 @@
+{
+  "milestone": "M7E-2C2",
+  "title": "Diagnosis Metric Alignment",
+  "runtime": "0.15.1",
+  "starting_commit": "c19313b31952b3303330579e271cb4a3d672ef1e",
+  "frozen_repair_run_id": "20260820T015242Z-fdaa73fd",
+  "frozen_repair_success": "6/6",
+  "agent_rerun": false,
+  "new_llm_calls": 0,
+  "diagnosis_v1": {
+    "preserved": true,
+    "result": "0/6",
+    "role": "historical lexical and debugging metric",
+    "threshold": 0.66,
+    "contract": [
+      "agent_completed",
+      "diagnosis_status_match",
+      "keyword_coverage_at_least_0_66",
+      "expected_file_hit",
+      "evidence_target_hit",
+      "no_invalid_rejected_evidence"
+    ],
+    "category_match_recorded_but_not_in_case_pass": true
+  },
+  "diagnosis_v2": {
+    "schema_version": "diagnosis-semantic-v2.0",
+    "deterministic": true,
+    "llm_as_judge": false,
+    "semantic_dimensions": [
+      "completion_and_status",
+      "failure_category",
+      "source_and_evidence",
+      "required_concept_groups",
+      "directional_root_cause_relations",
+      "contradiction_free"
+    ],
+    "positive_controls": {
+      "six_dev_strong_semantic_cases": "PASS 6/6",
+      "paraphrase": "PASS",
+      "correct_evidence_source": "PASS"
+    },
+    "negative_controls": {
+      "incomplete_vague": "PASS rejected",
+      "wrong_source": "PASS rejected",
+      "reversed_precedence": "PASS rejected",
+      "keyword_stuffing": "PASS rejected",
+      "contradiction": "PASS rejected",
+      "missing_evidence_support": "PASS rejected"
+    },
+    "v1_backward_compatibility": "PASS",
+    "schema_version_handling": "PASS"
+  },
+  "frozen_replays": {
+    "20260819T085438Z-4c89fc32": {
+      "diagnosis_v1": "0/6",
+      "diagnosis_v2_cases_evaluated": 0,
+      "diagnosis_v2_cases_passed": 0,
+      "diagnosis_v2_insufficient_artifact": 6
+    },
+    "20260820T015242Z-fdaa73fd": {
+      "diagnosis_v1": "0/6",
+      "diagnosis_v2_cases_evaluated": 0,
+      "diagnosis_v2_cases_passed": 0,
+      "diagnosis_v2_insufficient_artifact": 6
+    }
+  },
+  "diagnosis_v2_result": {
+    "score": null,
+    "display": "N/A: 0/6 evaluable; 6/6 insufficient_artifact",
+    "reason": "Frozen E2E artifacts omit bounded diagnosis summary and candidate text",
+    "cases_counted_as_semantic_failures": 0
+  },
+  "versioned_evaluator_metadata": {
+    "added": true,
+    "agent_projection_isolated": true,
+    "v1_gold_modified": false,
+    "repair_gold_modified": false
+  },
+  "scope": {
+    "repair_success_predicate_modified": false,
+    "prompt_modified": false,
+    "retrieval_modified": false,
+    "validator_modified": false,
+    "patch_applier_modified": false,
+    "maven_verifier_modified": false,
+    "dev_samples_modified": false,
+    "reference_fixes_modified": false,
+    "holdout_modified": false,
+    "holdout_agent_execution": false,
+    "holdout_mock_execution": false,
+    "holdout_live_execution": false
+  },
+  "quality_gates": {
+    "pytest": "PASS 487 passed, 1 skipped",
+    "ruff": "PASS",
+    "mypy_strict": "PASS 95 source files",
+    "uv_lock_check": "PASS",
+    "semantic_dev_integrity": "PASS",
+    "verify_semantic_dev_samples": "PASS baseline 6/6, reference fixes 6/6",
+    "holdout_integrity": "PASS",
+    "benchmark_validation": "PASS legacy 3/3, holdout 7/7, total 10/10"
+  },
+  "recommendations": {
+    "retain_v1": true,
+    "v1_role": "lexical_debug",
+    "v2_primary_now": false,
+    "v2_primary_candidate_after_real_output_validation": true,
+    "diagnosis_as_repair_success_gate": false
+  },
+  "artifact_safety": "PASS",
+  "stage_status": "M7E-2C2 BLOCKED: frozen semantic payload unavailable",
+  "next_stage_entered": false
+}

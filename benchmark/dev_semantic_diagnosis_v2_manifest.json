@@ -1,0 +1,22 @@
+{
+  "schema_version": "diagnosis-semantic-v2.0",
+  "split": "dev_semantic_v1",
+  "hash_algorithm": "sha256",
+  "content_normalization": "canonical-json-v1",
+  "case_ids": [
+    "dev-s1-profile-config-source",
+    "dev-s2-code-property-override",
+    "dev-s3-storage-validation",
+    "dev-s4-conditional-notification",
+    "dev-s5-cache-binding-key",
+    "dev-s6-local-precedence-conflict"
+  ],
+  "metadata_hashes": {
+    "dev-s1-profile-config-source": "b5dd693fc49b8099727bf3ded6c1767ca1b577af290f2810ab6c01cbf24a6f9a",
+    "dev-s2-code-property-override": "1ee12610472e78e1d718d5d36a010697e7a2e9d005ea4df4f4a696d328a54c99",
+    "dev-s3-storage-validation": "40eb2a739b8d5ba7e9dcbced06b69cf93dfb4154ab4056bff537098733c70621",
+    "dev-s4-conditional-notification": "452e6b3ff2b14af7c85a7c684f69744fa13a76853afd700466f4a72b0a17bb41",
+    "dev-s5-cache-binding-key": "dc79210f79b3e01680082acf8ab9ecf30604a0fabad0dfaaf40c3026d106d775",
+    "dev-s6-local-precedence-conflict": "1a9b5d26c37d31ca7bc546a16758544625ed21c7d64b194450dc768691fc0740"
+  }
+}

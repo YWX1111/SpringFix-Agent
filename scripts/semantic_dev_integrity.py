@@ -14,11 +14,20 @@ from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
 
+from springfix_agent.benchmark.diagnosis_v2 import (
+    DIAGNOSIS_V2_SCHEMA_VERSION,
+    load_diagnosis_v2_specs,
+)
+
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DEV_SPLIT = "dev_semantic_v1"
 DEV_CASES = PROJECT_ROOT / "benchmark" / "dev_semantic_cases.jsonl"
 DEV_GOLD = PROJECT_ROOT / "benchmark" / "dev_semantic_repair_gold.jsonl"
 DEV_FREEZE = PROJECT_ROOT / "benchmark" / "dev_semantic_manifest.json"
+DIAGNOSIS_V2_METADATA = PROJECT_ROOT / "benchmark" / "dev_semantic_diagnosis_v2.jsonl"
+DIAGNOSIS_V2_FREEZE = (
+    PROJECT_ROOT / "benchmark" / "dev_semantic_diagnosis_v2_manifest.json"
+)
 SPLITS = PROJECT_ROOT / "benchmark" / "splits.json"
 HASH_ALGORITHM = "sha256"
 CONTENT_NORMALIZATION = "utf8-lf-v1"
@@ -141,6 +150,11 @@ def _gold_hashes(path: Path) -> dict[str, str]:
     return result
 
 
+def _diagnosis_v2_hashes(path: Path) -> dict[str, str]:
+    """Hash canonical evaluator-only V2 records without exposing them to Agent input."""
+    return _gold_hashes(path)
+
+
 def compute_hashes(project_root: Path = PROJECT_ROOT) -> dict[str, dict[str, str]]:
     """Compute development sample source, test, sample, and Gold hashes."""
     sample_hashes: dict[str, str] = {}
@@ -187,8 +201,14 @@ def verify_dev_split(project_root: Path = PROJECT_ROOT) -> tuple[bool, list[str]
     try:
         splits = _load_json(project_root / "benchmark" / "splits.json")
         frozen = _load_json(project_root / "benchmark" / "dev_semantic_manifest.json")
+        diagnosis_v2_frozen = _load_json(
+            project_root / "benchmark" / "dev_semantic_diagnosis_v2_manifest.json"
+        )
         cases = _load_jsonl(project_root / "benchmark" / "dev_semantic_cases.jsonl")
         gold = _load_jsonl(project_root / "benchmark" / "dev_semantic_repair_gold.jsonl")
+        diagnosis_v2_specs = load_diagnosis_v2_specs(
+            project_root / "benchmark" / "dev_semantic_diagnosis_v2.jsonl"
+        )
     except (OSError, json.JSONDecodeError, KeyError, TypeError) as exc:
         return False, [f"[FAIL] development metadata load: {exc}"]
 
@@ -219,6 +239,23 @@ def verify_dev_split(project_root: Path = PROJECT_ROOT) -> tuple[bool, list[str]
                 "configuration-properties-prefix-mismatch",
             ],
         ),
+        (
+            "Diagnosis V2 schema version",
+            diagnosis_v2_frozen.get("schema_version") == DIAGNOSIS_V2_SCHEMA_VERSION,
+        ),
+        (
+            "Diagnosis V2 split",
+            diagnosis_v2_frozen.get("split") == DEV_SPLIT,
+        ),
+        (
+            "Diagnosis V2 case IDs",
+            diagnosis_v2_frozen.get("case_ids") == list(DEV_CASE_IDS)
+            and [spec.case_id for spec in diagnosis_v2_specs] == list(DEV_CASE_IDS),
+        ),
+        (
+            "Diagnosis V2 content normalization",
+            diagnosis_v2_frozen.get("content_normalization") == "canonical-json-v1",
+        ),
     ]
     for label, passed in checks:
         diagnostics.append(f"[{'PASS' if passed else 'FAIL'}] {label}")
@@ -239,6 +276,17 @@ def verify_dev_split(project_root: Path = PROJECT_ROOT) -> tuple[bool, list[str]
         projection_ok = agent_keys == {"repository", "issue_description", "error_log"}
         diagnostics.append(f"[{'PASS' if projection_ok else 'FAIL'}] Agent projection isolated: {case_id}")
         ok = ok and projection_ok
+        v2_projection_ok = projection_ok and not {
+            "diagnosis_semantic_v2",
+            "required_concepts",
+            "required_relations",
+            "forbidden_relations",
+        }.intersection(case)
+        diagnostics.append(
+            f"[{'PASS' if v2_projection_ok else 'FAIL'}] "
+            f"Diagnosis V2 metadata excluded from Agent projection: {case_id}"
+        )
+        ok = ok and v2_projection_ok
         public_text = f"{case.get('issue_description', '')}\n{case.get('error_log') or ''}".lower()
         gold_record = gold_by_case.get(case_id, {})
         public_leaks = [
@@ -304,6 +352,16 @@ def verify_dev_split(project_root: Path = PROJECT_ROOT) -> tuple[bool, list[str]
         passed = actual == frozen.get(key)
         diagnostics.append(f"[{'PASS' if passed else 'FAIL'}] {key}")
         ok = ok and passed
+    diagnosis_v2_hashes = _diagnosis_v2_hashes(
+        project_root / "benchmark" / "dev_semantic_diagnosis_v2.jsonl"
+    )
+    diagnosis_v2_hashes_ok = diagnosis_v2_hashes == diagnosis_v2_frozen.get(
+        "metadata_hashes"
+    )
+    diagnostics.append(
+        f"[{'PASS' if diagnosis_v2_hashes_ok else 'FAIL'}] Diagnosis V2 metadata hashes"
+    )
+    ok = ok and diagnosis_v2_hashes_ok
     return ok, diagnostics
 
 
