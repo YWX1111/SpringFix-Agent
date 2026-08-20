@@ -1,0 +1,2465 @@
+{
+  "trace_schema": "m7e2c2c3-bounded-matcher-trace.1",
+  "agent_rerun": false,
+  "llm_calls": 0,
+  "cases": [
+    {
+      "source": "calibration",
+      "case_id": "dev-s1-profile-config-source",
+      "bounded_evidence": {
+        "summary": "The application falls back to the default shipping endpoint because `application-dev.yml` incorrectly specifies `on-profile: staging`. When the `dev` profile is active, the properties in this file are ignored, causing the fallback endpoint from `application.yml` to be used.",
+        "candidate_title": "Incorrect profile activation condition in application-dev.yml",
+        "candidate_description": "The configuration file `application-dev.yml` incorrectly specifies `on-profile: staging` under `spring.config.activate`. Because the active profile is `dev`, the properties in this file are not applied, causing the application to fall back to the default endpoint defined in `application.yml`.",
+        "recommended_fix": "Update the `on-profile` value in `application-dev.yml` to `dev`, or remove the `spring.config.activate` block entirely since the file name already associates it with the `dev` profile."
+      },
+      "normalized_clauses": [
+        "the application falls back to the default shipping endpoint because application dev yml incorrectly specify on profile staging",
+        "when the dev profile is active the property in this file are ignored causing the fallback endpoint from application yml to be used",
+        "incorrect profile activation condition in application dev yml",
+        "the configuration file application dev yml incorrectly specify on profile staging under spring config activate",
+        "because the active profile is dev the property in this file are not applied causing the application to fall back to the default endpoint defined in application yml",
+        "update the on profile value in application dev yml to dev or remove the spring config activate block entirely since the file name already associates it with the dev profile"
+      ],
+      "required_relation": {
+        "name": "profile_gate_mismatch",
+        "variants": [
+          {
+            "left_aliases": [
+              {
+                "raw": "application-dev.yml",
+                "normalized": "application dev yml"
+              },
+              {
+                "raw": "profile-specific configuration",
+                "normalized": "profile specific configuration"
+              },
+              {
+                "raw": "dev profile configuration",
+                "normalized": "dev profile configuration"
+              }
+            ],
+            "relation_aliases": [
+              {
+                "raw": "is gated by",
+                "normalized": "is gated by"
+              },
+              {
+                "raw": "is activated only for",
+                "normalized": "is activated only for"
+              },
+              {
+                "raw": "declares",
+                "normalized": "declares"
+              },
+              {
+                "raw": "specifies",
+                "normalized": "specify"
+              },
+              {
+                "raw": "uses",
+                "normalized": "uses"
+              }
+            ],
+            "right_aliases": [
+              {
+                "raw": "staging profile",
+                "normalized": "staging profile"
+              },
+              {
+                "raw": "on-profile staging",
+                "normalized": "on profile staging"
+              },
+              {
+                "raw": "staging",
+                "normalized": "staging"
+              }
+            ],
+            "witnesses": [
+              {
+                "clause_index": 0,
+                "clause": "the application falls back to the default shipping endpoint because application dev yml incorrectly specify on profile staging",
+                "left": {
+                  "alias": "application-dev.yml",
+                  "normalized": "application dev yml",
+                  "span": [
+                    68,
+                    87
+                  ],
+                  "text": "application dev yml"
+                },
+                "relation": {
+                  "alias": "specifies",
+                  "normalized": "specify",
+                  "span": [
+                    100,
+                    107
+                  ],
+                  "text": "specify"
+                },
+                "right": {
+                  "alias": "on-profile staging",
+                  "normalized": "on profile staging",
+                  "span": [
+                    108,
+                    126
+                  ],
+                  "text": "on profile staging"
+                }
+              },
+              {
+                "clause_index": 3,
+                "clause": "the configuration file application dev yml incorrectly specify on profile staging under spring config activate",
+                "left": {
+                  "alias": "application-dev.yml",
+                  "normalized": "application dev yml",
+                  "span": [
+                    23,
+                    42
+                  ],
+                  "text": "application dev yml"
+                },
+                "relation": {
+                  "alias": "specifies",
+                  "normalized": "specify",
+                  "span": [
+                    55,
+                    62
+                  ],
+                  "text": "specify"
+                },
+                "right": {
+                  "alias": "on-profile staging",
+                  "normalized": "on profile staging",
+                  "span": [
+                    63,
+                    81
+                  ],
+                  "text": "on profile staging"
+                }
+              }
+            ],
+            "near_misses": []
+          },
+          {
+            "left_aliases": [
+              {
+                "raw": "staging profile",
+                "normalized": "staging profile"
+              },
+              {
+                "raw": "on-profile staging",
+                "normalized": "on profile staging"
+              }
+            ],
+            "relation_aliases": [
+              {
+                "raw": "does not match",
+                "normalized": "do not match"
+              },
+              {
+                "raw": "conflicts with",
+                "normalized": "conflicts with"
+              },
+              {
+                "raw": "is different from",
+                "normalized": "is different from"
+              },
+              {
+                "raw": "differs from",
+                "normalized": "differs from"
+              }
+            ],
+            "right_aliases": [
+              {
+                "raw": "active dev profile",
+                "normalized": "active dev profile"
+              },
+              {
+                "raw": "dev profile",
+                "normalized": "dev profile"
+              }
+            ],
+            "witnesses": [],
+            "near_misses": []
+          },
+          {
+            "left_aliases": [
+              {
+                "raw": "application-dev.yml",
+                "normalized": "application dev yml"
+              },
+              {
+                "raw": "profile-specific configuration",
+                "normalized": "profile specific configuration"
+              }
+            ],
+            "relation_aliases": [
+              {
+                "raw": "does not apply to",
+                "normalized": "do not apply to"
+              },
+              {
+                "raw": "is inactive for",
+                "normalized": "is inactive for"
+              },
+              {
+                "raw": "is excluded from",
+                "normalized": "is excluded from"
+              },
+              {
+                "raw": "ignored for",
+                "normalized": "ignored for"
+              }
+            ],
+            "right_aliases": [
+              {
+                "raw": "active dev profile",
+                "normalized": "active dev profile"
+              },
+              {
+                "raw": "dev profile",
+                "normalized": "dev profile"
+              }
+            ],
+            "witnesses": [],
+            "near_misses": [
+              {
+                "clause_index": 5,
+                "clause": "update the on profile value in application dev yml to dev or remove the spring config activate block entirely since the file name already associates it with the dev profile",
+                "left_hits": [
+                  {
+                    "alias": "application-dev.yml",
+                    "normalized": "application dev yml",
+                    "span": [
+                      31,
+                      50
+                    ],
+                    "text": "application dev yml"
+                  }
+                ],
+                "relation_hits": [],
+                "right_hits": [
+                  {
+                    "alias": "dev profile",
+                    "normalized": "dev profile",
+                    "span": [
+                      161,
+                      172
+                    ],
+                    "text": "dev profile"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "source": "calibration",
+      "case_id": "dev-s4-conditional-notification",
+      "bounded_evidence": {
+        "summary": "The application fails to start due to an UnsatisfiedDependencyException because NotificationService requires a NotificationSender bean. The configuration sets alerts.provider to 'email', but the only available implementation, WebhookNotificationSender, is conditionally registered only when alerts.provider is 'webhook'.",
+        "candidate_title": "Mismatch between configured notification provider and available implementation",
+        "candidate_description": "The application configuration sets alerts.provider to 'email', but the only available implementation of NotificationSender is WebhookNotificationSender, which is conditionally registered only when alerts.provider is 'webhook'. This mismatch causes Spring to fail to find a NotificationSender bean, leading to an UnsatisfiedDependencyException when injecting it into NotificationService.",
+        "recommended_fix": "Update the alerts.provider property in application.yml to 'webhook' to match the available implementation, or provide an EmailNotificationSender implementation with a corresponding @ConditionalOnProperty for 'email'."
+      },
+      "normalized_clauses": [
+        "the application fail to start due to an unsatisfied dependency exception because notification service require a notification sender bean",
+        "the configuration sets alerts provider to email but the only available implementation webhook notification sender is conditionally register only when alerts provider is webhook",
+        "mismatch between configured notification provider and available implementation",
+        "the application configuration sets alerts provider to email but the only available implementation of notification sender is webhook notification sender which is conditionally register only when alerts provider is webhook",
+        "this mismatch cause spring to fail to find a notification sender bean leading to an unsatisfied dependency exception when injecting it into notification service",
+        "update the alerts provider property in application yml to webhook to match the available implementation or provide an email notification sender implementation with a corresponding conditional on property for email"
+      ],
+      "required_relation": {
+        "name": "provider_condition_mismatch",
+        "variants": [
+          {
+            "left_aliases": [
+              {
+                "raw": "email provider",
+                "normalized": "email provider"
+              },
+              {
+                "raw": "provider email",
+                "normalized": "provider email"
+              },
+              {
+                "raw": "configured email",
+                "normalized": "configured email"
+              }
+            ],
+            "relation_aliases": [
+              {
+                "raw": "does not satisfy",
+                "normalized": "do not satisfy"
+              },
+              {
+                "raw": "does not match",
+                "normalized": "do not match"
+              },
+              {
+                "raw": "fails",
+                "normalized": "fail"
+              },
+              {
+                "raw": "is incompatible with",
+                "normalized": "is incompatible with"
+              },
+              {
+                "raw": "cannot activate",
+                "normalized": "cannot activate"
+              }
+            ],
+            "right_aliases": [
+              {
+                "raw": "webhook condition",
+                "normalized": "webhook condition"
+              },
+              {
+                "raw": "havingvalue webhook",
+                "normalized": "havingvalue webhook"
+              },
+              {
+                "raw": "conditionalonproperty",
+                "normalized": "conditionalonproperty"
+              }
+            ],
+            "witnesses": [],
+            "near_misses": []
+          },
+          {
+            "left_aliases": [
+              {
+                "raw": "configured email",
+                "normalized": "configured email"
+              },
+              {
+                "raw": "email provider",
+                "normalized": "email provider"
+              },
+              {
+                "raw": "provider email",
+                "normalized": "provider email"
+              },
+              {
+                "raw": "alerts.provider",
+                "normalized": "alerts provider"
+              }
+            ],
+            "relation_aliases": [
+              {
+                "raw": "conditionally registered only when",
+                "normalized": "conditionally register only when"
+              },
+              {
+                "raw": "available only when",
+                "normalized": "available only when"
+              },
+              {
+                "raw": "activates only for",
+                "normalized": "activate only for"
+              }
+            ],
+            "right_aliases": [
+              {
+                "raw": "webhook",
+                "normalized": "webhook"
+              },
+              {
+                "raw": "provider webhook",
+                "normalized": "provider webhook"
+              },
+              {
+                "raw": "webhook provider",
+                "normalized": "webhook provider"
+              }
+            ],
+            "witnesses": [
+              {
+                "clause_index": 1,
+                "clause": "the configuration sets alerts provider to email but the only available implementation webhook notification sender is conditionally register only when alerts provider is webhook",
+                "left": {
+                  "alias": "alerts.provider",
+                  "normalized": "alerts provider",
+                  "span": [
+                    23,
+                    38
+                  ],
+                  "text": "alerts provider"
+                },
+                "relation": {
+                  "alias": "conditionally registered only when",
+                  "normalized": "conditionally register only when",
+                  "span": [
+                    117,
+                    149
+                  ],
+                  "text": "conditionally register only when"
+                },
+                "right": {
+                  "alias": "webhook",
+                  "normalized": "webhook",
+                  "span": [
+                    169,
+                    176
+                  ],
+                  "text": "webhook"
+                }
+              },
+              {
+                "clause_index": 3,
+                "clause": "the application configuration sets alerts provider to email but the only available implementation of notification sender is webhook notification sender which is conditionally register only when alerts provider is webhook",
+                "left": {
+                  "alias": "alerts.provider",
+                  "normalized": "alerts provider",
+                  "span": [
+                    35,
+                    50
+                  ],
+                  "text": "alerts provider"
+                },
+                "relation": {
+                  "alias": "conditionally registered only when",
+                  "normalized": "conditionally register only when",
+                  "span": [
+                    161,
+                    193
+                  ],
+                  "text": "conditionally register only when"
+                },
+                "right": {
+                  "alias": "webhook",
+                  "normalized": "webhook",
+                  "span": [
+                    213,
+                    220
+                  ],
+                  "text": "webhook"
+                }
+              }
+            ],
+            "near_misses": [
+              {
+                "clause_index": 5,
+                "clause": "update the alerts provider property in application yml to webhook to match the available implementation or provide an email notification sender implementation with a corresponding conditional on property for email",
+                "left_hits": [
+                  {
+                    "alias": "alerts.provider",
+                    "normalized": "alerts provider",
+                    "span": [
+                      11,
+                      26
+                    ],
+                    "text": "alerts provider"
+                  }
+                ],
+                "relation_hits": [],
+                "right_hits": [
+                  {
+                    "alias": "webhook",
+                    "normalized": "webhook",
+                    "span": [
+                      58,
+                      65
+                    ],
+                    "text": "webhook"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "left_aliases": [
+              {
+                "raw": "conditional bean",
+                "normalized": "conditional bean"
+              },
+              {
+                "raw": "webhook sender",
+                "normalized": "webhook sender"
+              },
+              {
+                "raw": "webhook notification sender",
+                "normalized": "webhook notification sender"
+              }
+            ],
+            "relation_aliases": [
+              {
+                "raw": "is not created for",
+                "normalized": "is not created for"
+              },
+              {
+                "raw": "is inactive for",
+                "normalized": "is inactive for"
+              },
+              {
+                "raw": "is disabled for",
+                "normalized": "is disabled for"
+              },
+              {
+                "raw": "is registered only for",
+                "normalized": "is register only for"
+              }
+            ],
+            "right_aliases": [
+              {
+                "raw": "email provider",
+                "normalized": "email provider"
+              },
+              {
+                "raw": "provider email",
+                "normalized": "provider email"
+              },
+              {
+                "raw": "configured email",
+                "normalized": "configured email"
+              }
+            ],
+            "witnesses": [],
+            "near_misses": []
+          }
+        ]
+      }
+    },
+    {
+      "source": "calibration",
+      "case_id": "dev-s5-cache-binding-key",
+      "bounded_evidence": {
+        "summary": "The regional cache lifetime configuration is not binding to the CacheProperties map because of a property name mismatch. The application.yml defines 'cache.region-ttl', but the Java class expects 'cache.ttl-by-region' (mapped from 'ttlByRegion').",
+        "candidate_title": "Property name mismatch between application.yml and CacheProperties field",
+        "candidate_description": "The application.yml file configures the cache lifetime under the key 'cache.region-ttl', but the CacheProperties class defines the map field as 'ttlByRegion'. Spring Boot's relaxed binding maps 'ttlByRegion' to 'ttl-by-region' or 'ttlByRegion', not 'region-ttl'. As a result, the property is ignored, and the map retains its empty default value.",
+        "recommended_fix": "Align the property name in application.yml with the field name in CacheProperties. Either change the YAML key to 'cache.ttl-by-region' (or 'cache.ttlByRegion') or rename the Java field to 'regionTtl' to match the YAML key 'cache.region-ttl'."
+      },
+      "normalized_clauses": [
+        "the regional cache lifetime configuration is not bind to the cache property map because of a property name mismatch",
+        "the application yml defines cache region ttl but the java class expect cache ttl by region mapped from ttl by region",
+        "property name mismatch between application yml and cache property field",
+        "the application yml file configures the cache lifetime under the key cache region ttl but the cache property class defines the map field as ttl by region",
+        "spring boot s relaxed bind map ttl by region to ttl by region or ttl by region not region ttl",
+        "as a result the property is ignored and the map retains its empty default value",
+        "align the property name in application yml with the field name in cache property",
+        "either change the yaml key to cache ttl by region or cache ttl by region or rename the java field to region ttl to match the yaml key cache region ttl"
+      ],
+      "required_relation": {
+        "name": "configuration_key_binding_mismatch",
+        "variants": [
+          {
+            "left_aliases": [
+              {
+                "raw": "region-ttl",
+                "normalized": "region ttl"
+              },
+              {
+                "raw": "cache.region-ttl",
+                "normalized": "cache region ttl"
+              },
+              {
+                "raw": "configuration key",
+                "normalized": "configuration key"
+              },
+              {
+                "raw": "regional cache lifetime configuration",
+                "normalized": "regional cache lifetime configuration"
+              }
+            ],
+            "relation_aliases": [
+              {
+                "raw": "does not bind to",
+                "normalized": "do not bind to"
+              },
+              {
+                "raw": "is not binding to",
+                "normalized": "is not bind to"
+              },
+              {
+                "raw": "does not map to",
+                "normalized": "do not map to"
+              },
+              {
+                "raw": "does not match",
+                "normalized": "do not match"
+              },
+              {
+                "raw": "fails to bind to",
+                "normalized": "fail to bind to"
+              }
+            ],
+            "right_aliases": [
+              {
+                "raw": "ttlByRegion",
+                "normalized": "ttl by region"
+              },
+              {
+                "raw": "region ttl map",
+                "normalized": "region ttl map"
+              },
+              {
+                "raw": "map property",
+                "normalized": "map property"
+              },
+              {
+                "raw": "CacheProperties map",
+                "normalized": "cache property map"
+              }
+            ],
+            "witnesses": [
+              {
+                "clause_index": 0,
+                "clause": "the regional cache lifetime configuration is not bind to the cache property map because of a property name mismatch",
+                "left": {
+                  "alias": "regional cache lifetime configuration",
+                  "normalized": "regional cache lifetime configuration",
+                  "span": [
+                    4,
+                    41
+                  ],
+                  "text": "regional cache lifetime configuration"
+                },
+                "relation": {
+                  "alias": "is not binding to",
+                  "normalized": "is not bind to",
+                  "span": [
+                    42,
+                    56
+                  ],
+                  "text": "is not bind to"
+                },
+                "right": {
+                  "alias": "CacheProperties map",
+                  "normalized": "cache property map",
+                  "span": [
+                    61,
+                    79
+                  ],
+                  "text": "cache property map"
+                }
+              }
+            ],
+            "near_misses": [
+              {
+                "clause_index": 1,
+                "clause": "the application yml defines cache region ttl but the java class expect cache ttl by region mapped from ttl by region",
+                "left_hits": [
+                  {
+                    "alias": "region-ttl",
+                    "normalized": "region ttl",
+                    "span": [
+                      34,
+                      44
+                    ],
+                    "text": "region ttl"
+                  },
+                  {
+                    "alias": "cache.region-ttl",
+                    "normalized": "cache region ttl",
+                    "span": [
+                      28,
+                      44
+                    ],
+                    "text": "cache region ttl"
+                  }
+                ],
+                "relation_hits": [],
+                "right_hits": [
+                  {
+                    "alias": "ttlByRegion",
+                    "normalized": "ttl by region",
+                    "span": [
+                      77,
+                      90
+                    ],
+                    "text": "ttl by region"
+                  },
+                  {
+                    "alias": "ttlByRegion",
+                    "normalized": "ttl by region",
+                    "span": [
+                      103,
+                      116
+                    ],
+                    "text": "ttl by region"
+                  }
+                ]
+              },
+              {
+                "clause_index": 3,
+                "clause": "the application yml file configures the cache lifetime under the key cache region ttl but the cache property class defines the map field as ttl by region",
+                "left_hits": [
+                  {
+                    "alias": "region-ttl",
+                    "normalized": "region ttl",
+                    "span": [
+                      75,
+                      85
+                    ],
+                    "text": "region ttl"
+                  },
+                  {
+                    "alias": "cache.region-ttl",
+                    "normalized": "cache region ttl",
+                    "span": [
+                      69,
+                      85
+                    ],
+                    "text": "cache region ttl"
+                  }
+                ],
+                "relation_hits": [],
+                "right_hits": [
+                  {
+                    "alias": "ttlByRegion",
+                    "normalized": "ttl by region",
+                    "span": [
+                      140,
+                      153
+                    ],
+                    "text": "ttl by region"
+                  }
+                ]
+              },
+              {
+                "clause_index": 4,
+                "clause": "spring boot s relaxed bind map ttl by region to ttl by region or ttl by region not region ttl",
+                "left_hits": [
+                  {
+                    "alias": "region-ttl",
+                    "normalized": "region ttl",
+                    "span": [
+                      83,
+                      93
+                    ],
+                    "text": "region ttl"
+                  }
+                ],
+                "relation_hits": [],
+                "right_hits": [
+                  {
+                    "alias": "ttlByRegion",
+                    "normalized": "ttl by region",
+                    "span": [
+                      31,
+                      44
+                    ],
+                    "text": "ttl by region"
+                  },
+                  {
+                    "alias": "ttlByRegion",
+                    "normalized": "ttl by region",
+                    "span": [
+                      48,
+                      61
+                    ],
+                    "text": "ttl by region"
+                  },
+                  {
+                    "alias": "ttlByRegion",
+                    "normalized": "ttl by region",
+                    "span": [
+                      65,
+                      78
+                    ],
+                    "text": "ttl by region"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "left_aliases": [
+              {
+                "raw": "ttlByRegion",
+                "normalized": "ttl by region"
+              },
+              {
+                "raw": "region ttl map",
+                "normalized": "region ttl map"
+              },
+              {
+                "raw": "map property",
+                "normalized": "map property"
+              }
+            ],
+            "relation_aliases": [
+              {
+                "raw": "expects",
+                "normalized": "expect"
+              },
+              {
+                "raw": "binds from",
+                "normalized": "binds from"
+              },
+              {
+                "raw": "maps from",
+                "normalized": "map from"
+              }
+            ],
+            "right_aliases": [
+              {
+                "raw": "ttl-by-region",
+                "normalized": "ttl by region"
+              },
+              {
+                "raw": "cache.ttl-by-region",
+                "normalized": "cache ttl by region"
+              }
+            ],
+            "witnesses": [],
+            "near_misses": [
+              {
+                "clause_index": 3,
+                "clause": "the application yml file configures the cache lifetime under the key cache region ttl but the cache property class defines the map field as ttl by region",
+                "left_hits": [
+                  {
+                    "alias": "ttlByRegion",
+                    "normalized": "ttl by region",
+                    "span": [
+                      140,
+                      153
+                    ],
+                    "text": "ttl by region"
+                  }
+                ],
+                "relation_hits": [],
+                "right_hits": [
+                  {
+                    "alias": "ttl-by-region",
+                    "normalized": "ttl by region",
+                    "span": [
+                      140,
+                      153
+                    ],
+                    "text": "ttl by region"
+                  }
+                ]
+              },
+              {
+                "clause_index": 4,
+                "clause": "spring boot s relaxed bind map ttl by region to ttl by region or ttl by region not region ttl",
+                "left_hits": [
+                  {
+                    "alias": "ttlByRegion",
+                    "normalized": "ttl by region",
+                    "span": [
+                      31,
+                      44
+                    ],
+                    "text": "ttl by region"
+                  },
+                  {
+                    "alias": "ttlByRegion",
+                    "normalized": "ttl by region",
+                    "span": [
+                      48,
+                      61
+                    ],
+                    "text": "ttl by region"
+                  },
+                  {
+                    "alias": "ttlByRegion",
+                    "normalized": "ttl by region",
+                    "span": [
+                      65,
+                      78
+                    ],
+                    "text": "ttl by region"
+                  }
+                ],
+                "relation_hits": [],
+                "right_hits": [
+                  {
+                    "alias": "ttl-by-region",
+                    "normalized": "ttl by region",
+                    "span": [
+                      31,
+                      44
+                    ],
+                    "text": "ttl by region"
+                  },
+                  {
+                    "alias": "ttl-by-region",
+                    "normalized": "ttl by region",
+                    "span": [
+                      48,
+                      61
+                    ],
+                    "text": "ttl by region"
+                  },
+                  {
+                    "alias": "ttl-by-region",
+                    "normalized": "ttl by region",
+                    "span": [
+                      65,
+                      78
+                    ],
+                    "text": "ttl by region"
+                  }
+                ]
+              },
+              {
+                "clause_index": 7,
+                "clause": "either change the yaml key to cache ttl by region or cache ttl by region or rename the java field to region ttl to match the yaml key cache region ttl",
+                "left_hits": [
+                  {
+                    "alias": "ttlByRegion",
+                    "normalized": "ttl by region",
+                    "span": [
+                      36,
+                      49
+                    ],
+                    "text": "ttl by region"
+                  },
+                  {
+                    "alias": "ttlByRegion",
+                    "normalized": "ttl by region",
+                    "span": [
+                      59,
+                      72
+                    ],
+                    "text": "ttl by region"
+                  }
+                ],
+                "relation_hits": [],
+                "right_hits": [
+                  {
+                    "alias": "ttl-by-region",
+                    "normalized": "ttl by region",
+                    "span": [
+                      36,
+                      49
+                    ],
+                    "text": "ttl by region"
+                  },
+                  {
+                    "alias": "ttl-by-region",
+                    "normalized": "ttl by region",
+                    "span": [
+                      59,
+                      72
+                    ],
+                    "text": "ttl by region"
+                  },
+                  {
+                    "alias": "cache.ttl-by-region",
+                    "normalized": "cache ttl by region",
+                    "span": [
+                      30,
+                      49
+                    ],
+                    "text": "cache ttl by region"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "left_aliases": [
+              {
+                "raw": "mismatched key",
+                "normalized": "mismatched key"
+              },
+              {
+                "raw": "binding key mismatch",
+                "normalized": "bind key mismatch"
+              },
+              {
+                "raw": "region-ttl",
+                "normalized": "region ttl"
+              }
+            ],
+            "relation_aliases": [
+              {
+                "raw": "leaves",
+                "normalized": "leave"
+              },
+              {
+                "raw": "causes",
+                "normalized": "cause"
+              },
+              {
+                "raw": "results in",
+                "normalized": "result in"
+              }
+            ],
+            "right_aliases": [
+              {
+                "raw": "empty map",
+                "normalized": "empty map"
+              },
+              {
+                "raw": "map default",
+                "normalized": "map default"
+              },
+              {
+                "raw": "pt0s",
+                "normalized": "pt0s"
+              },
+              {
+                "raw": "zero duration",
+                "normalized": "zero duration"
+              }
+            ],
+            "witnesses": [],
+            "near_misses": []
+          }
+        ]
+      },
+      "forbidden_relation": {
+        "name": "incorrect_key_binds_successfully",
+        "variants": [
+          {
+            "left_aliases": [
+              {
+                "raw": "region-ttl",
+                "normalized": "region ttl"
+              },
+              {
+                "raw": "cache.region-ttl",
+                "normalized": "cache region ttl"
+              }
+            ],
+            "relation_aliases": [
+              {
+                "raw": "binds to",
+                "normalized": "binds to"
+              },
+              {
+                "raw": "maps to",
+                "normalized": "map to"
+              },
+              {
+                "raw": "matches",
+                "normalized": "match"
+              }
+            ],
+            "right_aliases": [
+              {
+                "raw": "ttlByRegion",
+                "normalized": "ttl by region"
+              },
+              {
+                "raw": "region ttl map",
+                "normalized": "region ttl map"
+              },
+              {
+                "raw": "map property",
+                "normalized": "map property"
+              }
+            ],
+            "witnesses": [],
+            "near_misses": [
+              {
+                "clause_index": 1,
+                "clause": "the application yml defines cache region ttl but the java class expect cache ttl by region mapped from ttl by region",
+                "left_hits": [
+                  {
+                    "alias": "region-ttl",
+                    "normalized": "region ttl",
+                    "span": [
+                      34,
+                      44
+                    ],
+                    "text": "region ttl"
+                  },
+                  {
+                    "alias": "cache.region-ttl",
+                    "normalized": "cache region ttl",
+                    "span": [
+                      28,
+                      44
+                    ],
+                    "text": "cache region ttl"
+                  }
+                ],
+                "relation_hits": [],
+                "right_hits": [
+                  {
+                    "alias": "ttlByRegion",
+                    "normalized": "ttl by region",
+                    "span": [
+                      77,
+                      90
+                    ],
+                    "text": "ttl by region"
+                  },
+                  {
+                    "alias": "ttlByRegion",
+                    "normalized": "ttl by region",
+                    "span": [
+                      103,
+                      116
+                    ],
+                    "text": "ttl by region"
+                  }
+                ]
+              },
+              {
+                "clause_index": 3,
+                "clause": "the application yml file configures the cache lifetime under the key cache region ttl but the cache property class defines the map field as ttl by region",
+                "left_hits": [
+                  {
+                    "alias": "region-ttl",
+                    "normalized": "region ttl",
+                    "span": [
+                      75,
+                      85
+                    ],
+                    "text": "region ttl"
+                  },
+                  {
+                    "alias": "cache.region-ttl",
+                    "normalized": "cache region ttl",
+                    "span": [
+                      69,
+                      85
+                    ],
+                    "text": "cache region ttl"
+                  }
+                ],
+                "relation_hits": [],
+                "right_hits": [
+                  {
+                    "alias": "ttlByRegion",
+                    "normalized": "ttl by region",
+                    "span": [
+                      140,
+                      153
+                    ],
+                    "text": "ttl by region"
+                  }
+                ]
+              },
+              {
+                "clause_index": 4,
+                "clause": "spring boot s relaxed bind map ttl by region to ttl by region or ttl by region not region ttl",
+                "left_hits": [
+                  {
+                    "alias": "region-ttl",
+                    "normalized": "region ttl",
+                    "span": [
+                      83,
+                      93
+                    ],
+                    "text": "region ttl"
+                  }
+                ],
+                "relation_hits": [],
+                "right_hits": [
+                  {
+                    "alias": "ttlByRegion",
+                    "normalized": "ttl by region",
+                    "span": [
+                      31,
+                      44
+                    ],
+                    "text": "ttl by region"
+                  },
+                  {
+                    "alias": "ttlByRegion",
+                    "normalized": "ttl by region",
+                    "span": [
+                      48,
+                      61
+                    ],
+                    "text": "ttl by region"
+                  },
+                  {
+                    "alias": "ttlByRegion",
+                    "normalized": "ttl by region",
+                    "span": [
+                      65,
+                      78
+                    ],
+                    "text": "ttl by region"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "source": "fresh",
+      "case_id": "dev-s1-profile-config-source",
+      "bounded_evidence": {
+        "summary": "The development endpoint is ignored because `application-dev.yml` incorrectly restricts its activation to the `staging` profile via `spring.config.activate.on-profile: staging`. When the `dev` profile is active, this file is skipped, causing the application to fall back to the default endpoint defined in `application.yml`.",
+        "candidate_title": "Incorrect profile activation condition in application-dev.yml",
+        "candidate_description": "The file `application-dev.yml` contains the property `spring.config.activate.on-profile: staging`. In Spring Boot, this property overrides the file-name-based profile activation, meaning the configuration inside this file will only be applied when the `staging` profile is active. When the `dev` profile is active, the file is ignored, causing the application to fall back to the default `shipping.endpoint` defined in `application.yml`.",
+        "recommended_fix": "Remove the `spring.config.activate.on-profile: staging` property from `application-dev.yml` so that it correctly activates for the `dev` profile based on its file name, or rename the file to `application-staging.yml` if it was intended for the staging environment."
+      },
+      "normalized_clauses": [
+        "the development endpoint is ignored because application dev yml incorrectly restricts its activation to the staging profile via spring config activate on profile staging",
+        "when the dev profile is active this file is skipped causing the application to fall back to the default endpoint defined in application yml",
+        "incorrect profile activation condition in application dev yml",
+        "the file application dev yml contains the property spring config activate on profile staging",
+        "in spring boot this property override the file name based profile activation meaning the configuration inside this file will only be applied when the staging profile is active",
+        "when the dev profile is active the file is ignored causing the application to fall back to the default shipping endpoint defined in application yml",
+        "remove the spring config activate on profile staging property from application dev yml so that it correctly activate for the dev profile based on its file name or rename the file to application staging yml if it was intended for the staging environment"
+      ],
+      "required_relation": {
+        "name": "profile_gate_mismatch",
+        "variants": [
+          {
+            "left_aliases": [
+              {
+                "raw": "application-dev.yml",
+                "normalized": "application dev yml"
+              },
+              {
+                "raw": "profile-specific configuration",
+                "normalized": "profile specific configuration"
+              },
+              {
+                "raw": "dev profile configuration",
+                "normalized": "dev profile configuration"
+              }
+            ],
+            "relation_aliases": [
+              {
+                "raw": "is gated by",
+                "normalized": "is gated by"
+              },
+              {
+                "raw": "is activated only for",
+                "normalized": "is activated only for"
+              },
+              {
+                "raw": "declares",
+                "normalized": "declares"
+              },
+              {
+                "raw": "specifies",
+                "normalized": "specify"
+              },
+              {
+                "raw": "uses",
+                "normalized": "uses"
+              }
+            ],
+            "right_aliases": [
+              {
+                "raw": "staging profile",
+                "normalized": "staging profile"
+              },
+              {
+                "raw": "on-profile staging",
+                "normalized": "on profile staging"
+              },
+              {
+                "raw": "staging",
+                "normalized": "staging"
+              }
+            ],
+            "witnesses": [],
+            "near_misses": [
+              {
+                "clause_index": 0,
+                "clause": "the development endpoint is ignored because application dev yml incorrectly restricts its activation to the staging profile via spring config activate on profile staging",
+                "left_hits": [
+                  {
+                    "alias": "application-dev.yml",
+                    "normalized": "application dev yml",
+                    "span": [
+                      44,
+                      63
+                    ],
+                    "text": "application dev yml"
+                  }
+                ],
+                "relation_hits": [],
+                "right_hits": [
+                  {
+                    "alias": "staging profile",
+                    "normalized": "staging profile",
+                    "span": [
+                      108,
+                      123
+                    ],
+                    "text": "staging profile"
+                  },
+                  {
+                    "alias": "on-profile staging",
+                    "normalized": "on profile staging",
+                    "span": [
+                      151,
+                      169
+                    ],
+                    "text": "on profile staging"
+                  },
+                  {
+                    "alias": "staging",
+                    "normalized": "staging",
+                    "span": [
+                      108,
+                      115
+                    ],
+                    "text": "staging"
+                  }
+                ]
+              },
+              {
+                "clause_index": 3,
+                "clause": "the file application dev yml contains the property spring config activate on profile staging",
+                "left_hits": [
+                  {
+                    "alias": "application-dev.yml",
+                    "normalized": "application dev yml",
+                    "span": [
+                      9,
+                      28
+                    ],
+                    "text": "application dev yml"
+                  }
+                ],
+                "relation_hits": [],
+                "right_hits": [
+                  {
+                    "alias": "on-profile staging",
+                    "normalized": "on profile staging",
+                    "span": [
+                      74,
+                      92
+                    ],
+                    "text": "on profile staging"
+                  },
+                  {
+                    "alias": "staging",
+                    "normalized": "staging",
+                    "span": [
+                      85,
+                      92
+                    ],
+                    "text": "staging"
+                  }
+                ]
+              },
+              {
+                "clause_index": 6,
+                "clause": "remove the spring config activate on profile staging property from application dev yml so that it correctly activate for the dev profile based on its file name or rename the file to application staging yml if it was intended for the staging environment",
+                "left_hits": [
+                  {
+                    "alias": "application-dev.yml",
+                    "normalized": "application dev yml",
+                    "span": [
+                      67,
+                      86
+                    ],
+                    "text": "application dev yml"
+                  }
+                ],
+                "relation_hits": [],
+                "right_hits": [
+                  {
+                    "alias": "on-profile staging",
+                    "normalized": "on profile staging",
+                    "span": [
+                      34,
+                      52
+                    ],
+                    "text": "on profile staging"
+                  },
+                  {
+                    "alias": "staging",
+                    "normalized": "staging",
+                    "span": [
+                      45,
+                      52
+                    ],
+                    "text": "staging"
+                  },
+                  {
+                    "alias": "staging",
+                    "normalized": "staging",
+                    "span": [
+                      194,
+                      201
+                    ],
+                    "text": "staging"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "left_aliases": [
+              {
+                "raw": "staging profile",
+                "normalized": "staging profile"
+              },
+              {
+                "raw": "on-profile staging",
+                "normalized": "on profile staging"
+              }
+            ],
+            "relation_aliases": [
+              {
+                "raw": "does not match",
+                "normalized": "do not match"
+              },
+              {
+                "raw": "conflicts with",
+                "normalized": "conflicts with"
+              },
+              {
+                "raw": "is different from",
+                "normalized": "is different from"
+              },
+              {
+                "raw": "differs from",
+                "normalized": "differs from"
+              }
+            ],
+            "right_aliases": [
+              {
+                "raw": "active dev profile",
+                "normalized": "active dev profile"
+              },
+              {
+                "raw": "dev profile",
+                "normalized": "dev profile"
+              }
+            ],
+            "witnesses": [],
+            "near_misses": [
+              {
+                "clause_index": 6,
+                "clause": "remove the spring config activate on profile staging property from application dev yml so that it correctly activate for the dev profile based on its file name or rename the file to application staging yml if it was intended for the staging environment",
+                "left_hits": [
+                  {
+                    "alias": "on-profile staging",
+                    "normalized": "on profile staging",
+                    "span": [
+                      34,
+                      52
+                    ],
+                    "text": "on profile staging"
+                  }
+                ],
+                "relation_hits": [],
+                "right_hits": [
+                  {
+                    "alias": "dev profile",
+                    "normalized": "dev profile",
+                    "span": [
+                      125,
+                      136
+                    ],
+                    "text": "dev profile"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "left_aliases": [
+              {
+                "raw": "application-dev.yml",
+                "normalized": "application dev yml"
+              },
+              {
+                "raw": "profile-specific configuration",
+                "normalized": "profile specific configuration"
+              }
+            ],
+            "relation_aliases": [
+              {
+                "raw": "does not apply to",
+                "normalized": "do not apply to"
+              },
+              {
+                "raw": "is inactive for",
+                "normalized": "is inactive for"
+              },
+              {
+                "raw": "is excluded from",
+                "normalized": "is excluded from"
+              },
+              {
+                "raw": "ignored for",
+                "normalized": "ignored for"
+              }
+            ],
+            "right_aliases": [
+              {
+                "raw": "active dev profile",
+                "normalized": "active dev profile"
+              },
+              {
+                "raw": "dev profile",
+                "normalized": "dev profile"
+              }
+            ],
+            "witnesses": [],
+            "near_misses": [
+              {
+                "clause_index": 6,
+                "clause": "remove the spring config activate on profile staging property from application dev yml so that it correctly activate for the dev profile based on its file name or rename the file to application staging yml if it was intended for the staging environment",
+                "left_hits": [
+                  {
+                    "alias": "application-dev.yml",
+                    "normalized": "application dev yml",
+                    "span": [
+                      67,
+                      86
+                    ],
+                    "text": "application dev yml"
+                  }
+                ],
+                "relation_hits": [],
+                "right_hits": [
+                  {
+                    "alias": "dev profile",
+                    "normalized": "dev profile",
+                    "span": [
+                      125,
+                      136
+                    ],
+                    "text": "dev profile"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "source": "fresh",
+      "case_id": "dev-s4-conditional-notification",
+      "bounded_evidence": {
+        "summary": "The application fails to start because NotificationService requires a NotificationSender bean, but the only provided implementation, WebhookNotificationSender, is conditionally disabled. The application.yml configures alerts.provider as 'email', while WebhookNotificationSender requires it to be 'webhook'.",
+        "candidate_title": "Mismatch between configured property and conditional bean requirement",
+        "candidate_description": "NotificationService requires a NotificationSender bean via constructor injection. The only available implementation, WebhookNotificationSender, is annotated with @ConditionalOnProperty requiring 'alerts.provider' to be 'webhook'. However, application.yml sets 'alerts.provider' to 'email'. This mismatch prevents the bean from being created, causing an UnsatisfiedDependencyException.",
+        "recommended_fix": "Update the 'alerts.provider' property in application.yml to 'webhook' to activate the WebhookNotificationSender, or implement and register an EmailNotificationSender that activates when the property is set to 'email'."
+      },
+      "normalized_clauses": [
+        "the application fail to start because notification service require a notification sender bean but the only provided implementation webhook notification sender is conditionally disabled",
+        "the application yml configures alerts provider as email while webhook notification sender require it to be webhook",
+        "mismatch between configured property and conditional bean requirement",
+        "notification service require a notification sender bean via constructor injection",
+        "the only available implementation webhook notification sender is annotated with conditional on property requiring alerts provider to be webhook",
+        "however application yml sets alerts provider to email",
+        "this mismatch prevents the bean from being created causing an unsatisfied dependency exception",
+        "update the alerts provider property in application yml to webhook to activate the webhook notification sender or implement and register an email notification sender that activate when the property is set to email"
+      ],
+      "required_relation": {
+        "name": "provider_condition_mismatch",
+        "variants": [
+          {
+            "left_aliases": [
+              {
+                "raw": "email provider",
+                "normalized": "email provider"
+              },
+              {
+                "raw": "provider email",
+                "normalized": "provider email"
+              },
+              {
+                "raw": "configured email",
+                "normalized": "configured email"
+              }
+            ],
+            "relation_aliases": [
+              {
+                "raw": "does not satisfy",
+                "normalized": "do not satisfy"
+              },
+              {
+                "raw": "does not match",
+                "normalized": "do not match"
+              },
+              {
+                "raw": "fails",
+                "normalized": "fail"
+              },
+              {
+                "raw": "is incompatible with",
+                "normalized": "is incompatible with"
+              },
+              {
+                "raw": "cannot activate",
+                "normalized": "cannot activate"
+              }
+            ],
+            "right_aliases": [
+              {
+                "raw": "webhook condition",
+                "normalized": "webhook condition"
+              },
+              {
+                "raw": "havingvalue webhook",
+                "normalized": "havingvalue webhook"
+              },
+              {
+                "raw": "conditionalonproperty",
+                "normalized": "conditionalonproperty"
+              }
+            ],
+            "witnesses": [],
+            "near_misses": []
+          },
+          {
+            "left_aliases": [
+              {
+                "raw": "configured email",
+                "normalized": "configured email"
+              },
+              {
+                "raw": "email provider",
+                "normalized": "email provider"
+              },
+              {
+                "raw": "provider email",
+                "normalized": "provider email"
+              },
+              {
+                "raw": "alerts.provider",
+                "normalized": "alerts provider"
+              }
+            ],
+            "relation_aliases": [
+              {
+                "raw": "conditionally registered only when",
+                "normalized": "conditionally register only when"
+              },
+              {
+                "raw": "available only when",
+                "normalized": "available only when"
+              },
+              {
+                "raw": "activates only for",
+                "normalized": "activate only for"
+              }
+            ],
+            "right_aliases": [
+              {
+                "raw": "webhook",
+                "normalized": "webhook"
+              },
+              {
+                "raw": "provider webhook",
+                "normalized": "provider webhook"
+              },
+              {
+                "raw": "webhook provider",
+                "normalized": "webhook provider"
+              }
+            ],
+            "witnesses": [],
+            "near_misses": [
+              {
+                "clause_index": 1,
+                "clause": "the application yml configures alerts provider as email while webhook notification sender require it to be webhook",
+                "left_hits": [
+                  {
+                    "alias": "alerts.provider",
+                    "normalized": "alerts provider",
+                    "span": [
+                      31,
+                      46
+                    ],
+                    "text": "alerts provider"
+                  }
+                ],
+                "relation_hits": [],
+                "right_hits": [
+                  {
+                    "alias": "webhook",
+                    "normalized": "webhook",
+                    "span": [
+                      62,
+                      69
+                    ],
+                    "text": "webhook"
+                  },
+                  {
+                    "alias": "webhook",
+                    "normalized": "webhook",
+                    "span": [
+                      107,
+                      114
+                    ],
+                    "text": "webhook"
+                  }
+                ]
+              },
+              {
+                "clause_index": 4,
+                "clause": "the only available implementation webhook notification sender is annotated with conditional on property requiring alerts provider to be webhook",
+                "left_hits": [
+                  {
+                    "alias": "alerts.provider",
+                    "normalized": "alerts provider",
+                    "span": [
+                      114,
+                      129
+                    ],
+                    "text": "alerts provider"
+                  }
+                ],
+                "relation_hits": [],
+                "right_hits": [
+                  {
+                    "alias": "webhook",
+                    "normalized": "webhook",
+                    "span": [
+                      34,
+                      41
+                    ],
+                    "text": "webhook"
+                  },
+                  {
+                    "alias": "webhook",
+                    "normalized": "webhook",
+                    "span": [
+                      136,
+                      143
+                    ],
+                    "text": "webhook"
+                  }
+                ]
+              },
+              {
+                "clause_index": 7,
+                "clause": "update the alerts provider property in application yml to webhook to activate the webhook notification sender or implement and register an email notification sender that activate when the property is set to email",
+                "left_hits": [
+                  {
+                    "alias": "alerts.provider",
+                    "normalized": "alerts provider",
+                    "span": [
+                      11,
+                      26
+                    ],
+                    "text": "alerts provider"
+                  }
+                ],
+                "relation_hits": [],
+                "right_hits": [
+                  {
+                    "alias": "webhook",
+                    "normalized": "webhook",
+                    "span": [
+                      58,
+                      65
+                    ],
+                    "text": "webhook"
+                  },
+                  {
+                    "alias": "webhook",
+                    "normalized": "webhook",
+                    "span": [
+                      82,
+                      89
+                    ],
+                    "text": "webhook"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "left_aliases": [
+              {
+                "raw": "conditional bean",
+                "normalized": "conditional bean"
+              },
+              {
+                "raw": "webhook sender",
+                "normalized": "webhook sender"
+              },
+              {
+                "raw": "webhook notification sender",
+                "normalized": "webhook notification sender"
+              }
+            ],
+            "relation_aliases": [
+              {
+                "raw": "is not created for",
+                "normalized": "is not created for"
+              },
+              {
+                "raw": "is inactive for",
+                "normalized": "is inactive for"
+              },
+              {
+                "raw": "is disabled for",
+                "normalized": "is disabled for"
+              },
+              {
+                "raw": "is registered only for",
+                "normalized": "is register only for"
+              }
+            ],
+            "right_aliases": [
+              {
+                "raw": "email provider",
+                "normalized": "email provider"
+              },
+              {
+                "raw": "provider email",
+                "normalized": "provider email"
+              },
+              {
+                "raw": "configured email",
+                "normalized": "configured email"
+              }
+            ],
+            "witnesses": [],
+            "near_misses": []
+          }
+        ]
+      }
+    },
+    {
+      "source": "fresh",
+      "case_id": "dev-s5-cache-binding-key",
+      "bounded_evidence": {
+        "summary": "The configuration property 'cache.region-ttl' in application.yml does not match the field name 'ttlByRegion' in CacheProperties. Spring Boot's relaxed binding maps 'region-ttl' to 'regionTtl', leaving 'ttlByRegion' unbound and initialized to its empty-map default.",
+        "candidate_title": "Property name mismatch between YAML configuration and ConfigurationProperties field",
+        "candidate_description": "The application.yml defines the cache TTL map under the key 'region-ttl', but the CacheProperties class defines the field as 'ttlByRegion'. Spring Boot's relaxed binding will map 'region-ttl' to a field named 'regionTtl', not 'ttlByRegion'. As a result, the 'ttlByRegion' field is never populated and retains its default empty LinkedHashMap.",
+        "recommended_fix": "Rename the field in CacheProperties to 'regionTtl' (and update the corresponding getter and setter methods) to match the YAML key 'region-ttl', or alternatively change the YAML key to 'ttl-by-region' to match the existing field name."
+      },
+      "normalized_clauses": [
+        "the configuration property cache region ttl in application yml do not match the field name ttl by region in cache property",
+        "spring boot s relaxed bind map region ttl to region ttl leaving ttl by region unbound and initialized to its empty map default",
+        "property name mismatch between yaml configuration and configuration property field",
+        "the application yml defines the cache ttl map under the key region ttl but the cache property class defines the field as ttl by region",
+        "spring boot s relaxed bind will map region ttl to a field named region ttl not ttl by region",
+        "as a result the ttl by region field is never populated and retains its default empty linked hash map",
+        "rename the field in cache property to region ttl and update the corresponding getter and setter methods to match the yaml key region ttl or alternatively change the yaml key to ttl by region to match the existing field name"
+      ],
+      "required_relation": {
+        "name": "configuration_key_binding_mismatch",
+        "variants": [
+          {
+            "left_aliases": [
+              {
+                "raw": "region-ttl",
+                "normalized": "region ttl"
+              },
+              {
+                "raw": "cache.region-ttl",
+                "normalized": "cache region ttl"
+              },
+              {
+                "raw": "configuration key",
+                "normalized": "configuration key"
+              },
+              {
+                "raw": "regional cache lifetime configuration",
+                "normalized": "regional cache lifetime configuration"
+              }
+            ],
+            "relation_aliases": [
+              {
+                "raw": "does not bind to",
+                "normalized": "do not bind to"
+              },
+              {
+                "raw": "is not binding to",
+                "normalized": "is not bind to"
+              },
+              {
+                "raw": "does not map to",
+                "normalized": "do not map to"
+              },
+              {
+                "raw": "does not match",
+                "normalized": "do not match"
+              },
+              {
+                "raw": "fails to bind to",
+                "normalized": "fail to bind to"
+              }
+            ],
+            "right_aliases": [
+              {
+                "raw": "ttlByRegion",
+                "normalized": "ttl by region"
+              },
+              {
+                "raw": "region ttl map",
+                "normalized": "region ttl map"
+              },
+              {
+                "raw": "map property",
+                "normalized": "map property"
+              },
+              {
+                "raw": "CacheProperties map",
+                "normalized": "cache property map"
+              }
+            ],
+            "witnesses": [
+              {
+                "clause_index": 0,
+                "clause": "the configuration property cache region ttl in application yml do not match the field name ttl by region in cache property",
+                "left": {
+                  "alias": "region-ttl",
+                  "normalized": "region ttl",
+                  "span": [
+                    33,
+                    43
+                  ],
+                  "text": "region ttl"
+                },
+                "relation": {
+                  "alias": "does not match",
+                  "normalized": "do not match",
+                  "span": [
+                    63,
+                    75
+                  ],
+                  "text": "do not match"
+                },
+                "right": {
+                  "alias": "ttlByRegion",
+                  "normalized": "ttl by region",
+                  "span": [
+                    91,
+                    104
+                  ],
+                  "text": "ttl by region"
+                }
+              }
+            ],
+            "near_misses": [
+              {
+                "clause_index": 1,
+                "clause": "spring boot s relaxed bind map region ttl to region ttl leaving ttl by region unbound and initialized to its empty map default",
+                "left_hits": [
+                  {
+                    "alias": "region-ttl",
+                    "normalized": "region ttl",
+                    "span": [
+                      31,
+                      41
+                    ],
+                    "text": "region ttl"
+                  },
+                  {
+                    "alias": "region-ttl",
+                    "normalized": "region ttl",
+                    "span": [
+                      45,
+                      55
+                    ],
+                    "text": "region ttl"
+                  }
+                ],
+                "relation_hits": [],
+                "right_hits": [
+                  {
+                    "alias": "ttlByRegion",
+                    "normalized": "ttl by region",
+                    "span": [
+                      64,
+                      77
+                    ],
+                    "text": "ttl by region"
+                  }
+                ]
+              },
+              {
+                "clause_index": 3,
+                "clause": "the application yml defines the cache ttl map under the key region ttl but the cache property class defines the field as ttl by region",
+                "left_hits": [
+                  {
+                    "alias": "region-ttl",
+                    "normalized": "region ttl",
+                    "span": [
+                      60,
+                      70
+                    ],
+                    "text": "region ttl"
+                  }
+                ],
+                "relation_hits": [],
+                "right_hits": [
+                  {
+                    "alias": "ttlByRegion",
+                    "normalized": "ttl by region",
+                    "span": [
+                      121,
+                      134
+                    ],
+                    "text": "ttl by region"
+                  }
+                ]
+              },
+              {
+                "clause_index": 4,
+                "clause": "spring boot s relaxed bind will map region ttl to a field named region ttl not ttl by region",
+                "left_hits": [
+                  {
+                    "alias": "region-ttl",
+                    "normalized": "region ttl",
+                    "span": [
+                      36,
+                      46
+                    ],
+                    "text": "region ttl"
+                  },
+                  {
+                    "alias": "region-ttl",
+                    "normalized": "region ttl",
+                    "span": [
+                      64,
+                      74
+                    ],
+                    "text": "region ttl"
+                  }
+                ],
+                "relation_hits": [],
+                "right_hits": [
+                  {
+                    "alias": "ttlByRegion",
+                    "normalized": "ttl by region",
+                    "span": [
+                      79,
+                      92
+                    ],
+                    "text": "ttl by region"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "left_aliases": [
+              {
+                "raw": "ttlByRegion",
+                "normalized": "ttl by region"
+              },
+              {
+                "raw": "region ttl map",
+                "normalized": "region ttl map"
+              },
+              {
+                "raw": "map property",
+                "normalized": "map property"
+              }
+            ],
+            "relation_aliases": [
+              {
+                "raw": "expects",
+                "normalized": "expect"
+              },
+              {
+                "raw": "binds from",
+                "normalized": "binds from"
+              },
+              {
+                "raw": "maps from",
+                "normalized": "map from"
+              }
+            ],
+            "right_aliases": [
+              {
+                "raw": "ttl-by-region",
+                "normalized": "ttl by region"
+              },
+              {
+                "raw": "cache.ttl-by-region",
+                "normalized": "cache ttl by region"
+              }
+            ],
+            "witnesses": [],
+            "near_misses": [
+              {
+                "clause_index": 0,
+                "clause": "the configuration property cache region ttl in application yml do not match the field name ttl by region in cache property",
+                "left_hits": [
+                  {
+                    "alias": "ttlByRegion",
+                    "normalized": "ttl by region",
+                    "span": [
+                      91,
+                      104
+                    ],
+                    "text": "ttl by region"
+                  }
+                ],
+                "relation_hits": [],
+                "right_hits": [
+                  {
+                    "alias": "ttl-by-region",
+                    "normalized": "ttl by region",
+                    "span": [
+                      91,
+                      104
+                    ],
+                    "text": "ttl by region"
+                  }
+                ]
+              },
+              {
+                "clause_index": 1,
+                "clause": "spring boot s relaxed bind map region ttl to region ttl leaving ttl by region unbound and initialized to its empty map default",
+                "left_hits": [
+                  {
+                    "alias": "ttlByRegion",
+                    "normalized": "ttl by region",
+                    "span": [
+                      64,
+                      77
+                    ],
+                    "text": "ttl by region"
+                  }
+                ],
+                "relation_hits": [],
+                "right_hits": [
+                  {
+                    "alias": "ttl-by-region",
+                    "normalized": "ttl by region",
+                    "span": [
+                      64,
+                      77
+                    ],
+                    "text": "ttl by region"
+                  }
+                ]
+              },
+              {
+                "clause_index": 3,
+                "clause": "the application yml defines the cache ttl map under the key region ttl but the cache property class defines the field as ttl by region",
+                "left_hits": [
+                  {
+                    "alias": "ttlByRegion",
+                    "normalized": "ttl by region",
+                    "span": [
+                      121,
+                      134
+                    ],
+                    "text": "ttl by region"
+                  }
+                ],
+                "relation_hits": [],
+                "right_hits": [
+                  {
+                    "alias": "ttl-by-region",
+                    "normalized": "ttl by region",
+                    "span": [
+                      121,
+                      134
+                    ],
+                    "text": "ttl by region"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "left_aliases": [
+              {
+                "raw": "mismatched key",
+                "normalized": "mismatched key"
+              },
+              {
+                "raw": "binding key mismatch",
+                "normalized": "bind key mismatch"
+              },
+              {
+                "raw": "region-ttl",
+                "normalized": "region ttl"
+              }
+            ],
+            "relation_aliases": [
+              {
+                "raw": "leaves",
+                "normalized": "leave"
+              },
+              {
+                "raw": "causes",
+                "normalized": "cause"
+              },
+              {
+                "raw": "results in",
+                "normalized": "result in"
+              }
+            ],
+            "right_aliases": [
+              {
+                "raw": "empty map",
+                "normalized": "empty map"
+              },
+              {
+                "raw": "map default",
+                "normalized": "map default"
+              },
+              {
+                "raw": "pt0s",
+                "normalized": "pt0s"
+              },
+              {
+                "raw": "zero duration",
+                "normalized": "zero duration"
+              }
+            ],
+            "witnesses": [],
+            "near_misses": [
+              {
+                "clause_index": 1,
+                "clause": "spring boot s relaxed bind map region ttl to region ttl leaving ttl by region unbound and initialized to its empty map default",
+                "left_hits": [
+                  {
+                    "alias": "region-ttl",
+                    "normalized": "region ttl",
+                    "span": [
+                      31,
+                      41
+                    ],
+                    "text": "region ttl"
+                  },
+                  {
+                    "alias": "region-ttl",
+                    "normalized": "region ttl",
+                    "span": [
+                      45,
+                      55
+                    ],
+                    "text": "region ttl"
+                  }
+                ],
+                "relation_hits": [],
+                "right_hits": [
+                  {
+                    "alias": "empty map",
+                    "normalized": "empty map",
+                    "span": [
+                      109,
+                      118
+                    ],
+                    "text": "empty map"
+                  },
+                  {
+                    "alias": "map default",
+                    "normalized": "map default",
+                    "span": [
+                      115,
+                      126
+                    ],
+                    "text": "map default"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "forbidden_relation": {
+        "name": "incorrect_key_binds_successfully",
+        "variants": [
+          {
+            "left_aliases": [
+              {
+                "raw": "region-ttl",
+                "normalized": "region ttl"
+              },
+              {
+                "raw": "cache.region-ttl",
+                "normalized": "cache region ttl"
+              }
+            ],
+            "relation_aliases": [
+              {
+                "raw": "binds to",
+                "normalized": "binds to"
+              },
+              {
+                "raw": "maps to",
+                "normalized": "map to"
+              },
+              {
+                "raw": "matches",
+                "normalized": "match"
+              }
+            ],
+            "right_aliases": [
+              {
+                "raw": "ttlByRegion",
+                "normalized": "ttl by region"
+              },
+              {
+                "raw": "region ttl map",
+                "normalized": "region ttl map"
+              },
+              {
+                "raw": "map property",
+                "normalized": "map property"
+              }
+            ],
+            "witnesses": [
+              {
+                "clause_index": 0,
+                "clause": "the configuration property cache region ttl in application yml do not match the field name ttl by region in cache property",
+                "left": {
+                  "alias": "region-ttl",
+                  "normalized": "region ttl",
+                  "span": [
+                    33,
+                    43
+                  ],
+                  "text": "region ttl"
+                },
+                "relation": {
+                  "alias": "matches",
+                  "normalized": "match",
+                  "span": [
+                    70,
+                    75
+                  ],
+                  "text": "match"
+                },
+                "right": {
+                  "alias": "ttlByRegion",
+                  "normalized": "ttl by region",
+                  "span": [
+                    91,
+                    104
+                  ],
+                  "text": "ttl by region"
+                }
+              },
+              {
+                "clause_index": 6,
+                "clause": "rename the field in cache property to region ttl and update the corresponding getter and setter methods to match the yaml key region ttl or alternatively change the yaml key to ttl by region to match the existing field name",
+                "left": {
+                  "alias": "region-ttl",
+                  "normalized": "region ttl",
+                  "span": [
+                    38,
+                    48
+                  ],
+                  "text": "region ttl"
+                },
+                "relation": {
+                  "alias": "matches",
+                  "normalized": "match",
+                  "span": [
+                    107,
+                    112
+                  ],
+                  "text": "match"
+                },
+                "right": {
+                  "alias": "ttlByRegion",
+                  "normalized": "ttl by region",
+                  "span": [
+                    177,
+                    190
+                  ],
+                  "text": "ttl by region"
+                }
+              }
+            ],
+            "near_misses": [
+              {
+                "clause_index": 1,
+                "clause": "spring boot s relaxed bind map region ttl to region ttl leaving ttl by region unbound and initialized to its empty map default",
+                "left_hits": [
+                  {
+                    "alias": "region-ttl",
+                    "normalized": "region ttl",
+                    "span": [
+                      31,
+                      41
+                    ],
+                    "text": "region ttl"
+                  },
+                  {
+                    "alias": "region-ttl",
+                    "normalized": "region ttl",
+                    "span": [
+                      45,
+                      55
+                    ],
+                    "text": "region ttl"
+                  }
+                ],
+                "relation_hits": [],
+                "right_hits": [
+                  {
+                    "alias": "ttlByRegion",
+                    "normalized": "ttl by region",
+                    "span": [
+                      64,
+                      77
+                    ],
+                    "text": "ttl by region"
+                  }
+                ]
+              },
+              {
+                "clause_index": 3,
+                "clause": "the application yml defines the cache ttl map under the key region ttl but the cache property class defines the field as ttl by region",
+                "left_hits": [
+                  {
+                    "alias": "region-ttl",
+                    "normalized": "region ttl",
+                    "span": [
+                      60,
+                      70
+                    ],
+                    "text": "region ttl"
+                  }
+                ],
+                "relation_hits": [],
+                "right_hits": [
+                  {
+                    "alias": "ttlByRegion",
+                    "normalized": "ttl by region",
+                    "span": [
+                      121,
+                      134
+                    ],
+                    "text": "ttl by region"
+                  }
+                ]
+              },
+              {
+                "clause_index": 4,
+                "clause": "spring boot s relaxed bind will map region ttl to a field named region ttl not ttl by region",
+                "left_hits": [
+                  {
+                    "alias": "region-ttl",
+                    "normalized": "region ttl",
+                    "span": [
+                      36,
+                      46
+                    ],
+                    "text": "region ttl"
+                  },
+                  {
+                    "alias": "region-ttl",
+                    "normalized": "region ttl",
+                    "span": [
+                      64,
+                      74
+                    ],
+                    "text": "region ttl"
+                  }
+                ],
+                "relation_hits": [],
+                "right_hits": [
+                  {
+                    "alias": "ttlByRegion",
+                    "normalized": "ttl by region",
+                    "span": [
+                      79,
+                      92
+                    ],
+                    "text": "ttl by region"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
