@@ -1,0 +1,28 @@
+{
+  "schema_version": "fresh-holdout-v2-agent-manifest-v1",
+  "benchmark_version": "fresh_holdout_v2",
+  "status": "REGISTERED_BEFORE_AGENT_EXECUTION",
+  "case_count": 8,
+  "case_ids": [
+    "fresh-v2-h01",
+    "fresh-v2-h02",
+    "fresh-v2-h03",
+    "fresh-v2-h04",
+    "fresh-v2-h05",
+    "fresh-v2-h06",
+    "fresh-v2-h07",
+    "fresh-v2-h08"
+  ],
+  "cases_path": "benchmark/fresh_holdout_v2_cases.jsonl",
+  "execution_contract": {
+    "agent_executions": 0,
+    "mock_executions": 0,
+    "live_executions": 0,
+    "llm_benchmark_calls": 0,
+    "maven_target": "mvn test",
+    "fresh_holdout_execution": false
+  },
+  "agent_projection_fields": ["case_id", "repository", "issue_description", "error_log", "error_log_version"],
+  "gold_projection": "excluded",
+  "reference_material": "sealed in benchmark/fresh_holdout_v2_repair_gold.jsonl and benchmark/fresh_holdout_v2_reference_patches/"
+}

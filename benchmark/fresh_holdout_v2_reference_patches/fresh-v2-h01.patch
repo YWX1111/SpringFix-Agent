@@ -1,0 +1,6 @@
+diff --git a/src/main/java/com/springfix/freshv2/h01/conditional/FeatureFlagConfig.java b/src/main/java/com/springfix/freshv2/h01/conditional/FeatureFlagConfig.java
+--- a/src/main/java/com/springfix/freshv2/h01/conditional/FeatureFlagConfig.java
++++ b/src/main/java/com/springfix/freshv2/h01/conditional/FeatureFlagConfig.java
+@@ -15 +15 @@ public class FeatureFlagConfig {
+-    @ConditionalOnBean(RemoteFeatureFlagStore.class)
++    @ConditionalOnBean(FeatureFlagStore.class)

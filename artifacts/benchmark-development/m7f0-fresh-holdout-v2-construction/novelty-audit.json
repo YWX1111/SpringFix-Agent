@@ -1,0 +1,25 @@
+{
+  "compositional_count": 2,
+  "copied_fixture_identifiers": [],
+  "fresh_v2_novelty_audit": "PASS",
+  "identical_descriptions": [],
+  "identical_project_hashes": [],
+  "overlap_documented": {
+    "fresh-v2-h02": "general configuration binding overlaps the broad Dev binding area but uses a nested indexed collection and a different failure mechanism",
+    "fresh-v2-h04": "relaxed binding overlaps the broad Dev binding area but tests preservation of a path-like map key",
+    "fresh-v2-h06": "profile semantics overlaps the broad Dev profile area but tests profile-group composition rather than profile source activation",
+    "fresh-v2-h07": "validation overlaps the broad Dev validation area but tests typed collection elements rather than a scalar lower bound"
+  },
+  "semantic_family_count": 8,
+  "semantic_family_counts": {
+    "conditional-registration-semantics": 1,
+    "config-import-resource-resolution": 1,
+    "configuration-properties-registration-scan": 1,
+    "nested-configuration-properties-binding": 1,
+    "placeholder-default-value-semantics": 1,
+    "profile-group-include-semantics": 1,
+    "relaxed-binding-map-key-preservation": 1,
+    "typed-collection-validation": 1
+  },
+  "status": "PASS"
+}

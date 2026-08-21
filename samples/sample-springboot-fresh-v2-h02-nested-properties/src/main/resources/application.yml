@@ -1,0 +1,5 @@
+routing:
+  limits:
+    zones:
+      - name: east
+        base-url: https://east-router.internal

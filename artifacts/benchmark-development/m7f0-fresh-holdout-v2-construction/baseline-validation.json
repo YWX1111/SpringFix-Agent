@@ -1,0 +1,69 @@
+{
+  "cases": [
+    {
+      "agent_execution_count": 0,
+      "case_id": "fresh-v2-h01",
+      "failure_signature": "test-error",
+      "failure_signature_consistent": true,
+      "repeat": "2/2",
+      "status": "PASS"
+    },
+    {
+      "agent_execution_count": 0,
+      "case_id": "fresh-v2-h02",
+      "failure_signature": "test-failure",
+      "failure_signature_consistent": true,
+      "repeat": "2/2",
+      "status": "PASS"
+    },
+    {
+      "agent_execution_count": 0,
+      "case_id": "fresh-v2-h03",
+      "failure_signature": "test-failure",
+      "failure_signature_consistent": true,
+      "repeat": "2/2",
+      "status": "PASS"
+    },
+    {
+      "agent_execution_count": 0,
+      "case_id": "fresh-v2-h04",
+      "failure_signature": "test-failure",
+      "failure_signature_consistent": true,
+      "repeat": "2/2",
+      "status": "PASS"
+    },
+    {
+      "agent_execution_count": 0,
+      "case_id": "fresh-v2-h05",
+      "failure_signature": "test-failure",
+      "failure_signature_consistent": true,
+      "repeat": "2/2",
+      "status": "PASS"
+    },
+    {
+      "agent_execution_count": 0,
+      "case_id": "fresh-v2-h06",
+      "failure_signature": "test-failure",
+      "failure_signature_consistent": true,
+      "repeat": "2/2",
+      "status": "PASS"
+    },
+    {
+      "agent_execution_count": 0,
+      "case_id": "fresh-v2-h07",
+      "failure_signature": "test-failure",
+      "failure_signature_consistent": true,
+      "repeat": "2/2",
+      "status": "PASS"
+    },
+    {
+      "agent_execution_count": 0,
+      "case_id": "fresh-v2-h08",
+      "failure_signature": "test-failure",
+      "failure_signature_consistent": true,
+      "repeat": "2/2",
+      "status": "PASS"
+    }
+  ],
+  "status": "PASS"
+}

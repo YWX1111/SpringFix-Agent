@@ -1,0 +1,170 @@
+{
+  "agent_manifest": "benchmark/fresh_holdout_v2_manifest.json",
+  "benchmark_version": "fresh_holdout_v2",
+  "case_count": 8,
+  "case_ids": [
+    "fresh-v2-h01",
+    "fresh-v2-h02",
+    "fresh-v2-h03",
+    "fresh-v2-h04",
+    "fresh-v2-h05",
+    "fresh-v2-h06",
+    "fresh-v2-h07",
+    "fresh-v2-h08"
+  ],
+  "content_normalization": "utf8-lf-v1",
+  "diagnosis": {
+    "available": false,
+    "role": "observational-only",
+    "schema": "diagnosis-evidence-v1.0"
+  },
+  "execution_lock": {
+    "agent_executions": 0,
+    "anti_tuning_lock_active": true,
+    "fresh_holdout_executed": false,
+    "live_executions": 0,
+    "llm_benchmark_calls": 0,
+    "mock_executions": 0
+  },
+  "file_hashes": {
+    "artifacts/benchmark-development/m7f0-fresh-holdout-v2-construction/baseline-validation.json": "66e04f92fa28c5183c3bdfb77d378d7521cd0bc842bd491c98681eba6af7d2e3",
+    "artifacts/benchmark-development/m7f0-fresh-holdout-v2-construction/gold-isolation-audit.json": "673763e929be3a890cf979f3bb6bbd54e4508b02f3b5506c9b382e3d7a6bcf76",
+    "artifacts/benchmark-development/m7f0-fresh-holdout-v2-construction/m7f1-execution-readiness.json": "a1182eb3ccc5b91623f5b2f534de866d2565564c889007724ec12671e146711c",
+    "artifacts/benchmark-development/m7f0-fresh-holdout-v2-construction/novelty-audit.json": "e7e96a3569bf531e56ce2963a401b684f605d86e0ebb4a5791c607f8838fd248",
+    "artifacts/benchmark-development/m7f0-fresh-holdout-v2-construction/reference-validation.json": "dbec0870f3356d0c30d3e8a62c3e92d56d8ffc8e0acbc36b04d483eed928157e",
+    "artifacts/benchmark-development/m7f0-fresh-holdout-v2-construction/test-leak-audit.json": "065c12820506c22b4c2a3df20c5995c633c61e40f623adeb0536fd668371254b",
+    "benchmark/fresh_holdout_v2_cases.jsonl": "d9b746f46489ea0cfda043c197832b5384b21796af5a3aa1d96d256bd39d6026",
+    "benchmark/fresh_holdout_v2_manifest.json": "dbc38b00e75adc3f172696a37dfce8898ae1e6235ecd097e2d9eba6bf2fdb30d",
+    "benchmark/fresh_holdout_v2_reference_patches/fresh-v2-h01.patch": "7277ae987c5b71cec6c3b5f323adb7c1a43dabaa269cd0b037c51208459773b8",
+    "benchmark/fresh_holdout_v2_reference_patches/fresh-v2-h02.patch": "5614ab240a0b9494eaf7347dbbbb0623daa6693a8e3ac48103603ce48cdc7a90",
+    "benchmark/fresh_holdout_v2_reference_patches/fresh-v2-h03.patch": "e58801c8a953d1867d0cffc77e56c8f2dd7e41ff46c7141b74a2a595f8ac8ced",
+    "benchmark/fresh_holdout_v2_reference_patches/fresh-v2-h04.patch": "b889554ba153d6c9b5a72076dcb83c8e04a4f53ab9434e394227d43a4a6fc699",
+    "benchmark/fresh_holdout_v2_reference_patches/fresh-v2-h05.patch": "39827364e4507915ae6b85c60c601f0a2a15718f5791111a175140a17ac0a575",
+    "benchmark/fresh_holdout_v2_reference_patches/fresh-v2-h06.patch": "88a0ddc19932997e369e1257c309d2676d15cec29d2b6ca22aae07cd6f9c18ba",
+    "benchmark/fresh_holdout_v2_reference_patches/fresh-v2-h07.patch": "165c907424615c97e59e66b46c08ae544cb5dfbc14e164a3b74453ee0472f2d3",
+    "benchmark/fresh_holdout_v2_reference_patches/fresh-v2-h08.patch": "6b3419201985615af0332512b45ce44fc6baa9d506a7bfa0cc687364c6b08fd7",
+    "benchmark/fresh_holdout_v2_repair_gold.jsonl": "e2b9b787134d86eade8f2c4abdbb01092092ac8bc9621a1f8c19b468e81c5a41"
+  },
+  "freeze_timestamp_utc": "2026-08-21T02:25:43.045501+00:00",
+  "gold_manifest": "benchmark/fresh_holdout_v2_repair_gold.jsonl",
+  "hash_algorithm": "sha256",
+  "historical_holdout_v1": {
+    "case_outcomes_used": false,
+    "gold_inspected": false,
+    "touched": false
+  },
+  "reference_patch_root": "benchmark/fresh_holdout_v2_reference_patches",
+  "repair_score": {
+    "available": false,
+    "primary_metric": "Repair Success rate",
+    "threshold": null
+  },
+  "sample_hashes": {
+    "fresh-v2-h01": {
+      "files": {
+        "pom.xml": "4875f9b496cdedb3233254c0de56360c01b361fcc63e8c8e34322df828551571",
+        "src/main/java/com/springfix/freshv2/h01/conditional/Application.java": "a00152bf5dc9e297306918c9a87e1905ac7b7629df970b931cd93a4a051c5465",
+        "src/main/java/com/springfix/freshv2/h01/conditional/FeatureFlagConfig.java": "df91cd7b6d88e8718f03d4574eaf4a81d562c82bc8c503ecf0c4368494d467a3",
+        "src/main/java/com/springfix/freshv2/h01/conditional/FeatureFlagMetrics.java": "35a71cb9e7b4fb7037e317054b45ca9f024fd576e06b7134cecc36178e483a5d",
+        "src/main/java/com/springfix/freshv2/h01/conditional/FeatureFlagStore.java": "0915f5a824cef0e167507d169bf8d417f4bac374d16fc253abcfa542a387ddb4",
+        "src/main/java/com/springfix/freshv2/h01/conditional/RemoteFeatureFlagStore.java": "8dce442300feffb7f0936ce02c6b39730de1cb8bece1df298a448d099ce59bbf",
+        "src/test/java/com/springfix/freshv2/h01/conditional/ConditionalRegistrationTest.java": "304ac961ddca08b95b5ea75151d122721c33e5d12b948448126e2df1b4e92536"
+      },
+      "sample_hash": "ef5b2b5f2c9c4af1636f4b167d1d78bba584186162f1577f9034ab694015b7a5",
+      "source_hash": "76c207dd751b021ea925183ca97eb3acb7b6c472c20259ad99e4fe2d05e72126",
+      "test_hash": "7ef06c7e656a6e21e0b6710deb192a2b7fa696b57689c21b2ab011ee6a851c0e"
+    },
+    "fresh-v2-h02": {
+      "files": {
+        "pom.xml": "eb8970209114912711a9d31aedd0f33f6765431ec2d8df571fc1175dc7fb594c",
+        "src/main/java/com/springfix/freshv2/h02/routing/Application.java": "273262f95575a6fb7ebf8f1455720066f13c49338542014c0e8685ca138cbcb7",
+        "src/main/java/com/springfix/freshv2/h02/routing/RoutingProperties.java": "59a87921c662de6853681bb9db4ce86abbf39c0a7fabc79fe369f655f409515f",
+        "src/main/java/com/springfix/freshv2/h02/routing/RoutingService.java": "9fadca6bc69ac8338a6f50d71bb3f90c289224009d4ebe11b0502816e967ea07",
+        "src/main/resources/application.yml": "f321abea14da3fb29416c1c69a0d1cba152a1ca06334993c7853a52fa20c1f8d",
+        "src/test/java/com/springfix/freshv2/h02/routing/NestedPropertiesTest.java": "50a77bd48b7f9707efc9e682c242556259766521fd8bc308278474856cc887b1"
+      },
+      "sample_hash": "634e374878b6bf7fbec9c3a05cb66fb7fa29c22ccd8d4a14a819f7802be629aa",
+      "source_hash": "d5c4253f86bebf1ccec15525debfa60aa28c6173c70b0bb23722cbe38e3511ca",
+      "test_hash": "0f93eedb60f2c5b9a2e1df440e0fccf597dab9be5fda1ab8ac9f8ad52955b613"
+    },
+    "fresh-v2-h03": {
+      "files": {
+        "pom.xml": "177784ca3d8748b8b8bff47253355b809b6c5b90d30d20dc35199676b17abed7",
+        "src/main/java/com/springfix/freshv2/h03/app/Application.java": "acb2ab73dc6f785c1374cb3e8d5267fd26828ea7793e7552a99740d156bc3760",
+        "src/main/java/com/springfix/freshv2/h03/app/MailService.java": "92239300ff0f6ad9c470aae6755c673677e2cb37f83675375e0bf749cbffe069",
+        "src/main/java/com/springfix/freshv2/h03/settings/MailProperties.java": "919e35da37c0b18c4eec7a65be20b3cf7538ecf3ffbc56b644181727d7238613",
+        "src/main/resources/application.yml": "7dcc371bf5f750c5fffdb583175aed885b6b446aff98edde7881e96f2d05d50e",
+        "src/test/java/com/springfix/freshv2/h03/app/PropertiesScanTest.java": "addf9fab8f7a1340bffaf391eaa7bbd25bfe91e91f031c9014fffaafa023400c"
+      },
+      "sample_hash": "101b13b90177f03ec2bab233488e7a282a4ff6241eb89780100595f169de98b5",
+      "source_hash": "7b71818ab85100644f5f5e79d4a3ed27767abcc5eaacef4d6e5affd72274587e",
+      "test_hash": "26bae4f564a28331fa02b6bddbf796c3987d90fb3e21ac68b5d39c3f7442c78d"
+    },
+    "fresh-v2-h04": {
+      "files": {
+        "pom.xml": "7b89ee0a1b1b83d3ad34962313610f40a357fb8aaf4f476d40fc16cc23a6de8e",
+        "src/main/java/com/springfix/freshv2/h04/telemetry/Application.java": "28c791224ffb686cea3362f4267577f8fc04a367e55793cf908d25fedd8075be",
+        "src/main/java/com/springfix/freshv2/h04/telemetry/TelemetryProperties.java": "a5fe072046822cb3c450950ac39524dcb86f36df89d89ec6df378cbdee84d06d",
+        "src/main/java/com/springfix/freshv2/h04/telemetry/TelemetryService.java": "f95117f9773c2470ef66ebca3a49ac07da342a7a677b7a962c82b4cee725cf08",
+        "src/main/resources/application.yml": "af9b31ad6009904ca2ab6d96b9d3edd2fd683574748fb68e6cdac658ee35848f",
+        "src/test/java/com/springfix/freshv2/h04/telemetry/RelaxedMapKeyTest.java": "34351761e9e6bf3abf04ebb9c930190b10bc97025817b71e87a1efd8d9bb64e8"
+      },
+      "sample_hash": "b6d22fd519f3351aa226c4dac03e522ca2a69df6a09915ee8d8fb48cb33678e1",
+      "source_hash": "8584e9a673b13342e07f85bf34cebdf629ac949636fb33ba83b16aa565b7a310",
+      "test_hash": "5952bd0ba367ee18450aa986a0769724266352441c4696479f2e54b69d297fe9"
+    },
+    "fresh-v2-h05": {
+      "files": {
+        "pom.xml": "63f6b80c9a0601c922fc94e6ab5b700a9d01573a495ceb7f5a79520686e36d3e",
+        "src/main/java/com/springfix/freshv2/h05/pricing/Application.java": "ceea7bc9a46e12236752e3fdbf58498295d577f0a2b3d7b43b4197b12d71ab3a",
+        "src/main/java/com/springfix/freshv2/h05/pricing/PricingService.java": "fbfe90860d1bbcbcbfc07cd0379d01bc1fd48c9aff7696e08de5368855ded798",
+        "src/main/resources/application.yml": "1331aa858494b5ee66f4d621f28357f5bafdbeae6e6291a1f7f58a633fbf9234",
+        "src/test/java/com/springfix/freshv2/h05/pricing/PlaceholderDefaultTest.java": "3a22f1902731b9cf6656198b25c354b3087ba2498ef3956d043e9e611e3255c8"
+      },
+      "sample_hash": "4559563b691aa076d227e935e584a511fc5d33295d21f4a6d4971c6b321846ae",
+      "source_hash": "527707d7c145db933b1179d033a70cf49571143878238fbbfde79e04ad63afeb",
+      "test_hash": "660ea04fc4a948cb063dd9852a9f04bfcd7cd067c83a81867405567700522f8d"
+    },
+    "fresh-v2-h06": {
+      "files": {
+        "pom.xml": "f307d195ed997bca939ec0481ac90c336b88be2f3234c913ee27f81307b570c7",
+        "src/main/java/com/springfix/freshv2/h06/release/Application.java": "fed07eaa341d1524b672790c1e39595051bc912db1175a0cafa7770147296aa4",
+        "src/main/java/com/springfix/freshv2/h06/release/ReleaseFeatures.java": "6483f451e62df10c84fa462fa57a55be21fb4b3c1df99da4c285d9031cb79117",
+        "src/main/resources/application-eu.yml": "3d4d33100b1ae6dbe9380b8f30adc9e454a5fb37fefb3055f9b06e641b82a676",
+        "src/main/resources/application-metrics.yml": "2efad855c3575b23c9fbef543da1288104649603df5f91779bcc02af077ba5f6",
+        "src/main/resources/application.yml": "b780194e2dd43a587c94a7071332382ddf88547aa1231802ca19016aecac7f8c",
+        "src/test/java/com/springfix/freshv2/h06/release/ProfileGroupTest.java": "b248380a6f7ff9dad47c6497a1234662df5fe06410717ca6b97383b5344acf2d"
+      },
+      "sample_hash": "eb4ded484c92aefedaaf988f119593b391be8aac32b4ebc9dfb8ce5d78a7c6bd",
+      "source_hash": "0b764cceaecf5d735536864d5d940f92167785fa8da27ae3e94690c0390aa4eb",
+      "test_hash": "76159dbf4696c9076e58956627678e6094274afac47086f81413822db183726e"
+    },
+    "fresh-v2-h07": {
+      "files": {
+        "pom.xml": "c4f02946484d13cfa1697b357eaf521436304ec5aa8fd4d9159033162142ef23",
+        "src/main/java/com/springfix/freshv2/h07/ingest/Application.java": "3d043128b932b12deda9e18e3c3aa53545fddf1e0c196ebdb44e20393adf3343",
+        "src/main/java/com/springfix/freshv2/h07/ingest/IngestProperties.java": "97feeb45234db909a89913de1f44d9a3ca313cea7cd8add0b35701b3e4726753",
+        "src/main/java/com/springfix/freshv2/h07/ingest/IngestService.java": "a24ed453bdc0379d7aad0d04cb85c2de94b43fd47df9837c3d8f7c9769fd4884",
+        "src/main/resources/application.yml": "b68557ecad13f930ae577decc7f37e7dd018fe6d4aa15931b6514b344620efef",
+        "src/test/java/com/springfix/freshv2/h07/ingest/TypedPropertiesTest.java": "7fa0df1861a5eda2c7ce73f563c8e5f6256d75301ed5bd4dccff847c1759e35d"
+      },
+      "sample_hash": "f0cec6d2a37e93a0ed98a82cc00b1fe751a519a1b79050439e90e5b7a1e9b30c",
+      "source_hash": "f1b70a57059f94336d63e40017bce7713e810ee0f082ec3432a674e410cc3275",
+      "test_hash": "71018a3e810e3ceb298c9e992dee189ec0fe2ca1ed3c718a84b75e7a1c9bff1e"
+    },
+    "fresh-v2-h08": {
+      "files": {
+        "pom.xml": "8dde111a722157c23c260574063aeaad456565806aa44aa28f5d377e9bb0ad3f",
+        "src/main/java/com/springfix/freshv2/h08/tenant/Application.java": "a6dede485d47624a9454cfcd06567d227742df099b394322661f1b3ab4cf4191",
+        "src/main/java/com/springfix/freshv2/h08/tenant/TenantService.java": "fd69c21d84be41f465ae0f4718fce3b1f6cb18a68de7afc1be13dff6a754d05f",
+        "src/main/resources/application.yml": "b3d572563a437732545980067298c3a5fbfadf365da7e58f4bbe56636b8d4d56",
+        "src/test/java/com/springfix/freshv2/h08/tenant/ConfigImportTest.java": "d490b78741d2bbb9d220a0fcfa66bfec3405f9e653f02cf394221537d8afdecb"
+      },
+      "sample_hash": "9c49e5946c4f73f25e6e6613091cec6ed453b7fa3f66ed8764dbd2cdb527fdab",
+      "source_hash": "2daf4acd0940956c9e99db04ee52cafa1ee47a905ae3744897896f61af40fe7b",
+      "test_hash": "19e3abad7453becc739a7941f67139e665ea20e5fca08042c0417f6cd0c4c103"
+    }
+  },
+  "schema_version": "fresh-holdout-v2-freeze-manifest-v1",
+  "status": "FROZEN"
+}

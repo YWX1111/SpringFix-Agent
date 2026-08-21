@@ -1,0 +1,8 @@
+diff --git a/src/main/java/com/springfix/freshv2/h03/app/Application.java b/src/main/java/com/springfix/freshv2/h03/app/Application.java
+--- a/src/main/java/com/springfix/freshv2/h03/app/Application.java
++++ b/src/main/java/com/springfix/freshv2/h03/app/Application.java
+@@ -8,3 +8,3 @@
+ @SpringBootApplication
+-@ConfigurationPropertiesScan
++@ConfigurationPropertiesScan(basePackageClasses = MailProperties.class)
+ public class Application {

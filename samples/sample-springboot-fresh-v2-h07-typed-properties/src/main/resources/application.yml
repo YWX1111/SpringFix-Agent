@@ -1,0 +1,5 @@
+ingest:
+  poll-interval: 750ms
+  recipients:
+    - ops
+    - alerts@example.com

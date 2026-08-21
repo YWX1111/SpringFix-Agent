@@ -1,0 +1,11 @@
+{
+  "agent_manifest_loadable": true,
+  "agent_runner_projection_contains_gold": false,
+  "baseline_paths_exist": true,
+  "case_count": 8,
+  "case_ids_unique": true,
+  "gold_loader_offline": true,
+  "maven_target_resolvable": true,
+  "output_artifact_path_writable": true,
+  "status": "PASS"
+}

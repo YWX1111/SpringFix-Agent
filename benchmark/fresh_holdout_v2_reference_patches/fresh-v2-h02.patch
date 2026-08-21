@@ -1,0 +1,6 @@
+diff --git a/src/main/java/com/springfix/freshv2/h02/routing/RoutingProperties.java b/src/main/java/com/springfix/freshv2/h02/routing/RoutingProperties.java
+--- a/src/main/java/com/springfix/freshv2/h02/routing/RoutingProperties.java
++++ b/src/main/java/com/springfix/freshv2/h02/routing/RoutingProperties.java
+@@ -16 +16 @@ public class RoutingProperties {
+-        private final List<Zone> zones = List.of();
++        private final List<Zone> zones = new java.util.ArrayList<>();

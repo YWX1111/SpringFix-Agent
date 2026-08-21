@@ -1,0 +1,6 @@
+diff --git a/src/main/java/com/springfix/freshv2/h05/pricing/PricingService.java b/src/main/java/com/springfix/freshv2/h05/pricing/PricingService.java
+--- a/src/main/java/com/springfix/freshv2/h05/pricing/PricingService.java
++++ b/src/main/java/com/springfix/freshv2/h05/pricing/PricingService.java
+@@ -10 +10 @@ public class PricingService {
+-    public PricingService(@Value("${pricing.currency}") String currency) {
++    public PricingService(@Value("${pricing.currency:USD}") String currency) {

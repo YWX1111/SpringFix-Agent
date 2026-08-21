@@ -1,0 +1,128 @@
+{
+  "agent_executions": 0,
+  "agent_projection_isolation": "PASS",
+  "anti_tuning_lock_active": true,
+  "artifact_safety": "PASS",
+  "baseline_repeat": "2/2 per case",
+  "baseline_restoration": "8/8",
+  "baseline_validation": "8/8",
+  "case_count": 8,
+  "case_ids": [
+    "fresh-v2-h01",
+    "fresh-v2-h02",
+    "fresh-v2-h03",
+    "fresh-v2-h04",
+    "fresh-v2-h05",
+    "fresh-v2-h06",
+    "fresh-v2-h07",
+    "fresh-v2-h08"
+  ],
+  "compositional_count": 2,
+  "diagnosis_score_available": false,
+  "freeze_commit": null,
+  "fresh_holdout_executed": false,
+  "frozen_manifest_path": "benchmark/fresh_holdout_v2_freeze_manifest.json",
+  "frozen_manifest_sha256": "c66ab75431d9f32ead56eba14fe9e234a38b4c8874a4990ff08a834d2e9d504b",
+  "gold_isolation": "PASS",
+  "historical_holdout_v1_gold_inspected": false,
+  "historical_holdout_v1_touched": false,
+  "live_executions": 0,
+  "llm_benchmark_calls": 0,
+  "m7e_freeze_intact": false,
+  "m7e_sections": {
+    "dev_benchmark_hashes": true,
+    "evaluator_hashes": true,
+    "production_hashes": false,
+    "prompt_hashes": true
+  },
+  "m7f0_status": "BLOCKED_BY_PREEXISTING_M7E_HASH_MISMATCH",
+  "m7f1_execution_ready": true,
+  "mock_executions": 0,
+  "novelty_audit": "PASS",
+  "quality_gates": {
+    "pytest": "PASS",
+    "ruff": "PASS",
+    "mypy_strict": "PASS",
+    "uv_lock_check": "PASS",
+    "semantic_dev_integrity": "PASS",
+    "holdout_integrity": "PASS",
+    "benchmark_validation": "PASS",
+    "fresh_v2_structural_validation": "PASS",
+    "m7e_freeze_recheck": "FAIL_PREEXISTING_MANIFEST_MISMATCH"
+  },
+  "reference_patch_scope_audit": "8/8",
+  "reference_repeat": "2/2 per case",
+  "reference_validation": "8/8",
+  "repair_score_available": false,
+  "restoration_records": [
+    {
+      "baseline_failure_after_restore": true,
+      "baseline_tree_hash": "ef5b2b5f2c9c4af1636f4b167d1d78bba584186162f1577f9034ab694015b7a5",
+      "case_id": "fresh-v2-h01",
+      "patch_not_resident_in_sample": true,
+      "restored_tree_hash": "ef5b2b5f2c9c4af1636f4b167d1d78bba584186162f1577f9034ab694015b7a5",
+      "status": "PASS"
+    },
+    {
+      "baseline_failure_after_restore": true,
+      "baseline_tree_hash": "634e374878b6bf7fbec9c3a05cb66fb7fa29c22ccd8d4a14a819f7802be629aa",
+      "case_id": "fresh-v2-h02",
+      "patch_not_resident_in_sample": true,
+      "restored_tree_hash": "634e374878b6bf7fbec9c3a05cb66fb7fa29c22ccd8d4a14a819f7802be629aa",
+      "status": "PASS"
+    },
+    {
+      "baseline_failure_after_restore": true,
+      "baseline_tree_hash": "101b13b90177f03ec2bab233488e7a282a4ff6241eb89780100595f169de98b5",
+      "case_id": "fresh-v2-h03",
+      "patch_not_resident_in_sample": true,
+      "restored_tree_hash": "101b13b90177f03ec2bab233488e7a282a4ff6241eb89780100595f169de98b5",
+      "status": "PASS"
+    },
+    {
+      "baseline_failure_after_restore": true,
+      "baseline_tree_hash": "b6d22fd519f3351aa226c4dac03e522ca2a69df6a09915ee8d8fb48cb33678e1",
+      "case_id": "fresh-v2-h04",
+      "patch_not_resident_in_sample": true,
+      "restored_tree_hash": "b6d22fd519f3351aa226c4dac03e522ca2a69df6a09915ee8d8fb48cb33678e1",
+      "status": "PASS"
+    },
+    {
+      "baseline_failure_after_restore": true,
+      "baseline_tree_hash": "4559563b691aa076d227e935e584a511fc5d33295d21f4a6d4971c6b321846ae",
+      "case_id": "fresh-v2-h05",
+      "patch_not_resident_in_sample": true,
+      "restored_tree_hash": "4559563b691aa076d227e935e584a511fc5d33295d21f4a6d4971c6b321846ae",
+      "status": "PASS"
+    },
+    {
+      "baseline_failure_after_restore": true,
+      "baseline_tree_hash": "eb4ded484c92aefedaaf988f119593b391be8aac32b4ebc9dfb8ce5d78a7c6bd",
+      "case_id": "fresh-v2-h06",
+      "patch_not_resident_in_sample": true,
+      "restored_tree_hash": "eb4ded484c92aefedaaf988f119593b391be8aac32b4ebc9dfb8ce5d78a7c6bd",
+      "status": "PASS"
+    },
+    {
+      "baseline_failure_after_restore": true,
+      "baseline_tree_hash": "f0cec6d2a37e93a0ed98a82cc00b1fe751a519a1b79050439e90e5b7a1e9b30c",
+      "case_id": "fresh-v2-h07",
+      "patch_not_resident_in_sample": true,
+      "restored_tree_hash": "f0cec6d2a37e93a0ed98a82cc00b1fe751a519a1b79050439e90e5b7a1e9b30c",
+      "status": "PASS"
+    },
+    {
+      "baseline_failure_after_restore": true,
+      "baseline_tree_hash": "9c49e5946c4f73f25e6e6613091cec6ed453b7fa3f66ed8764dbd2cdb527fdab",
+      "case_id": "fresh-v2-h08",
+      "patch_not_resident_in_sample": true,
+      "restored_tree_hash": "9c49e5946c4f73f25e6e6613091cec6ed453b7fa3f66ed8764dbd2cdb527fdab",
+      "status": "PASS"
+    }
+  ],
+  "runtime": "0.15.1",
+  "schema_version": "m7f0-closeout-summary-v1",
+  "semantic_family_count": 8,
+  "starting_commit": "35f8bbebcafded22397e53a5a2f2a148dab0c890",
+  "test_leak_audit": "PASS"
+}

@@ -1,0 +1,11 @@
+diff --git a/src/main/resources/application.yml b/src/main/resources/application.yml
+--- a/src/main/resources/application.yml
++++ b/src/main/resources/application.yml
+@@ -2,6 +2,6 @@ spring:
+   profiles:
+     active: release
+     group:
+-      releases:
++      release:
+         - metrics
+         - eu

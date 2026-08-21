@@ -1,0 +1,69 @@
+{
+  "cases": [
+    {
+      "agent_execution_count": 0,
+      "case_id": "fresh-v2-h01",
+      "patch_applied": true,
+      "reference_signature": "test-failure",
+      "repeat": "2/2",
+      "status": "PASS"
+    },
+    {
+      "agent_execution_count": 0,
+      "case_id": "fresh-v2-h02",
+      "patch_applied": true,
+      "reference_signature": "test-failure",
+      "repeat": "2/2",
+      "status": "PASS"
+    },
+    {
+      "agent_execution_count": 0,
+      "case_id": "fresh-v2-h03",
+      "patch_applied": true,
+      "reference_signature": "test-failure",
+      "repeat": "2/2",
+      "status": "PASS"
+    },
+    {
+      "agent_execution_count": 0,
+      "case_id": "fresh-v2-h04",
+      "patch_applied": true,
+      "reference_signature": "test-failure",
+      "repeat": "2/2",
+      "status": "PASS"
+    },
+    {
+      "agent_execution_count": 0,
+      "case_id": "fresh-v2-h05",
+      "patch_applied": true,
+      "reference_signature": "test-failure",
+      "repeat": "2/2",
+      "status": "PASS"
+    },
+    {
+      "agent_execution_count": 0,
+      "case_id": "fresh-v2-h06",
+      "patch_applied": true,
+      "reference_signature": "test-failure",
+      "repeat": "2/2",
+      "status": "PASS"
+    },
+    {
+      "agent_execution_count": 0,
+      "case_id": "fresh-v2-h07",
+      "patch_applied": true,
+      "reference_signature": "test-failure",
+      "repeat": "2/2",
+      "status": "PASS"
+    },
+    {
+      "agent_execution_count": 0,
+      "case_id": "fresh-v2-h08",
+      "patch_applied": true,
+      "reference_signature": "test-failure",
+      "repeat": "2/2",
+      "status": "PASS"
+    }
+  ],
+  "status": "PASS"
+}

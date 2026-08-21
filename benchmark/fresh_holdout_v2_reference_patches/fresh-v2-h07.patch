@@ -1,0 +1,9 @@
+diff --git a/src/main/resources/application.yml b/src/main/resources/application.yml
+--- a/src/main/resources/application.yml
++++ b/src/main/resources/application.yml
+@@ -2,4 +2,4 @@ ingest:
+   poll-interval: 750ms
+   recipients:
+-    - ops
++    - ops@example.com
+     - alerts@example.com
