@@ -1,0 +1,65 @@
+{
+  "schema_version": "m7e3a-freeze-manifest-correction-v1",
+  "maintenance_id": "M7E-3A",
+  "classification": "MANIFEST_ERROR",
+  "original_freeze_commit": "190f0225ad354b6268086ff643565e740dabb481",
+  "maintenance_start_commit": "35f8bbebcafded22397e53a5a2f2a148dab0c890",
+  "affected_path": "src/springfix_agent/repair/evaluator.py",
+  "manifest_field": "production_hashes[src/springfix_agent/repair/evaluator.py]",
+  "old_expected_hash": "b01228e4a93496301af26ba28f6ac51e951720ede579b647ce54efaaf562bed",
+  "old_expected_length": 63,
+  "corrected_expected_hash": "b01228e4a93496301afc26ba28f6ac51e951720ede579b647ce54efaaf562bed",
+  "corrected_expected_length": 64,
+  "freeze_blob_hash": "b01228e4a93496301afc26ba28f6ac51e951720ede579b647ce54efaaf562bed",
+  "current_blob_hash": "b01228e4a93496301afc26ba28f6ac51e951720ede579b647ce54efaaf562bed",
+  "source_changed_since_freeze": false,
+  "semantic_change": false,
+  "production_change": false,
+  "reason": "malformed hash transcription in initial M7E freeze manifest",
+  "commit_ids": {
+    "original_freeze_commit": "190f0225ad354b6268086ff643565e740dabb481",
+    "maintenance_start_commit": "35f8bbebcafded22397e53a5a2f2a148dab0c890",
+    "correction_commit": "recorded by the containing maintenance commit"
+  },
+  "source_unchanged_proof": {
+    "freeze_and_current_bytes_identical": true,
+    "git_diff_from_freeze_to_head": "empty",
+    "changed_lines_since_freeze": 0,
+    "changed_functions_since_freeze": 0,
+    "post_freeze_evaluator_commits": 0
+  },
+  "manifest_change_proof": {
+    "manifest_entries_changed": 1,
+    "changed_field_only": "production_hashes[src/springfix_agent/repair/evaluator.py]",
+    "other_frozen_hashes_changed": false
+  },
+  "validation_results": {
+    "production_hash_verification": "PASS",
+    "prompt_hash_verification": "PASS",
+    "evaluator_hash_verification": "PASS",
+    "benchmark_hash_verification": "PASS",
+    "m7e_freeze_mismatch_count": 0,
+    "invalid_sha256_format_count_before": 1,
+    "invalid_sha256_format_count_after": 0,
+    "pytest": "PASS (561 passed, 1 skipped)",
+    "ruff": "PASS",
+    "mypy_strict": "PASS (97 source files)",
+    "uv_lock_check": "PASS",
+    "semantic_dev_integrity": "PASS",
+    "verify_semantic_dev_samples": "PASS (6/6 baseline; 6/6 reference fixes)",
+    "holdout_integrity": "PASS",
+    "benchmark_validation": "PASS (legacy 3/3; Holdout v1 7/7)",
+    "v2_0_controls": "PASS (17/17)",
+    "v2_1_controls": "PASS (24/24)",
+    "v2_2_controls": "PASS (29/29)"
+  },
+  "execution_safety": {
+    "m7f0_executed": false,
+    "m7f1_executed": false,
+    "agent_executions": 0,
+    "llm_benchmark_calls": 0,
+    "fresh_holdout_executed": false,
+    "fresh_holdout_gold_inspected": false,
+    "historical_holdout_modified": false
+  }
+}

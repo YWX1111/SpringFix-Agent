@@ -1,0 +1,60 @@
+{
+  "schema_version": "m7e3a-closeout-summary-v1",
+  "maintenance_id": "M7E-3A",
+  "status": "PASS_PENDING_COMMIT_AND_CI",
+  "classification": "MANIFEST_ERROR",
+  "original_freeze_commit": "190f0225ad354b6268086ff643565e740dabb481",
+  "maintenance_start_commit": "35f8bbebcafded22397e53a5a2f2a148dab0c890",
+  "runtime": "0.15.1",
+  "affected_path": "src/springfix_agent/repair/evaluator.py",
+  "old_expected_hash": "b01228e4a93496301af26ba28f6ac51e951720ede579b647ce54efaaf562bed",
+  "corrected_expected_hash": "b01228e4a93496301afc26ba28f6ac51e951720ede579b647ce54efaaf562bed",
+  "source_unchanged_since_freeze": true,
+  "manifest_entries_changed": 1,
+  "other_m7e_hash_mismatches": [],
+  "sha256": {
+    "total_hash_entries": 43,
+    "invalid_format_count_before": 1,
+    "invalid_format_count_after": 0
+  },
+  "freeze_verification": {
+    "production_hashes": "PASS",
+    "prompt_freeze_hashes": "PASS",
+    "evaluator_hashes": "PASS",
+    "benchmark_hashes": "PASS",
+    "mismatch_count": 0
+  },
+  "quality_gates": {
+    "pytest": "PASS (561 passed, 1 skipped)",
+    "ruff": "PASS",
+    "mypy_strict": "PASS (97 source files)",
+    "uv_lock_check": "PASS",
+    "semantic_dev_integrity": "PASS",
+    "verify_semantic_dev_samples": "PASS (6/6 baseline; 6/6 reference fixes)",
+    "holdout_integrity": "PASS",
+    "benchmark_validation": "PASS (legacy 3/3; Holdout v1 7/7)",
+    "v2_0_controls": "PASS (17/17)",
+    "v2_1_controls": "PASS (24/24)",
+    "v2_2_controls": "PASS (29/29)"
+  },
+  "functional_status_unchanged": {
+    "m7e3": "PASS",
+    "m7e_closed": true,
+    "semantic_dev_repair": "6/6",
+    "v2_2_role": "SECONDARY / OBSERVATIONAL",
+    "historical_holdout_v1_repair": "3/7",
+    "m7f_ready": true
+  },
+  "execution_safety": {
+    "agent_executions": 0,
+    "llm_benchmark_calls": 0,
+    "fresh_holdout_executed": false,
+    "m7f0_executed": false,
+    "m7f1_executed": false,
+    "fresh_holdout_gold_inspected": false
+  },
+  "production_files_modified": 0,
+  "prompt_modified": false,
+  "dev_benchmark_modified": false,
+  "holdout_modified": false
+}
