@@ -1,0 +1,14 @@
+{
+  "frozen_files": {
+    "case-results.json": "bdc52b4a05451aa4379c3f35371f9151b9ff3c8ad5470b363c69028cd9e4f79b",
+    "diagnosis-evidence.json": "d2d50dd02c6b1dbbad5966b61672e5071369e5d173e02f7db3c3f03193d66315",
+    "live-run-manifest.json": "3308058302a7107a7f1f78ed57ac4e539066dd8e4afaffe4d330154e28f5b7c8"
+  },
+  "derived_files": {
+    "quality-gates.json": "306398c42e029473a9bb99a2d4a83a146c03d3352e61a0c1295e9dfc47d357ea",
+    "report.md": "c103b1dad2a6c45e712df1928345351f77a5a0632b1f8b560b82c488d595a0ca",
+    "summary.json": "80ca54df2675a4c558508734654860c6defcea16fb6cc9905d93397c6f003f08"
+  },
+  "hash_algorithm": "sha256",
+  "schema_version": "m7f1-artifact-hashes-v1"
+}

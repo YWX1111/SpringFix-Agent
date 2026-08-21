@@ -1,0 +1,81 @@
+{
+  "artifact_safety": {
+    "bounded": true,
+    "fresh_v2_gold_read_by_agent_runtime": false,
+    "fresh_v2_reference_patch_read_by_agent_runtime": false,
+    "no_hidden_reasoning": true,
+    "no_raw_model_output": true,
+    "no_secrets": true,
+    "sanitized": true
+  },
+  "case_count": 8,
+  "cases": [
+    {
+      "case_id": "fresh-v2-h01",
+      "failure_category": "proposal_validation_rejected",
+      "failure_stage": "proposal",
+      "status": "FAIL"
+    },
+    {
+      "case_id": "fresh-v2-h02",
+      "failure_category": "proposal_validation_rejected",
+      "failure_stage": "proposal",
+      "status": "FAIL"
+    },
+    {
+      "case_id": "fresh-v2-h03",
+      "failure_category": null,
+      "failure_stage": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "fresh-v2-h04",
+      "failure_category": "test_failure",
+      "failure_stage": "verification",
+      "status": "FAIL"
+    },
+    {
+      "case_id": "fresh-v2-h05",
+      "failure_category": null,
+      "failure_stage": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "fresh-v2-h06",
+      "failure_category": null,
+      "failure_stage": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "fresh-v2-h07",
+      "failure_category": null,
+      "failure_stage": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "fresh-v2-h08",
+      "failure_category": null,
+      "failure_stage": null,
+      "status": "PASS"
+    }
+  ],
+  "diagnosis_v22": {
+    "score": null,
+    "status": "observational_only_not_scored"
+  },
+  "quality_gates": {
+    "benchmark_validation": "PASS; legacy=3/3, holdout=7/7, total=10/10",
+    "fresh_holdout_v2_manifest_unchanged": "PASS",
+    "holdout_integrity": "PASS",
+    "mypy_strict": "PASS",
+    "pytest": "PASS; 574 passed, 1 skipped",
+    "ruff": "PASS",
+    "semantic_dev_integrity": "PASS",
+    "uv_lock_check": "PASS"
+  },
+  "live_agent_executions": 1,
+  "llm_calls": 32,
+  "repair_score": "5/8",
+  "run_id": "20260821T073919Z",
+  "status": "COMPLETED"
+}

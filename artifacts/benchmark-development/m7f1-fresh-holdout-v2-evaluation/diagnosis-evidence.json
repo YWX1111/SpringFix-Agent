@@ -1,0 +1,314 @@
+{
+  "bounded": true,
+  "cases": [
+    {
+      "bounded": true,
+      "candidates": [
+        {
+          "description": "The featureFlagMetrics bean is conditionally created using @ConditionalOnBean(RemoteFeatureFlagStore.class). However, the featureFlagStore bean is declared with a return type of the interface FeatureFlagStore. Spring registers the bean based on the method's return type, meaning no bean of type RemoteFeatureFlagStore is actually present in the context. The condition evaluates to false, preventing the FeatureFlagMetrics bean from being created.",
+          "recommended_fix": "Change the return type of the featureFlagStore() method to RemoteFeatureFlagStore, or update the @ConditionalOnBean annotation to check for FeatureFlagStore.class instead of RemoteFeatureFlagStore.class.",
+          "title": "@ConditionalOnBean type mismatch due to @Bean method return type"
+        }
+      ],
+      "case_id": "fresh-v2-h01",
+      "diagnosis_status": "complete",
+      "evidence_references": [
+        {
+          "end_line": 12,
+          "file": "src/main/java/com/springfix/freshv2/h01/conditional/FeatureFlagConfig.java",
+          "start_line": 10
+        },
+        {
+          "end_line": 17,
+          "file": "src/main/java/com/springfix/freshv2/h01/conditional/FeatureFlagConfig.java",
+          "start_line": 14
+        }
+      ],
+      "issue_category": "dependency_injection",
+      "rejected_evidence_count": 0,
+      "retrieved_files": [
+        "src/main/java/com/springfix/freshv2/h01/conditional/FeatureFlagMetrics.java",
+        "pom.xml",
+        "src/main/java/com/springfix/freshv2/h01/conditional/FeatureFlagConfig.java",
+        "src/main/java/com/springfix/freshv2/h01/conditional/Application.java",
+        "src/main/java/com/springfix/freshv2/h01/conditional/RemoteFeatureFlagStore.java",
+        "src/main/java/com/springfix/freshv2/h01/conditional/FeatureFlagStore.java"
+      ],
+      "sanitized": true,
+      "schema_version": "diagnosis-evidence-v1.0",
+      "summary": "The FeatureFlagMetrics bean is not created because the @ConditionalOnBean(RemoteFeatureFlagStore.class) condition fails. The featureFlagStore bean is registered with the interface type FeatureFlagStore due to the @Bean method's return type, so no bean of type RemoteFeatureFlagStore exists in the context.",
+      "truncated": false,
+      "truncated_fields": []
+    },
+    {
+      "bounded": true,
+      "candidates": [
+        {
+          "description": "The `Limits` nested class in `RoutingProperties` initializes the `zones` field with `List.of()`, which returns an immutable list. Additionally, there is no setter method for `zones`. Spring Boot's configuration properties binder requires a mutable collection (e.g., `ArrayList`) or a setter to populate list properties from configuration files. The combination of an immutable list and missing setter prevents the binder from adding the configured zones, causing a `BindException`.",
+          "recommended_fix": "Change the initialization of the `zones` field to a mutable list, such as `new ArrayList<>()`, and remove the `final` modifier, or provide a setter method for the `zones` field to allow Spring Boot to bind the configuration values.",
+          "title": "Immutable List and Missing Setter in Configuration Properties"
+        }
+      ],
+      "case_id": "fresh-v2-h02",
+      "diagnosis_status": "complete",
+      "evidence_references": [
+        {
+          "end_line": 18,
+          "file": "src/main/java/com/springfix/freshv2/h02/routing/RoutingProperties.java",
+          "start_line": 14
+        }
+      ],
+      "issue_category": "configuration",
+      "rejected_evidence_count": 0,
+      "retrieved_files": [
+        "src/main/java/com/springfix/freshv2/h02/routing/RoutingProperties.java",
+        "pom.xml",
+        "src/main/java/com/springfix/freshv2/h02/routing/Application.java",
+        "src/main/java/com/springfix/freshv2/h02/routing/RoutingService.java",
+        "src/main/resources/application.yml"
+      ],
+      "sanitized": true,
+      "schema_version": "diagnosis-evidence-v1.0",
+      "summary": "The application fails to start because the `zones` list in `RoutingProperties.Limits` is initialized as an immutable list using `List.of()` and lacks a setter. Spring Boot cannot bind configuration values to an immutable collection without a setter, resulting in a BindException.",
+      "truncated": false,
+      "truncated_fields": []
+    },
+    {
+      "bounded": true,
+      "candidates": [
+        {
+          "description": "The Application class is annotated with @ConfigurationPropertiesScan, which by default scans the package of the annotated class (com.springfix.freshv2.h03.app) and its sub-packages. However, MailProperties is located in a sibling package (com.springfix.freshv2.h03.settings). As a result, MailProperties is not registered as a bean, causing MailService to fail injection with an UnsatisfiedDependencyException.",
+          "recommended_fix": "Specify the base packages to scan in the @ConfigurationPropertiesScan annotation (e.g., @ConfigurationPropertiesScan(\"com.springfix.freshv2.h03.settings\")), or use @EnableConfigurationProperties(MailProperties.class) on the Application class, or move MailProperties to a sub-package of the Application class.",
+          "title": "@ConfigurationPropertiesScan fails to scan MailProperties due to package hierarchy"
+        }
+      ],
+      "case_id": "fresh-v2-h03",
+      "diagnosis_status": "complete",
+      "evidence_references": [
+        {
+          "end_line": 12,
+          "file": "src/main/java/com/springfix/freshv2/h03/app/Application.java",
+          "start_line": 1
+        },
+        {
+          "end_line": 14,
+          "file": "src/main/java/com/springfix/freshv2/h03/settings/MailProperties.java",
+          "start_line": 1
+        },
+        {
+          "end_line": 15,
+          "file": "src/main/java/com/springfix/freshv2/h03/app/MailService.java",
+          "start_line": 1
+        }
+      ],
+      "issue_category": "dependency_injection",
+      "rejected_evidence_count": 0,
+      "retrieved_files": [
+        "src/main/java/com/springfix/freshv2/h03/app/MailService.java",
+        "pom.xml",
+        "src/main/java/com/springfix/freshv2/h03/app/Application.java",
+        "src/main/java/com/springfix/freshv2/h03/settings/MailProperties.java",
+        "src/main/resources/application.yml"
+      ],
+      "sanitized": true,
+      "schema_version": "diagnosis-evidence-v1.0",
+      "summary": "The UnsatisfiedDependencyException occurs because MailProperties is not registered as a bean. The @ConfigurationPropertiesScan on Application only scans its own package (app) and sub-packages, missing the sibling settings package where MailProperties resides.",
+      "truncated": false,
+      "truncated_fields": []
+    },
+    {
+      "bounded": true,
+      "candidates": [
+        {
+          "description": "Spring Boot's @ConfigurationProperties applies relaxed binding to map keys, normalizing them (e.g., to lowercase or kebab-case). The TelemetryService retrieves the header using the exact original name via properties.getHeaders().get(name). Because the map key was normalized during binding, the exact match fails, returning null and omitting the header.",
+          "recommended_fix": "Normalize the lookup key in TelemetryService to match Spring Boot's relaxed binding rules (e.g., convert to lowercase or kebab-case) before querying the map, or use a custom PropertyMapper to preserve the original key casing.",
+          "title": "Relaxed binding normalizes map keys causing exact-match lookup failure"
+        }
+      ],
+      "case_id": "fresh-v2-h04",
+      "diagnosis_status": "complete",
+      "evidence_references": [
+        {
+          "end_line": 10,
+          "file": "src/main/java/com/springfix/freshv2/h04/telemetry/TelemetryProperties.java",
+          "start_line": 8
+        },
+        {
+          "end_line": 14,
+          "file": "src/main/java/com/springfix/freshv2/h04/telemetry/TelemetryService.java",
+          "start_line": 13
+        },
+        {
+          "end_line": 10,
+          "file": "pom.xml",
+          "start_line": 10
+        }
+      ],
+      "issue_category": "configuration",
+      "rejected_evidence_count": 0,
+      "retrieved_files": [
+        "src/main/java/com/springfix/freshv2/h04/telemetry/TelemetryProperties.java",
+        "pom.xml",
+        "src/main/java/com/springfix/freshv2/h04/telemetry/TelemetryService.java",
+        "src/main/java/com/springfix/freshv2/h04/telemetry/Application.java",
+        "src/main/java/com/springfix/freshv2/h04/telemetry/Application.java",
+        "src/main/resources/application.yml"
+      ],
+      "sanitized": true,
+      "schema_version": "diagnosis-evidence-v1.0",
+      "summary": "Spring Boot's @ConfigurationProperties applies relaxed binding to map keys, normalizing them (e.g., to lowercase). TelemetryService performs an exact string match using properties.getHeaders().get(name), which fails because the map key was normalized during binding, causing the header to be omitted.",
+      "truncated": false,
+      "truncated_fields": []
+    },
+    {
+      "bounded": true,
+      "candidates": [
+        {
+          "description": "The PricingService constructor injects the currency using @Value(\"${pricing.currency}\") without providing a default value. Since the deployment does not provide a currency override and application.yml only defines pricing.region, Spring fails to resolve the placeholder during bean creation.",
+          "recommended_fix": "Add a default value to the @Value annotation in PricingService, such as @Value(\"${pricing.currency:USD}\"), or define pricing.currency in application.yml to match the expected standard currency behavior.",
+          "title": "Missing default value for pricing.currency in @Value annotation"
+        }
+      ],
+      "case_id": "fresh-v2-h05",
+      "diagnosis_status": "complete",
+      "evidence_references": [
+        {
+          "end_line": 10,
+          "file": "src/main/java/com/springfix/freshv2/h05/pricing/PricingService.java",
+          "start_line": 10
+        },
+        {
+          "end_line": 2,
+          "file": "src/main/resources/application.yml",
+          "start_line": 1
+        }
+      ],
+      "issue_category": "configuration",
+      "rejected_evidence_count": 0,
+      "retrieved_files": [
+        "src/main/java/com/springfix/freshv2/h05/pricing/PricingService.java",
+        "pom.xml",
+        "src/main/java/com/springfix/freshv2/h05/pricing/Application.java",
+        "src/main/resources/application.yml"
+      ],
+      "sanitized": true,
+      "schema_version": "diagnosis-evidence-v1.0",
+      "summary": "The PricingService fails to initialize because the @Value annotation for the currency property lacks a default fallback, and the application.yml configuration does not define pricing.currency. Spring cannot resolve the placeholder, resulting in a BeanCreationException.",
+      "truncated": false,
+      "truncated_fields": []
+    },
+    {
+      "bounded": true,
+      "candidates": [
+        {
+          "description": "The active profile is set to 'release', but the profile group is defined under the key 'releases' (plural). Because of this typo, Spring Boot does not associate the 'metrics' and 'eu' profiles with the 'release' profile, leaving the metrics feature disabled.",
+          "recommended_fix": "Correct the profile group key in application.yml from 'releases' to 'release' so that the 'metrics' and 'eu' profiles are properly included when the 'release' profile is active.",
+          "title": "Profile group name mismatch in application.yml"
+        }
+      ],
+      "case_id": "fresh-v2-h06",
+      "diagnosis_status": "complete",
+      "evidence_references": [
+        {
+          "end_line": 7,
+          "file": "src/main/resources/application.yml",
+          "start_line": 1
+        }
+      ],
+      "issue_category": "configuration",
+      "rejected_evidence_count": 0,
+      "retrieved_files": [
+        "pom.xml",
+        "src/main/resources/application.yml",
+        "src/main/java/com/springfix/freshv2/h06/release/ReleaseFeatures.java",
+        "src/main/java/com/springfix/freshv2/h06/release/Application.java",
+        "src/main/resources/application-eu.yml",
+        "src/main/resources/application-metrics.yml"
+      ],
+      "sanitized": true,
+      "schema_version": "diagnosis-evidence-v1.0",
+      "summary": "The metrics feature is not activated because of a typo in the profile group configuration. The active profile is 'release', but the group is defined under 'releases', preventing the 'metrics' profile from being included.",
+      "truncated": false,
+      "truncated_fields": []
+    },
+    {
+      "bounded": true,
+      "candidates": [
+        {
+          "description": "The IngestProperties class applies the @Email validation constraint to the elements of the recipients list. The application.yml configuration provides 'ops' as the first recipient, which is not a valid email address. During startup, Spring Boot binds the properties and triggers validation due to the @Validated annotation, resulting in a BindException.",
+          "recommended_fix": "Update the application.yml configuration to provide valid email addresses for all items in the ingest.recipients list, or remove the @Email constraint from the recipients field in IngestProperties if non-email identifiers are intended.",
+          "title": "Invalid email format in recipients list violates @Email constraint"
+        }
+      ],
+      "case_id": "fresh-v2-h07",
+      "diagnosis_status": "complete",
+      "evidence_references": [
+        {
+          "end_line": 14,
+          "file": "src/main/java/com/springfix/freshv2/h07/ingest/IngestProperties.java",
+          "start_line": 13
+        },
+        {
+          "end_line": 5,
+          "file": "src/main/resources/application.yml",
+          "start_line": 3
+        },
+        {
+          "end_line": 11,
+          "file": "src/main/java/com/springfix/freshv2/h07/ingest/IngestProperties.java",
+          "start_line": 10
+        }
+      ],
+      "issue_category": "configuration",
+      "rejected_evidence_count": 0,
+      "retrieved_files": [
+        "src/main/java/com/springfix/freshv2/h07/ingest/IngestProperties.java",
+        "pom.xml",
+        "src/main/java/com/springfix/freshv2/h07/ingest/Application.java",
+        "src/main/java/com/springfix/freshv2/h07/ingest/IngestService.java",
+        "src/main/java/com/springfix/freshv2/h07/ingest/Application.java",
+        "src/main/resources/application.yml"
+      ],
+      "sanitized": true,
+      "schema_version": "diagnosis-evidence-v1.0",
+      "summary": "The application fails to start with a BindException because the 'ops' value in the 'ingest.recipients' list violates the @Email validation constraint defined in IngestProperties. Spring Boot's @Validated annotation triggers JSR-303 validation during property binding, rejecting the invalid email format.",
+      "truncated": false,
+      "truncated_fields": []
+    },
+    {
+      "bounded": true,
+      "candidates": [
+        {
+          "description": "The application.yml file imports 'classpath:tenant-overrides.properties' without the 'optional:' prefix. Spring Boot requires this prefix to gracefully ignore missing configuration files. Without it, the absence of the file causes a ConfigDataResourceNotFoundException during startup, preventing the service from using the default region.",
+          "recommended_fix": "Update the spring.config.import property in application.yml to include the 'optional:' prefix, changing the value to 'optional:classpath:tenant-overrides.properties'. This instructs Spring Boot to ignore the missing file and proceed with default configurations.",
+          "title": "Missing 'optional:' prefix in spring.config.import"
+        }
+      ],
+      "case_id": "fresh-v2-h08",
+      "diagnosis_status": "complete",
+      "evidence_references": [
+        {
+          "end_line": 3,
+          "file": "src/main/resources/application.yml",
+          "start_line": 1
+        }
+      ],
+      "issue_category": "configuration",
+      "rejected_evidence_count": 0,
+      "retrieved_files": [
+        "src/main/java/com/springfix/freshv2/h08/tenant/TenantService.java",
+        "pom.xml",
+        "src/main/resources/application.yml",
+        "src/main/java/com/springfix/freshv2/h08/tenant/Application.java",
+        "src/main/java/com/springfix/freshv2/h08/tenant/Application.java"
+      ],
+      "sanitized": true,
+      "schema_version": "diagnosis-evidence-v1.0",
+      "summary": "The tenant service fails to start because the configuration import for tenant-overrides.properties is not marked as optional. When the file is missing in certain installations, Spring Boot throws a ConfigDataResourceNotFoundException instead of falling back to the default region.",
+      "truncated": false,
+      "truncated_fields": []
+    }
+  ],
+  "sanitized": true,
+  "schema_version": "diagnosis-evidence-v1.0"
+}

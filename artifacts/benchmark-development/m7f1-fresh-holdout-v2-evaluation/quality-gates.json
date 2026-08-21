@@ -1,0 +1,14 @@
+{
+  "benchmark_validation": "PASS; legacy=3/3, holdout=7/7, total=10/10",
+  "fresh_holdout_v2_manifest_unchanged": "PASS; no tracked diff from starting commit",
+  "freeze_manifest_hash_recheck": "PREEXISTING_CHECKOUT_MISMATCH; frozen file_hashes do not match current checkout bytes; benchmark files were not modified",
+  "holdout_integrity": "PASS",
+  "mypy_strict": "PASS; 97 source files",
+  "pytest": "PASS; 574 passed, 1 skipped",
+  "ruff": "PASS",
+  "semantic_dev_integrity": "PASS",
+  "uv_lock_check": "PASS",
+  "agent_or_llm_calls_during_gates": 0,
+  "sanitized": true,
+  "bounded": true
+}
