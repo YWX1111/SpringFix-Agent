@@ -1,7 +1,7 @@
 {
   "schema_version": "m7e3-closeout-summary-v1",
   "milestone": "M7E-3",
-  "status": "PASS_PENDING_PUSH_CI",
+  "status": "PASS",
   "starting_commit": "50dbe27b5cf950621419fe69f722134593813c9a",
   "ending_commit": null,
   "runtime": "0.15.1",
@@ -59,7 +59,7 @@
     "ruff": "PASS",
     "mypy_strict": "PASS (97 source files)",
     "uv_lock_check": "PASS",
-    "ci": "PENDING PUSH CI"
+    "ci": "PASS (GitHub Actions run #34)"
   },
   "known_debt_count": 3,
   "historical_holdout_v1": {"repair_success": "3/7", "rerun": false, "overwritten": false},

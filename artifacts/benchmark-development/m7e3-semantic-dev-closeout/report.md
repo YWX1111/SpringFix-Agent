@@ -1,6 +1,6 @@
 # M7E-3 — Semantic Dev Closeout & Freeze
 
-Status at artifact creation: **PASS pending the pushed-commit CI check**. This closeout changes documentation/artifacts only. Starting commit: `50dbe27b5cf950621419fe69f722134593813c9a`. Runtime: `0.15.1`. Dev split: `dev_semantic_v1` (6 cases).
+Status: **PASS**. GitHub Actions run #34 passed for closeout commit `190f022`. This closeout changes documentation/artifacts only. Starting commit: `50dbe27b5cf950621419fe69f722134593813c9a`. Runtime: `0.15.1`. Dev split: `dev_semantic_v1` (6 cases).
 
 ## Freeze decision
 
@@ -41,6 +41,6 @@ The debt register records three non-blocking items: rule-based evaluator lexical
 
 ## Quality and closure
 
-Preflight integrity, sample, benchmark, and V2.0/V2.1/V2.2 controls all passed. The full local gates also passed: `pytest` 561 passed/1 skipped, Ruff PASS, MyPy strict PASS (97 source files), and `uv lock --check` PASS. The pushed CI check remains the final external gate for the closeout commit. Once it passes and Git is clean, the recorded state is `M7E-3 = PASS`, `M7E_CLOSED = true`, and `M7F_READY = true`.
+Preflight integrity, sample, benchmark, and V2.0/V2.1/V2.2 controls all passed. The full local gates also passed: `pytest` 561 passed/1 skipped, Ruff PASS, MyPy strict PASS (97 source files), and `uv lock --check` PASS. GitHub Actions run #34 passed all four jobs. With Git clean, the recorded state is `M7E-3 = PASS`, `M7E_CLOSED = true`, and `M7F_READY = true`.
 
 The next milestone is **M7F-0 — Fresh Holdout v2 Construction & Blind Freeze**. Do not execute Fresh Holdout v2 in M7E-3.

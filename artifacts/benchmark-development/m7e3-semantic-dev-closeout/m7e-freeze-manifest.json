@@ -1,7 +1,8 @@
 {
   "schema_version": "m7e-freeze-manifest-v1",
   "milestone": "M7E-3",
-  "status": "FROZEN_PENDING_PUSH_CI",
+  "status": "PASS",
+  "ci_run": "https://github.com/YWX1111/SpringFix-Agent/actions/runs/32436550202",
   "starting_commit": "50dbe27b5cf950621419fe69f722134593813c9a",
   "runtime_contract": {
     "runtime": "0.15.1",
