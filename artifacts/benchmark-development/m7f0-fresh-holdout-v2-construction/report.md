@@ -5,7 +5,7 @@ Status: **BLOCKED_BY_PREEXISTING_M7E_HASH_MISMATCH**
 This report contains aggregate construction and isolation results only. Reference patches, exact expected edits, and case Gold are sealed separately.
 
 - Starting commit: `35f8bbebcafded22397e53a5a2f2a148dab0c890`
-- Freeze commit: `pending sealing commit`
+- Freeze commit: `16ecd46fea9801c598a1b4e6faf718a1224584f6`
 - Runtime: `0.15.1`
 - Cases: `8` (fresh-v2-h01, fresh-v2-h02, fresh-v2-h03, fresh-v2-h04, fresh-v2-h05, fresh-v2-h06, fresh-v2-h07, fresh-v2-h08)
 - Semantic families: `8`

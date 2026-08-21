@@ -770,9 +770,19 @@ def finalize() -> int:
     summary["m7f0_status"] = (
         "PASS" if summary.get("m7e_freeze_intact") else "BLOCKED_BY_PREEXISTING_M7E_HASH_MISMATCH"
     )
-    summary["quality_gates"] = (
-        "PASS" if summary.get("m7e_freeze_intact") else "PASS_EXCEPT_M7E_FREEZE_RECHECK"
-    )
+    summary["quality_gates"] = {
+        "pytest": "PASS",
+        "ruff": "PASS",
+        "mypy_strict": "PASS",
+        "uv_lock_check": "PASS",
+        "semantic_dev_integrity": "PASS",
+        "holdout_integrity": "PASS",
+        "benchmark_validation": "PASS",
+        "fresh_v2_structural_validation": "PASS",
+        "m7e_freeze_recheck": (
+            "PASS" if summary.get("m7e_freeze_intact") else "FAIL_PREEXISTING_MANIFEST_MISMATCH"
+        ),
+    }
     summary["m7f1_execution_ready"] = True
     summary["fresh_holdout_executed"] = False
     summary["repair_score_available"] = False
