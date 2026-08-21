@@ -1,0 +1,130 @@
+{
+  "schema_version": "m7e-freeze-manifest-v1",
+  "milestone": "M7E-3",
+  "status": "FROZEN_PENDING_PUSH_CI",
+  "starting_commit": "50dbe27b5cf950621419fe69f722134593813c9a",
+  "runtime_contract": {
+    "runtime": "0.15.1",
+    "provider": "openai_compatible",
+    "model": "qwen3.7-plus",
+    "temperature": 0.0,
+    "timeout_seconds": 60,
+    "max_retries": 2,
+    "max_output_tokens": 2000,
+    "note": "Frozen Dev validation configuration; not a permanent model-only requirement."
+  },
+  "production_hashes": {
+    "src/springfix_agent/graph/builder.py": "256b8536bba651c4023d10c2d32ad671878c1f4cd99a95e60af03e46c3276047",
+    "src/springfix_agent/graph/state.py": "62a1c25f993d3478a0548df7b4b30b2bc9c3f8370bcc0fadf03a7ec93c5cf676",
+    "src/springfix_agent/graph/nodes/root_cause_analyzer.py": "cbb6d3ce440adc80b1d2abba836230de5b697f023819a3045926cf5cbf4b42d4",
+    "src/springfix_agent/graph/nodes/retrieve_code.py": "116a6e985f2e8ef00dbdad6f436b53831bfbab519ae36728dc1e51c88f82be48",
+    "src/springfix_agent/llm/schemas.py": "963848604b7a067a5811e3430a66c9d4f8bcd7a04394991da3366b3ee0dec2b2",
+    "src/springfix_agent/config.py": "4949e8f04b62aa342e2ade7cde912120e1c8a360a0e308d6ad75cd27a9bbb15b",
+    "src/springfix_agent/main.py": "5abf7472988d85e510b2818e816fe4f32a3b027984fbaf9f8d2df8cfa8f4d707",
+    "src/springfix_agent/retrieval/query_builder.py": "79764ab777ac710d49288078d31824a5c409b8a8c97798aea5d2eaa146616bb2",
+    "src/springfix_agent/retrieval/fusion.py": "890f683221d449e350bb7fb3c1b118e62cc5e094b8a933d8bf83e46a8dbe5869",
+    "src/springfix_agent/repair/generator.py": "c86be9b7458556ad4291bee9a1cecf9780511040cb0de2d4540e47fef1eefc0d",
+    "src/springfix_agent/repair/validator.py": "9cbab43dc769b65c1016e67c6d1c1f9c5e31656bbe96cbe61aa5278590d34129",
+    "src/springfix_agent/repair/applier.py": "fe5a1ea393d5bdf03c9bff76c1b76d4a46e7dc086048e42fc855dd37198629be",
+    "src/springfix_agent/repair/maven_verifier.py": "4c82145fbdf41727f130af16ad8bf0be9fd42c93d718183b9f151b32ee6e07c1",
+    "src/springfix_agent/repair/evaluator.py": "b01228e4a93496301af26ba28f6ac51e951720ede579b647ce54efaaf562bed",
+    "src/springfix_agent/repair/repair_runner.py": "28527ab9de732f8b978da634228d5d43104dcb2cff789fbb7ed58513d10a296d",
+    "src/springfix_agent/repair/runner.py": "72160432484e51461ddcd1bfa8ec5fa7b649da022a737080fe097f9189c51de7",
+    "src/springfix_agent/repair/e2e_runner.py": "42610968d2d25fe2c233d37058179623aa6bb750595afb8a98b2be05f71f408a",
+    "src/springfix_agent/repair/e2e_models.py": "3469c80410805ba75cc509295dfac31c6ae0eb6514d19330d0efad091ba4792f",
+    "src/springfix_agent/repair/e2e_artifacts.py": "8d1571e9baa599e3650d68d9ea7311b74940f6cf311a29f3996847c4c1778069",
+    "src/springfix_agent/benchmark/evaluator.py": "93f07aca9f720a996c9215220c9e85d549c9453d03bab396ad22aa6991dd81f3",
+    "src/springfix_agent/benchmark/runner.py": "7d693f0c403cb5376e95d7cdbb54a552fb053f715e7f5d545427d8874d9da56d",
+    "pyproject.toml": "f8d226313e0f28f723c7b4ec44ca5135b1d95c0e3db7fa8d7d9c641b6c4b485d",
+    "uv.lock": "e9f603c913fd184d20369a0ba6ec3dee90825e4630409b0e372914870097a856"
+  },
+  "prompt_freeze": {
+    "status": "PASS",
+    "content_included": false,
+    "files": {
+      "src/springfix_agent/llm/prompts/issue_parser.md": "77274a7b83c796cc6ea1155feb92776b5503c2bc9e60c43f21350ee4be28102c",
+      "src/springfix_agent/llm/prompts/root_cause_analyzer.md": "c99ba203c5366014c821c6e4907f4c873f813ab69185f6bef72e6392cd627705",
+      "src/springfix_agent/llm/prompts/task_planner.md": "8f5e6c35ea974d013592cbd26226f568030b12af222ec88f06ca044b4a622629",
+      "src/springfix_agent/repair/prompts/patch_proposal.md": "b1a4fca1a0d7e62151b0a9626d6446395c75c632dd144f033ff03c75ef9bdbc6"
+    }
+  },
+  "evaluator_hashes": {
+    "src/springfix_agent/benchmark/diagnosis_v2.py": "ba7306d02182c81a50b1ab3ec9ce8b59de572987edad8ccd2fcf34ded8d5a060",
+    "src/springfix_agent/benchmark/diagnosis_v21.py": "33e9fa4262ed14e4ef5e58bc4259b619839740e55234828b232a6e2bc3621403",
+    "src/springfix_agent/benchmark/diagnosis_v22.py": "cd9c5f0113d2ed91a143d2d257a961a8642d74744e063c70eece1f419331a9b1",
+    "benchmark/dev_semantic_diagnosis_v2.jsonl": "7663a5ab72280bb60c368a793189434f845e833af7baa4fee516e32da97ef2d7",
+    "benchmark/dev_semantic_diagnosis_v2_manifest.json": "bb7baee19383ad632d03846fc24ca7be941a9036acfe9a4119eec1ef64716007",
+    "benchmark/dev_semantic_diagnosis_v2_1.jsonl": "3ab66235ae1127290a90cf07bd40c1f48b25f1219959f9e897c19e83361404a7",
+    "benchmark/dev_semantic_diagnosis_v2_1_manifest.json": "ac7f37668961f47d61039a2150db686cc1c0d926681baa0655529b028473f37d",
+    "benchmark/dev_semantic_diagnosis_v2_1_regressions.jsonl": "1e87d32941da83d4797df0c7bcd778e544b8bd1d8624ff54acfbaacae0048bbc",
+    "benchmark/dev_semantic_diagnosis_v2_2.jsonl": "113d608a00f9ebf439c73201e5c48f702a87734fec5d5f2b8f16a9f3a3df9dbd",
+    "benchmark/dev_semantic_diagnosis_v2_2_manifest.json": "1e9cb793f565322cbd0981f5c47ec614e3c87e0494756803e09b2d3d6a692dbe",
+    "benchmark/dev_semantic_diagnosis_v2_2_regressions.jsonl": "45fd7789504dcaaa411bc45e2b2affc0a3f6b2d9ae8e1bd176efa7945c755bc9"
+  },
+  "benchmark_hashes": {
+    "benchmark/dev_semantic_cases.jsonl": "393a5409a30a2a20e9203bf795bddcfd3e55f02291909b286b33b2a48834d069",
+    "benchmark/dev_semantic_repair_gold.jsonl": "51f94b829d86002bbf04714876b26fbae1b96796fac8f592499662dcdff73372",
+    "benchmark/dev_semantic_manifest.json": "a5d668a870d6023fda3fd6b012267a801f8d5ce79a18a25af8986cad453abb3a",
+    "benchmark/holdout_manifest.json": "aa389d466fe43e6a8f5aea8704057c682fc9bf87a71afb5f646b4251954fae96",
+    "benchmark/splits.json": "7477d2bb91a9ebefc2b7f421c58ad127cafcc950c5bcb0fb6829ceda97f784b0"
+  },
+  "dev_benchmark": {
+    "split": "dev_semantic_v1",
+    "cases": 6,
+    "baseline_failures": "6/6",
+    "reference_fixes": "6/6",
+    "samples_unchanged": true,
+    "tests_unchanged": true,
+    "gold_unchanged": true,
+    "reference_fixes_unchanged": true
+  },
+  "historical_holdout_v1": {
+    "repair_success": "3/7",
+    "status": "preserved_historical_only",
+    "rerun": false,
+    "gold_included": false
+  },
+  "scope_freeze": {
+    "v2_3_created": false,
+    "fresh_3_executed": false,
+    "new_dev_agent_execution": false,
+    "fresh_holdout_v2_executed": false,
+    "prompt_modified": false,
+    "repair_pipeline_modified": false,
+    "structured_diagnosis_implemented": false,
+    "rule_based_diagnosis_iteration_stopped": true
+  },
+  "artifacts": {
+    "closeout_report": "artifacts/benchmark-development/m7e3-semantic-dev-closeout/report.md",
+    "summary": "artifacts/benchmark-development/m7e3-semantic-dev-closeout/summary.json",
+    "debt_register": "artifacts/benchmark-development/m7e3-semantic-dev-closeout/known-debt-register.json",
+    "fresh_holdout_v2_protocol": "artifacts/benchmark-development/m7e3-semantic-dev-closeout/fresh-holdout-v2-protocol.md",
+    "metric_roles": "artifacts/benchmark-development/m7e3-semantic-dev-closeout/metric-role-registry.json"
+  },
+  "m7f_entry_gate": {
+    "required": [
+      "complete freeze manifest",
+      "Git clean",
+      "CI PASS",
+      "Repair pipeline frozen",
+      "Prompt frozen",
+      "runtime/config frozen",
+      "Dev benchmark frozen",
+      "evaluator versions frozen",
+      "debt register complete",
+      "Fresh Holdout v2 protocol frozen",
+      "historical Holdout v1 untouched"
+    ],
+    "ready_after_all_requirements": true
+  },
+  "artifact_safety": {
+    "secrets": false,
+    "api_keys": false,
+    "raw_model_output": false,
+    "prompt_content": false,
+    "hidden_reasoning": false,
+    "source_dump": false,
+    "holdout_gold": false,
+    "machine_absolute_paths": false
+  }
+}

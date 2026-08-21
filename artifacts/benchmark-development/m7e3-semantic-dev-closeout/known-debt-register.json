@@ -1,0 +1,36 @@
+{
+  "schema_version": "m7e3-known-debt-v1",
+  "milestone": "M7E-3",
+  "debts": [
+    {
+      "id": "D1",
+      "title": "Rule-based Diagnosis evaluator lexical coverage maintenance",
+      "severity": "medium",
+      "observed": true,
+      "release_blocker": false,
+      "status": "deferred",
+      "future_direction": "structured semantic fields and evaluator redesign",
+      "evidence": "Fresh-2 RCA classified all reviewed failures as evaluator false negatives"
+    },
+    {
+      "id": "D2",
+      "title": "Generation schema does not structurally require causal fields",
+      "severity": "low/medium",
+      "observed": false,
+      "release_blocker": false,
+      "status": "deferred",
+      "future_direction": "consider structured diagnosis output only with a separately justified contract change"
+    },
+    {
+      "id": "D3",
+      "title": "Historical Frozen Holdout v1 Repair Success = 3/7",
+      "severity": "historical",
+      "observed": true,
+      "release_blocker": false,
+      "status": "preserve_without_rerun",
+      "future_direction": "Fresh Holdout v2 under the frozen M7F protocol"
+    }
+  ],
+  "count": 3,
+  "holdout_v1_policy": "historical only; do not rerun, overwrite, retune, or inspect Gold in M7E-3"
+}

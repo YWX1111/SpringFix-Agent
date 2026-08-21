@@ -1,0 +1,41 @@
+{
+  "schema_version": "m7e3-metric-role-registry-v1",
+  "primary_functional_metric": {
+    "name": "Repair Success",
+    "role": "PRIMARY",
+    "predicate": "existing frozen Repair Success predicate",
+    "diagnosis_affects_repair_success": false
+  },
+  "diagnosis_metrics": [
+    {
+      "name": "Diagnosis V1",
+      "role": "HISTORICAL_DEBUG",
+      "primary": false,
+      "release_gate": false
+    },
+    {
+      "name": "Diagnosis V2.0",
+      "role": "FROZEN_HISTORICAL_SEMANTIC_EXPERIMENT",
+      "primary": false,
+      "release_gate": false
+    },
+    {
+      "name": "Diagnosis V2.1",
+      "role": "FROZEN_FAIRNESS_CALIBRATED_SEMANTIC_EXPERIMENT",
+      "primary": false,
+      "release_gate": false
+    },
+    {
+      "name": "Diagnosis V2.2",
+      "role": "SECONDARY_OBSERVATIONAL",
+      "status": "LIMITED_GENERALIZATION",
+      "primary": false,
+      "release_gate": false,
+      "repair_gate": false,
+      "holdout_prerequisite": false
+    }
+  ],
+  "diagnosis_release_gate": false,
+  "rule_based_iteration_stopped": true,
+  "evidence_schema": "diagnosis-evidence-v1.0"
+}
