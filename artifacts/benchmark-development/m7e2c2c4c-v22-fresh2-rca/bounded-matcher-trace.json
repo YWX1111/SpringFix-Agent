@@ -1,0 +1,2755 @@
+{
+  "milestone": "M7E-2C2C4C",
+  "purpose": "read-only deterministic matcher RCA; zero Agent and LLM calls",
+  "source_runs": {
+    "calibration": "20260820T040110Z-20b0fcf2",
+    "fresh1": "20260820T060935Z-fb5af9c3",
+    "fresh2": "20260820T075619Z-3bb64f39"
+  },
+  "cases": {
+    "dev-s1-profile-config-source": {
+      "three_run_comparison": {
+        "calibration": {
+          "run_id": "20260820T040110Z-20b0fcf2",
+          "bounded_summary": "The application falls back to the default shipping endpoint because `application-dev.yml` incorrectly specifies `on-profile: staging`. When the `dev` profile is active, the properties in this file are ignored, causing the fallback endpoint from `application.yml` to be used.",
+          "bounded_candidate_fields": [
+            {
+              "source": "candidate[0].title",
+              "text": "Incorrect profile activation condition in application-dev.yml"
+            },
+            {
+              "source": "candidate[0].description",
+              "text": "The configuration file `application-dev.yml` incorrectly specifies `on-profile: staging` under `spring.config.activate`. Because the active profile is `dev`, the properties in this file are not applied, causing the application to fall back to the default endpoint defined in `application.yml`."
+            },
+            {
+              "source": "candidate[0].recommended_fix",
+              "text": "Update the `on-profile` value in `application-dev.yml` to `dev`, or remove the `spring.config.activate` block entirely since the file name already associates it with the `dev` profile."
+            }
+          ],
+          "required_concept_hits": {
+            "active_profile": true,
+            "profile_specific_source": true,
+            "profile_activation_gate": true,
+            "affected_endpoint": true
+          },
+          "required_relation_hits": {
+            "profile_gate_mismatch": true
+          },
+          "semantic_pass": true,
+          "semantic_score": 1.0
+        },
+        "fresh1": {
+          "run_id": "20260820T060935Z-fb5af9c3",
+          "bounded_summary": "The development endpoint is ignored because `application-dev.yml` incorrectly restricts its activation to the `staging` profile via `spring.config.activate.on-profile: staging`. When the `dev` profile is active, this file is skipped, causing the application to fall back to the default endpoint defined in `application.yml`.",
+          "bounded_candidate_fields": [
+            {
+              "source": "candidate[0].title",
+              "text": "Incorrect profile activation condition in application-dev.yml"
+            },
+            {
+              "source": "candidate[0].description",
+              "text": "The file `application-dev.yml` contains the property `spring.config.activate.on-profile: staging`. In Spring Boot, this property overrides the file-name-based profile activation, meaning the configuration inside this file will only be applied when the `staging` profile is active. When the `dev` profile is active, the file is ignored, causing the application to fall back to the default `shipping.endpoint` defined in `application.yml`."
+            },
+            {
+              "source": "candidate[0].recommended_fix",
+              "text": "Remove the `spring.config.activate.on-profile: staging` property from `application-dev.yml` so that it correctly activates for the `dev` profile based on its file name, or rename the file to `application-staging.yml` if it was intended for the staging environment."
+            }
+          ],
+          "required_concept_hits": {
+            "active_profile": true,
+            "profile_specific_source": true,
+            "profile_activation_gate": true,
+            "affected_endpoint": true
+          },
+          "required_relation_hits": {
+            "profile_gate_mismatch": true
+          },
+          "semantic_pass": true,
+          "semantic_score": 1.0
+        },
+        "fresh2": {
+          "run_id": "20260820T075619Z-3bb64f39",
+          "bounded_summary": "The development endpoint is not selected because `application-dev.yml` contains a profile activation condition for `staging` instead of `dev`. When the `dev` profile is active, this file's properties are ignored, causing a fallback to the default endpoint.",
+          "bounded_candidate_fields": [
+            {
+              "source": "candidate[0].title",
+              "text": "Mismatched profile activation condition in application-dev.yml"
+            },
+            {
+              "source": "candidate[0].description",
+              "text": "The file `application-dev.yml` is named for the `dev` profile, but its internal `spring.config.activate.on-profile` property is set to `staging`. Because the active profile is `dev`, the properties in this file (including the development shipping endpoint) are not loaded, causing the application to fall back to the default endpoint defined in `application.yml`."
+            },
+            {
+              "source": "candidate[0].recommended_fix",
+              "text": "Change the `spring.config.activate.on-profile` value in `application-dev.yml` to `dev`, or rename the file to `application-staging.yml` if the intention was to configure the staging profile."
+            }
+          ],
+          "required_concept_hits": {
+            "active_profile": true,
+            "profile_specific_source": true,
+            "profile_activation_gate": true,
+            "affected_endpoint": true
+          },
+          "required_relation_hits": {
+            "profile_gate_mismatch": false
+          },
+          "semantic_pass": false,
+          "semantic_score": 0.9167
+        }
+      },
+      "fresh2_normalized_fields": [
+        {
+          "source": "root_cause_summary",
+          "text": "the development endpoint is not selected because application dev yml contains a profile activation condition for staging instead of dev when the dev profile is active this file s property are ignored causing a fallback to the default endpoint"
+        },
+        {
+          "source": "candidate[0].title",
+          "text": "mismatched profile activation condition in application dev yml"
+        },
+        {
+          "source": "candidate[0].description",
+          "text": "the file application dev yml is named for the dev profile but its internal spring config activate on profile property is set to staging because the active profile is dev the property in this file including the development shipping endpoint are not loaded causing the application to fall back to the default endpoint defined in application yml"
+        },
+        {
+          "source": "candidate[0].recommended_fix",
+          "text": "change the spring config activate on profile value in application dev yml to dev or rename the file to application staging yml if the intention was to configure the staging profile"
+        }
+      ],
+      "fresh2_clauses": [
+        "the development endpoint is not selected because application dev yml contains a profile activation condition for staging instead of dev",
+        "when the dev profile is active this file s property are ignored causing a fallback to the default endpoint",
+        "mismatched profile activation condition in application dev yml",
+        "the file application dev yml is named for the dev profile but its internal spring config activate on profile property is set to staging",
+        "because the active profile is dev the property in this file including the development shipping endpoint are not loaded causing the application to fall back to the default endpoint defined in application yml",
+        "change the spring config activate on profile value in application dev yml to dev or rename the file to application staging yml if the intention was to configure the staging profile"
+      ],
+      "concept_trace": [
+        {
+          "name": "active_profile",
+          "aliases": [
+            "active dev profile",
+            "dev profile is active",
+            "spring.profiles.active"
+          ],
+          "alias_hits_by_field": {
+            "root_cause_summary": [
+              {
+                "alias": "dev profile is active",
+                "normalized": "dev profile is active",
+                "spans": [
+                  [
+                    145,
+                    166
+                  ]
+                ]
+              }
+            ],
+            "candidate[0].title": [],
+            "candidate[0].description": [],
+            "candidate[0].recommended_fix": []
+          },
+          "bounded_patterns": [],
+          "evaluator_hit": true
+        },
+        {
+          "name": "profile_specific_source",
+          "aliases": [
+            "application-dev.yml",
+            "profile-specific configuration",
+            "dev profile configuration"
+          ],
+          "alias_hits_by_field": {
+            "root_cause_summary": [
+              {
+                "alias": "application-dev.yml",
+                "normalized": "application dev yml",
+                "spans": [
+                  [
+                    49,
+                    68
+                  ]
+                ]
+              }
+            ],
+            "candidate[0].title": [
+              {
+                "alias": "application-dev.yml",
+                "normalized": "application dev yml",
+                "spans": [
+                  [
+                    43,
+                    62
+                  ]
+                ]
+              }
+            ],
+            "candidate[0].description": [
+              {
+                "alias": "application-dev.yml",
+                "normalized": "application dev yml",
+                "spans": [
+                  [
+                    9,
+                    28
+                  ]
+                ]
+              }
+            ],
+            "candidate[0].recommended_fix": [
+              {
+                "alias": "application-dev.yml",
+                "normalized": "application dev yml",
+                "spans": [
+                  [
+                    54,
+                    73
+                  ]
+                ]
+              }
+            ]
+          },
+          "bounded_patterns": [],
+          "evaluator_hit": true
+        },
+        {
+          "name": "profile_activation_gate",
+          "aliases": [
+            "spring.config.activate.on-profile",
+            "on-profile",
+            "profile activation"
+          ],
+          "alias_hits_by_field": {
+            "root_cause_summary": [
+              {
+                "alias": "profile activation",
+                "normalized": "profile activation",
+                "spans": [
+                  [
+                    80,
+                    98
+                  ]
+                ]
+              }
+            ],
+            "candidate[0].title": [
+              {
+                "alias": "profile activation",
+                "normalized": "profile activation",
+                "spans": [
+                  [
+                    11,
+                    29
+                  ]
+                ]
+              }
+            ],
+            "candidate[0].description": [
+              {
+                "alias": "spring.config.activate.on-profile",
+                "normalized": "spring config activate on profile",
+                "spans": [
+                  [
+                    75,
+                    108
+                  ]
+                ]
+              },
+              {
+                "alias": "on-profile",
+                "normalized": "on profile",
+                "spans": [
+                  [
+                    98,
+                    108
+                  ]
+                ]
+              }
+            ],
+            "candidate[0].recommended_fix": [
+              {
+                "alias": "spring.config.activate.on-profile",
+                "normalized": "spring config activate on profile",
+                "spans": [
+                  [
+                    11,
+                    44
+                  ]
+                ]
+              },
+              {
+                "alias": "on-profile",
+                "normalized": "on profile",
+                "spans": [
+                  [
+                    34,
+                    44
+                  ]
+                ]
+              }
+            ]
+          },
+          "bounded_patterns": [],
+          "evaluator_hit": true
+        },
+        {
+          "name": "affected_endpoint",
+          "aliases": [
+            "shipping endpoint",
+            "development endpoint",
+            "default endpoint",
+            "fallback endpoint"
+          ],
+          "alias_hits_by_field": {
+            "root_cause_summary": [
+              {
+                "alias": "development endpoint",
+                "normalized": "development endpoint",
+                "spans": [
+                  [
+                    4,
+                    24
+                  ]
+                ]
+              },
+              {
+                "alias": "default endpoint",
+                "normalized": "default endpoint",
+                "spans": [
+                  [
+                    226,
+                    242
+                  ]
+                ]
+              }
+            ],
+            "candidate[0].title": [],
+            "candidate[0].description": [
+              {
+                "alias": "shipping endpoint",
+                "normalized": "shipping endpoint",
+                "spans": [
+                  [
+                    222,
+                    239
+                  ]
+                ]
+              },
+              {
+                "alias": "default endpoint",
+                "normalized": "default endpoint",
+                "spans": [
+                  [
+                    299,
+                    315
+                  ]
+                ]
+              }
+            ],
+            "candidate[0].recommended_fix": []
+          },
+          "bounded_patterns": [],
+          "evaluator_hit": true
+        }
+      ],
+      "relation_trace": {
+        "profile_gate_mismatch": {
+          "clauses": [
+            "the development endpoint is not selected because application dev yml contains a profile activation condition for staging instead of dev",
+            "when the dev profile is active this file s property are ignored causing a fallback to the default endpoint",
+            "mismatched profile activation condition in application dev yml",
+            "the file application dev yml is named for the dev profile but its internal spring config activate on profile property is set to staging",
+            "because the active profile is dev the property in this file including the development shipping endpoint are not loaded causing the application to fall back to the default endpoint defined in application yml",
+            "change the spring config activate on profile value in application dev yml to dev or rename the file to application staging yml if the intention was to configure the staging profile"
+          ],
+          "variants": [
+            {
+              "variant_index": 0,
+              "left_aliases": [
+                "application-dev.yml",
+                "profile-specific configuration",
+                "dev profile configuration",
+                "activation"
+              ],
+              "relation_aliases": [
+                "is gated by",
+                "is activated only for",
+                "declares",
+                "specifies",
+                "uses",
+                "restricts activation to",
+                "restricts its activation to",
+                "activation restricted to",
+                "activation is restricted to",
+                "is restricted to",
+                "configured only for",
+                "targets"
+              ],
+              "right_aliases": [
+                "staging profile",
+                "on-profile staging",
+                "staging"
+              ],
+              "required_value_aliases": [],
+              "context_aliases": [
+                "active dev profile",
+                "dev profile is active"
+              ],
+              "max_token_distance": 24,
+              "value_max_token_distance": 8,
+              "context_max_token_distance": 64,
+              "clauses_with_any_alias": [
+                {
+                  "clause_index": 0,
+                  "clause": "the development endpoint is not selected because application dev yml contains a profile activation condition for staging instead of dev",
+                  "context_window": "the development endpoint is not selected because application dev yml contains a profile activation condition for staging instead of dev when the dev profile is active this file s property are ignored causing a fallback to the default endpoint",
+                  "left_spans": [
+                    [
+                      49,
+                      68
+                    ],
+                    [
+                      88,
+                      98
+                    ]
+                  ],
+                  "relation_spans": [],
+                  "right_spans": [
+                    [
+                      113,
+                      120
+                    ]
+                  ],
+                  "required_value_spans": [],
+                  "context_alias_matches": [
+                    [
+                      145,
+                      166
+                    ]
+                  ],
+                  "context_hit": true,
+                  "candidate_paths": [],
+                  "witness": null
+                },
+                {
+                  "clause_index": 1,
+                  "clause": "when the dev profile is active this file s property are ignored causing a fallback to the default endpoint",
+                  "context_window": "the development endpoint is not selected because application dev yml contains a profile activation condition for staging instead of dev when the dev profile is active this file s property are ignored causing a fallback to the default endpoint mismatched profile activation condition in application dev yml",
+                  "left_spans": [],
+                  "relation_spans": [],
+                  "right_spans": [],
+                  "required_value_spans": [],
+                  "context_alias_matches": [
+                    [
+                      145,
+                      166
+                    ]
+                  ],
+                  "context_hit": true,
+                  "candidate_paths": [],
+                  "witness": null
+                },
+                {
+                  "clause_index": 2,
+                  "clause": "mismatched profile activation condition in application dev yml",
+                  "context_window": "when the dev profile is active this file s property are ignored causing a fallback to the default endpoint mismatched profile activation condition in application dev yml the file application dev yml is named for the dev profile but its internal spring config activate on profile property is set to staging",
+                  "left_spans": [
+                    [
+                      19,
+                      29
+                    ],
+                    [
+                      43,
+                      62
+                    ]
+                  ],
+                  "relation_spans": [],
+                  "right_spans": [],
+                  "required_value_spans": [],
+                  "context_alias_matches": [
+                    [
+                      9,
+                      30
+                    ]
+                  ],
+                  "context_hit": true,
+                  "candidate_paths": [],
+                  "witness": null
+                },
+                {
+                  "clause_index": 3,
+                  "clause": "the file application dev yml is named for the dev profile but its internal spring config activate on profile property is set to staging",
+                  "context_window": "mismatched profile activation condition in application dev yml the file application dev yml is named for the dev profile but its internal spring config activate on profile property is set to staging because the active profile is dev the property in this file including the development shipping endpoint are not loaded causing the application to fall back to the default endpoint defined in application yml",
+                  "left_spans": [
+                    [
+                      9,
+                      28
+                    ]
+                  ],
+                  "relation_spans": [],
+                  "right_spans": [
+                    [
+                      128,
+                      135
+                    ]
+                  ],
+                  "required_value_spans": [],
+                  "context_alias_matches": [],
+                  "context_hit": false,
+                  "candidate_paths": [],
+                  "witness": null
+                },
+                {
+                  "clause_index": 5,
+                  "clause": "change the spring config activate on profile value in application dev yml to dev or rename the file to application staging yml if the intention was to configure the staging profile",
+                  "context_window": "because the active profile is dev the property in this file including the development shipping endpoint are not loaded causing the application to fall back to the default endpoint defined in application yml change the spring config activate on profile value in application dev yml to dev or rename the file to application staging yml if the intention was to configure the staging profile",
+                  "left_spans": [
+                    [
+                      54,
+                      73
+                    ]
+                  ],
+                  "relation_spans": [],
+                  "right_spans": [
+                    [
+                      115,
+                      122
+                    ],
+                    [
+                      165,
+                      172
+                    ],
+                    [
+                      165,
+                      180
+                    ]
+                  ],
+                  "required_value_spans": [],
+                  "context_alias_matches": [],
+                  "context_hit": false,
+                  "candidate_paths": [],
+                  "witness": null
+                }
+              ]
+            },
+            {
+              "variant_index": 1,
+              "left_aliases": [
+                "application-dev.yml",
+                "dev-active file",
+                "development file"
+              ],
+              "relation_aliases": [
+                "is skipped because gate targets",
+                "is skipped",
+                "ignored because gate targets"
+              ],
+              "right_aliases": [
+                "staging profile",
+                "staging"
+              ],
+              "required_value_aliases": [],
+              "context_aliases": [
+                "active dev profile",
+                "dev profile is active"
+              ],
+              "max_token_distance": 24,
+              "value_max_token_distance": 8,
+              "context_max_token_distance": 64,
+              "clauses_with_any_alias": [
+                {
+                  "clause_index": 0,
+                  "clause": "the development endpoint is not selected because application dev yml contains a profile activation condition for staging instead of dev",
+                  "context_window": "the development endpoint is not selected because application dev yml contains a profile activation condition for staging instead of dev when the dev profile is active this file s property are ignored causing a fallback to the default endpoint",
+                  "left_spans": [
+                    [
+                      49,
+                      68
+                    ]
+                  ],
+                  "relation_spans": [],
+                  "right_spans": [
+                    [
+                      113,
+                      120
+                    ]
+                  ],
+                  "required_value_spans": [],
+                  "context_alias_matches": [
+                    [
+                      145,
+                      166
+                    ]
+                  ],
+                  "context_hit": true,
+                  "candidate_paths": [],
+                  "witness": null
+                },
+                {
+                  "clause_index": 1,
+                  "clause": "when the dev profile is active this file s property are ignored causing a fallback to the default endpoint",
+                  "context_window": "the development endpoint is not selected because application dev yml contains a profile activation condition for staging instead of dev when the dev profile is active this file s property are ignored causing a fallback to the default endpoint mismatched profile activation condition in application dev yml",
+                  "left_spans": [],
+                  "relation_spans": [],
+                  "right_spans": [],
+                  "required_value_spans": [],
+                  "context_alias_matches": [
+                    [
+                      145,
+                      166
+                    ]
+                  ],
+                  "context_hit": true,
+                  "candidate_paths": [],
+                  "witness": null
+                },
+                {
+                  "clause_index": 2,
+                  "clause": "mismatched profile activation condition in application dev yml",
+                  "context_window": "when the dev profile is active this file s property are ignored causing a fallback to the default endpoint mismatched profile activation condition in application dev yml the file application dev yml is named for the dev profile but its internal spring config activate on profile property is set to staging",
+                  "left_spans": [
+                    [
+                      43,
+                      62
+                    ]
+                  ],
+                  "relation_spans": [],
+                  "right_spans": [],
+                  "required_value_spans": [],
+                  "context_alias_matches": [
+                    [
+                      9,
+                      30
+                    ]
+                  ],
+                  "context_hit": true,
+                  "candidate_paths": [],
+                  "witness": null
+                },
+                {
+                  "clause_index": 3,
+                  "clause": "the file application dev yml is named for the dev profile but its internal spring config activate on profile property is set to staging",
+                  "context_window": "mismatched profile activation condition in application dev yml the file application dev yml is named for the dev profile but its internal spring config activate on profile property is set to staging because the active profile is dev the property in this file including the development shipping endpoint are not loaded causing the application to fall back to the default endpoint defined in application yml",
+                  "left_spans": [
+                    [
+                      9,
+                      28
+                    ]
+                  ],
+                  "relation_spans": [],
+                  "right_spans": [
+                    [
+                      128,
+                      135
+                    ]
+                  ],
+                  "required_value_spans": [],
+                  "context_alias_matches": [],
+                  "context_hit": false,
+                  "candidate_paths": [],
+                  "witness": null
+                },
+                {
+                  "clause_index": 5,
+                  "clause": "change the spring config activate on profile value in application dev yml to dev or rename the file to application staging yml if the intention was to configure the staging profile",
+                  "context_window": "because the active profile is dev the property in this file including the development shipping endpoint are not loaded causing the application to fall back to the default endpoint defined in application yml change the spring config activate on profile value in application dev yml to dev or rename the file to application staging yml if the intention was to configure the staging profile",
+                  "left_spans": [
+                    [
+                      54,
+                      73
+                    ]
+                  ],
+                  "relation_spans": [],
+                  "right_spans": [
+                    [
+                      115,
+                      122
+                    ],
+                    [
+                      165,
+                      172
+                    ],
+                    [
+                      165,
+                      180
+                    ]
+                  ],
+                  "required_value_spans": [],
+                  "context_alias_matches": [],
+                  "context_hit": false,
+                  "candidate_paths": [],
+                  "witness": null
+                }
+              ]
+            },
+            {
+              "variant_index": 2,
+              "left_aliases": [
+                "staging profile",
+                "on-profile staging"
+              ],
+              "relation_aliases": [
+                "does not match",
+                "conflicts with",
+                "is different from",
+                "differs from"
+              ],
+              "right_aliases": [
+                "active dev profile",
+                "dev profile"
+              ],
+              "required_value_aliases": [],
+              "context_aliases": [],
+              "max_token_distance": 24,
+              "value_max_token_distance": 8,
+              "context_max_token_distance": 64,
+              "clauses_with_any_alias": [
+                {
+                  "clause_index": 1,
+                  "clause": "when the dev profile is active this file s property are ignored causing a fallback to the default endpoint",
+                  "context_window": "the development endpoint is not selected because application dev yml contains a profile activation condition for staging instead of dev when the dev profile is active this file s property are ignored causing a fallback to the default endpoint mismatched profile activation condition in application dev yml",
+                  "left_spans": [],
+                  "relation_spans": [],
+                  "right_spans": [
+                    [
+                      9,
+                      20
+                    ]
+                  ],
+                  "required_value_spans": [],
+                  "context_alias_matches": [],
+                  "context_hit": true,
+                  "candidate_paths": [],
+                  "witness": null
+                },
+                {
+                  "clause_index": 3,
+                  "clause": "the file application dev yml is named for the dev profile but its internal spring config activate on profile property is set to staging",
+                  "context_window": "mismatched profile activation condition in application dev yml the file application dev yml is named for the dev profile but its internal spring config activate on profile property is set to staging because the active profile is dev the property in this file including the development shipping endpoint are not loaded causing the application to fall back to the default endpoint defined in application yml",
+                  "left_spans": [],
+                  "relation_spans": [],
+                  "right_spans": [
+                    [
+                      46,
+                      57
+                    ]
+                  ],
+                  "required_value_spans": [],
+                  "context_alias_matches": [],
+                  "context_hit": true,
+                  "candidate_paths": [],
+                  "witness": null
+                },
+                {
+                  "clause_index": 5,
+                  "clause": "change the spring config activate on profile value in application dev yml to dev or rename the file to application staging yml if the intention was to configure the staging profile",
+                  "context_window": "because the active profile is dev the property in this file including the development shipping endpoint are not loaded causing the application to fall back to the default endpoint defined in application yml change the spring config activate on profile value in application dev yml to dev or rename the file to application staging yml if the intention was to configure the staging profile",
+                  "left_spans": [
+                    [
+                      165,
+                      180
+                    ]
+                  ],
+                  "relation_spans": [],
+                  "right_spans": [],
+                  "required_value_spans": [],
+                  "context_alias_matches": [],
+                  "context_hit": true,
+                  "candidate_paths": [],
+                  "witness": null
+                }
+              ]
+            }
+          ],
+          "observed_relation_phrases": [
+            "contains a profile activation condition for staging instead of dev",
+            "staging instead of dev"
+          ],
+          "classification": {
+            "classification": "NEW_PARAPHRASE_FALSE_NEGATIVE",
+            "primary_rca": "RELATION_ALIAS_COVERAGE_GAP",
+            "reason": "The bounded diagnosis explicitly states staging instead of dev and the resulting skip/fallback; observed relation wording is not in the frozen relation alias set, so no directional witness is formed."
+          }
+        }
+      }
+    },
+    "dev-s5-cache-binding-key": {
+      "three_run_comparison": {
+        "calibration": {
+          "run_id": "20260820T040110Z-20b0fcf2",
+          "bounded_summary": "The regional cache lifetime configuration is not binding to the CacheProperties map because of a property name mismatch. The application.yml defines 'cache.region-ttl', but the Java class expects 'cache.ttl-by-region' (mapped from 'ttlByRegion').",
+          "bounded_candidate_fields": [
+            {
+              "source": "candidate[0].title",
+              "text": "Property name mismatch between application.yml and CacheProperties field"
+            },
+            {
+              "source": "candidate[0].description",
+              "text": "The application.yml file configures the cache lifetime under the key 'cache.region-ttl', but the CacheProperties class defines the map field as 'ttlByRegion'. Spring Boot's relaxed binding maps 'ttlByRegion' to 'ttl-by-region' or 'ttlByRegion', not 'region-ttl'. As a result, the property is ignored, and the map retains its empty default value."
+            },
+            {
+              "source": "candidate[0].recommended_fix",
+              "text": "Align the property name in application.yml with the field name in CacheProperties. Either change the YAML key to 'cache.ttl-by-region' (or 'cache.ttlByRegion') or rename the Java field to 'regionTtl' to match the YAML key 'cache.region-ttl'."
+            }
+          ],
+          "required_concept_hits": {
+            "configured_key": true,
+            "binding_target": true,
+            "observed_default": true
+          },
+          "required_relation_hits": {
+            "configuration_key_binding_mismatch": true
+          },
+          "semantic_pass": true,
+          "semantic_score": 1.0
+        },
+        "fresh1": {
+          "run_id": "20260820T060935Z-fb5af9c3",
+          "bounded_summary": "The configuration property 'cache.region-ttl' in application.yml does not match the field name 'ttlByRegion' in CacheProperties. Spring Boot's relaxed binding maps 'region-ttl' to 'regionTtl', leaving 'ttlByRegion' unbound and initialized to its empty-map default.",
+          "bounded_candidate_fields": [
+            {
+              "source": "candidate[0].title",
+              "text": "Property name mismatch between YAML configuration and ConfigurationProperties field"
+            },
+            {
+              "source": "candidate[0].description",
+              "text": "The application.yml defines the cache TTL map under the key 'region-ttl', but the CacheProperties class defines the field as 'ttlByRegion'. Spring Boot's relaxed binding will map 'region-ttl' to a field named 'regionTtl', not 'ttlByRegion'. As a result, the 'ttlByRegion' field is never populated and retains its default empty LinkedHashMap."
+            },
+            {
+              "source": "candidate[0].recommended_fix",
+              "text": "Rename the field in CacheProperties to 'regionTtl' (and update the corresponding getter and setter methods) to match the YAML key 'region-ttl', or alternatively change the YAML key to 'ttl-by-region' to match the existing field name."
+            }
+          ],
+          "required_concept_hits": {
+            "configured_key": true,
+            "binding_target": true,
+            "observed_default": true
+          },
+          "required_relation_hits": {
+            "configuration_key_binding_mismatch": true
+          },
+          "semantic_pass": true,
+          "semantic_score": 1.0
+        },
+        "fresh2": {
+          "run_id": "20260820T075619Z-3bb64f39",
+          "bounded_summary": "The regional cache lifetime configuration is not bound because of a property key mismatch. The YAML file uses 'region-ttl' while the Java field is named 'ttlByRegion', which expects 'ttl-by-region'.",
+          "bounded_candidate_fields": [
+            {
+              "source": "candidate[0].title",
+              "text": "Property key mismatch between application.yml and CacheProperties field name"
+            },
+            {
+              "source": "candidate[0].description",
+              "text": "The configuration file application.yml defines the cache lifetime map under the key 'region-ttl', which Spring Boot would attempt to bind to a field named 'regionTtl'. However, the CacheProperties class defines the field as 'ttlByRegion', which expects the property key 'ttl-by-region' or 'ttlByRegion'. Due to this naming mismatch, the property is not bound, and the field retains its default empty LinkedHashMap."
+            },
+            {
+              "source": "candidate[0].recommended_fix",
+              "text": "Rename the property key in application.yml to 'ttl-by-region' (or 'ttlByRegion') to match the 'ttlByRegion' field in CacheProperties, or rename the field in CacheProperties to 'regionTtl' to match the YAML key."
+            }
+          ],
+          "required_concept_hits": {
+            "configured_key": true,
+            "binding_target": true,
+            "observed_default": false
+          },
+          "required_relation_hits": {
+            "configuration_key_binding_mismatch": true
+          },
+          "semantic_pass": false,
+          "semantic_score": 0.9091
+        }
+      },
+      "fresh2_normalized_fields": [
+        {
+          "source": "root_cause_summary",
+          "text": "the regional cache lifetime configuration is not bound because of a property key mismatch the yaml file uses region ttl while the java field is named ttl by region which expect ttl by region"
+        },
+        {
+          "source": "candidate[0].title",
+          "text": "property key mismatch between application yml and cache property field name"
+        },
+        {
+          "source": "candidate[0].description",
+          "text": "the configuration file application yml defines the cache lifetime map under the key region ttl which spring boot would attempt to bind to a field named region ttl however the cache property class defines the field as ttl by region which expect the property key ttl by region or ttl by region due to this naming mismatch the property is not bound and the field retains its default empty linked hash map"
+        },
+        {
+          "source": "candidate[0].recommended_fix",
+          "text": "rename the property key in application yml to ttl by region or ttl by region to match the ttl by region field in cache property or rename the field in cache property to region ttl to match the yaml key"
+        }
+      ],
+      "fresh2_clauses": [
+        "the regional cache lifetime configuration is not bound because of a property key mismatch",
+        "the yaml file uses region ttl while the java field is named ttl by region which expect ttl by region",
+        "property key mismatch between application yml and cache property field name",
+        "the configuration file application yml defines the cache lifetime map under the key region ttl which spring boot would attempt to bind to a field named region ttl",
+        "however the cache property class defines the field as ttl by region which expect the property key ttl by region or ttl by region",
+        "due to this naming mismatch the property is not bound and the field retains its default empty linked hash map",
+        "rename the property key in application yml to ttl by region or ttl by region to match the ttl by region field in cache property or rename the field in cache property to region ttl to match the yaml key"
+      ],
+      "concept_trace": [
+        {
+          "name": "configured_key",
+          "aliases": [
+            "region-ttl",
+            "cache.region-ttl",
+            "configuration key"
+          ],
+          "alias_hits_by_field": {
+            "root_cause_summary": [
+              {
+                "alias": "region-ttl",
+                "normalized": "region ttl",
+                "spans": [
+                  [
+                    109,
+                    119
+                  ]
+                ]
+              }
+            ],
+            "candidate[0].title": [],
+            "candidate[0].description": [
+              {
+                "alias": "region-ttl",
+                "normalized": "region ttl",
+                "spans": [
+                  [
+                    84,
+                    94
+                  ],
+                  [
+                    152,
+                    162
+                  ]
+                ]
+              }
+            ],
+            "candidate[0].recommended_fix": [
+              {
+                "alias": "region-ttl",
+                "normalized": "region ttl",
+                "spans": [
+                  [
+                    169,
+                    179
+                  ]
+                ]
+              }
+            ]
+          },
+          "bounded_patterns": [],
+          "evaluator_hit": true
+        },
+        {
+          "name": "binding_target",
+          "aliases": [
+            "ttlByRegion",
+            "region ttl map",
+            "map property",
+            "CacheProperties map"
+          ],
+          "alias_hits_by_field": {
+            "root_cause_summary": [
+              {
+                "alias": "ttlByRegion",
+                "normalized": "ttl by region",
+                "spans": [
+                  [
+                    150,
+                    163
+                  ],
+                  [
+                    177,
+                    190
+                  ]
+                ]
+              }
+            ],
+            "candidate[0].title": [],
+            "candidate[0].description": [
+              {
+                "alias": "ttlByRegion",
+                "normalized": "ttl by region",
+                "spans": [
+                  [
+                    217,
+                    230
+                  ],
+                  [
+                    261,
+                    274
+                  ],
+                  [
+                    278,
+                    291
+                  ]
+                ]
+              }
+            ],
+            "candidate[0].recommended_fix": [
+              {
+                "alias": "ttlByRegion",
+                "normalized": "ttl by region",
+                "spans": [
+                  [
+                    46,
+                    59
+                  ],
+                  [
+                    63,
+                    76
+                  ],
+                  [
+                    90,
+                    103
+                  ]
+                ]
+              }
+            ]
+          },
+          "bounded_patterns": [],
+          "evaluator_hit": true
+        },
+        {
+          "name": "observed_default",
+          "aliases": [
+            "empty map",
+            "map default",
+            "pt0s",
+            "zero duration",
+            "empty default"
+          ],
+          "alias_hits_by_field": {
+            "root_cause_summary": [],
+            "candidate[0].title": [],
+            "candidate[0].description": [],
+            "candidate[0].recommended_fix": []
+          },
+          "bounded_patterns": [],
+          "evaluator_hit": false
+        }
+      ],
+      "relation_trace": {
+        "configuration_key_binding_mismatch": {
+          "clauses": [
+            "the regional cache lifetime configuration is not bound because of a property key mismatch",
+            "the yaml file uses region ttl while the java field is named ttl by region which expect ttl by region",
+            "property key mismatch between application yml and cache property field name",
+            "the configuration file application yml defines the cache lifetime map under the key region ttl which spring boot would attempt to bind to a field named region ttl",
+            "however the cache property class defines the field as ttl by region which expect the property key ttl by region or ttl by region",
+            "due to this naming mismatch the property is not bound and the field retains its default empty linked hash map",
+            "rename the property key in application yml to ttl by region or ttl by region to match the ttl by region field in cache property or rename the field in cache property to region ttl to match the yaml key"
+          ],
+          "variants": [
+            {
+              "variant_index": 0,
+              "left_aliases": [
+                "region-ttl",
+                "cache.region-ttl",
+                "configuration key",
+                "regional cache lifetime configuration"
+              ],
+              "relation_aliases": [
+                "does not bind to",
+                "is not binding to",
+                "does not map to",
+                "does not match",
+                "fails to bind to"
+              ],
+              "right_aliases": [
+                "ttlByRegion",
+                "region ttl map",
+                "map property",
+                "CacheProperties map"
+              ],
+              "required_value_aliases": [],
+              "context_aliases": [],
+              "max_token_distance": 28,
+              "value_max_token_distance": 8,
+              "context_max_token_distance": 64,
+              "clauses_with_any_alias": [
+                {
+                  "clause_index": 0,
+                  "clause": "the regional cache lifetime configuration is not bound because of a property key mismatch",
+                  "context_window": "the regional cache lifetime configuration is not bound because of a property key mismatch the yaml file uses region ttl while the java field is named ttl by region which expect ttl by region",
+                  "left_spans": [
+                    [
+                      4,
+                      41
+                    ]
+                  ],
+                  "relation_spans": [],
+                  "right_spans": [],
+                  "required_value_spans": [],
+                  "context_alias_matches": [],
+                  "context_hit": true,
+                  "candidate_paths": [],
+                  "witness": null
+                },
+                {
+                  "clause_index": 1,
+                  "clause": "the yaml file uses region ttl while the java field is named ttl by region which expect ttl by region",
+                  "context_window": "the regional cache lifetime configuration is not bound because of a property key mismatch the yaml file uses region ttl while the java field is named ttl by region which expect ttl by region property key mismatch between application yml and cache property field name",
+                  "left_spans": [
+                    [
+                      19,
+                      29
+                    ]
+                  ],
+                  "relation_spans": [],
+                  "right_spans": [
+                    [
+                      60,
+                      73
+                    ],
+                    [
+                      87,
+                      100
+                    ]
+                  ],
+                  "required_value_spans": [],
+                  "context_alias_matches": [],
+                  "context_hit": true,
+                  "candidate_paths": [],
+                  "witness": null
+                },
+                {
+                  "clause_index": 3,
+                  "clause": "the configuration file application yml defines the cache lifetime map under the key region ttl which spring boot would attempt to bind to a field named region ttl",
+                  "context_window": "property key mismatch between application yml and cache property field name the configuration file application yml defines the cache lifetime map under the key region ttl which spring boot would attempt to bind to a field named region ttl however the cache property class defines the field as ttl by region which expect the property key ttl by region or ttl by region",
+                  "left_spans": [
+                    [
+                      84,
+                      94
+                    ],
+                    [
+                      152,
+                      162
+                    ]
+                  ],
+                  "relation_spans": [],
+                  "right_spans": [],
+                  "required_value_spans": [],
+                  "context_alias_matches": [],
+                  "context_hit": true,
+                  "candidate_paths": [],
+                  "witness": null
+                },
+                {
+                  "clause_index": 4,
+                  "clause": "however the cache property class defines the field as ttl by region which expect the property key ttl by region or ttl by region",
+                  "context_window": "the configuration file application yml defines the cache lifetime map under the key region ttl which spring boot would attempt to bind to a field named region ttl however the cache property class defines the field as ttl by region which expect the property key ttl by region or ttl by region due to this naming mismatch the property is not bound and the field retains its default empty linked hash map",
+                  "left_spans": [],
+                  "relation_spans": [],
+                  "right_spans": [
+                    [
+                      54,
+                      67
+                    ],
+                    [
+                      98,
+                      111
+                    ],
+                    [
+                      115,
+                      128
+                    ]
+                  ],
+                  "required_value_spans": [],
+                  "context_alias_matches": [],
+                  "context_hit": true,
+                  "candidate_paths": [],
+                  "witness": null
+                },
+                {
+                  "clause_index": 6,
+                  "clause": "rename the property key in application yml to ttl by region or ttl by region to match the ttl by region field in cache property or rename the field in cache property to region ttl to match the yaml key",
+                  "context_window": "due to this naming mismatch the property is not bound and the field retains its default empty linked hash map rename the property key in application yml to ttl by region or ttl by region to match the ttl by region field in cache property or rename the field in cache property to region ttl to match the yaml key",
+                  "left_spans": [
+                    [
+                      169,
+                      179
+                    ]
+                  ],
+                  "relation_spans": [],
+                  "right_spans": [
+                    [
+                      46,
+                      59
+                    ],
+                    [
+                      63,
+                      76
+                    ],
+                    [
+                      90,
+                      103
+                    ]
+                  ],
+                  "required_value_spans": [],
+                  "context_alias_matches": [],
+                  "context_hit": true,
+                  "candidate_paths": [],
+                  "witness": null
+                }
+              ]
+            },
+            {
+              "variant_index": 1,
+              "left_aliases": [
+                "ttlByRegion",
+                "region ttl map",
+                "map property"
+              ],
+              "relation_aliases": [
+                "expects",
+                "binds from",
+                "maps from"
+              ],
+              "right_aliases": [
+                "ttl-by-region",
+                "cache.ttl-by-region"
+              ],
+              "required_value_aliases": [],
+              "context_aliases": [],
+              "max_token_distance": 24,
+              "value_max_token_distance": 8,
+              "context_max_token_distance": 64,
+              "clauses_with_any_alias": [
+                {
+                  "clause_index": 1,
+                  "clause": "the yaml file uses region ttl while the java field is named ttl by region which expect ttl by region",
+                  "context_window": "the regional cache lifetime configuration is not bound because of a property key mismatch the yaml file uses region ttl while the java field is named ttl by region which expect ttl by region property key mismatch between application yml and cache property field name",
+                  "left_spans": [
+                    [
+                      60,
+                      73
+                    ],
+                    [
+                      87,
+                      100
+                    ]
+                  ],
+                  "relation_spans": [
+                    [
+                      80,
+                      86
+                    ]
+                  ],
+                  "right_spans": [
+                    [
+                      60,
+                      73
+                    ],
+                    [
+                      87,
+                      100
+                    ]
+                  ],
+                  "required_value_spans": [],
+                  "context_alias_matches": [],
+                  "context_hit": true,
+                  "candidate_paths": [
+                    {
+                      "left_span": [
+                        60,
+                        73
+                      ],
+                      "relation_span": [
+                        80,
+                        86
+                      ],
+                      "right_span": [
+                        60,
+                        73
+                      ],
+                      "direction_left_relation_right": false,
+                      "left_to_right_token_distance": null
+                    },
+                    {
+                      "left_span": [
+                        60,
+                        73
+                      ],
+                      "relation_span": [
+                        80,
+                        86
+                      ],
+                      "right_span": [
+                        87,
+                        100
+                      ],
+                      "direction_left_relation_right": true,
+                      "left_to_right_token_distance": 2
+                    },
+                    {
+                      "left_span": [
+                        87,
+                        100
+                      ],
+                      "relation_span": [
+                        80,
+                        86
+                      ],
+                      "right_span": [
+                        60,
+                        73
+                      ],
+                      "direction_left_relation_right": false,
+                      "left_to_right_token_distance": null
+                    },
+                    {
+                      "left_span": [
+                        87,
+                        100
+                      ],
+                      "relation_span": [
+                        80,
+                        86
+                      ],
+                      "right_span": [
+                        87,
+                        100
+                      ],
+                      "direction_left_relation_right": false,
+                      "left_to_right_token_distance": null
+                    }
+                  ],
+                  "witness": [
+                    80,
+                    86
+                  ]
+                },
+                {
+                  "clause_index": 4,
+                  "clause": "however the cache property class defines the field as ttl by region which expect the property key ttl by region or ttl by region",
+                  "context_window": "the configuration file application yml defines the cache lifetime map under the key region ttl which spring boot would attempt to bind to a field named region ttl however the cache property class defines the field as ttl by region which expect the property key ttl by region or ttl by region due to this naming mismatch the property is not bound and the field retains its default empty linked hash map",
+                  "left_spans": [
+                    [
+                      54,
+                      67
+                    ],
+                    [
+                      98,
+                      111
+                    ],
+                    [
+                      115,
+                      128
+                    ]
+                  ],
+                  "relation_spans": [
+                    [
+                      74,
+                      80
+                    ]
+                  ],
+                  "right_spans": [
+                    [
+                      54,
+                      67
+                    ],
+                    [
+                      98,
+                      111
+                    ],
+                    [
+                      115,
+                      128
+                    ]
+                  ],
+                  "required_value_spans": [],
+                  "context_alias_matches": [],
+                  "context_hit": true,
+                  "candidate_paths": [
+                    {
+                      "left_span": [
+                        54,
+                        67
+                      ],
+                      "relation_span": [
+                        74,
+                        80
+                      ],
+                      "right_span": [
+                        54,
+                        67
+                      ],
+                      "direction_left_relation_right": false,
+                      "left_to_right_token_distance": null
+                    },
+                    {
+                      "left_span": [
+                        54,
+                        67
+                      ],
+                      "relation_span": [
+                        74,
+                        80
+                      ],
+                      "right_span": [
+                        98,
+                        111
+                      ],
+                      "direction_left_relation_right": true,
+                      "left_to_right_token_distance": 5
+                    },
+                    {
+                      "left_span": [
+                        54,
+                        67
+                      ],
+                      "relation_span": [
+                        74,
+                        80
+                      ],
+                      "right_span": [
+                        115,
+                        128
+                      ],
+                      "direction_left_relation_right": true,
+                      "left_to_right_token_distance": 9
+                    },
+                    {
+                      "left_span": [
+                        98,
+                        111
+                      ],
+                      "relation_span": [
+                        74,
+                        80
+                      ],
+                      "right_span": [
+                        54,
+                        67
+                      ],
+                      "direction_left_relation_right": false,
+                      "left_to_right_token_distance": null
+                    },
+                    {
+                      "left_span": [
+                        98,
+                        111
+                      ],
+                      "relation_span": [
+                        74,
+                        80
+                      ],
+                      "right_span": [
+                        98,
+                        111
+                      ],
+                      "direction_left_relation_right": false,
+                      "left_to_right_token_distance": null
+                    },
+                    {
+                      "left_span": [
+                        98,
+                        111
+                      ],
+                      "relation_span": [
+                        74,
+                        80
+                      ],
+                      "right_span": [
+                        115,
+                        128
+                      ],
+                      "direction_left_relation_right": false,
+                      "left_to_right_token_distance": 1
+                    },
+                    {
+                      "left_span": [
+                        115,
+                        128
+                      ],
+                      "relation_span": [
+                        74,
+                        80
+                      ],
+                      "right_span": [
+                        54,
+                        67
+                      ],
+                      "direction_left_relation_right": false,
+                      "left_to_right_token_distance": null
+                    },
+                    {
+                      "left_span": [
+                        115,
+                        128
+                      ],
+                      "relation_span": [
+                        74,
+                        80
+                      ],
+                      "right_span": [
+                        98,
+                        111
+                      ],
+                      "direction_left_relation_right": false,
+                      "left_to_right_token_distance": null
+                    },
+                    {
+                      "left_span": [
+                        115,
+                        128
+                      ],
+                      "relation_span": [
+                        74,
+                        80
+                      ],
+                      "right_span": [
+                        115,
+                        128
+                      ],
+                      "direction_left_relation_right": false,
+                      "left_to_right_token_distance": null
+                    }
+                  ],
+                  "witness": [
+                    74,
+                    80
+                  ]
+                },
+                {
+                  "clause_index": 6,
+                  "clause": "rename the property key in application yml to ttl by region or ttl by region to match the ttl by region field in cache property or rename the field in cache property to region ttl to match the yaml key",
+                  "context_window": "due to this naming mismatch the property is not bound and the field retains its default empty linked hash map rename the property key in application yml to ttl by region or ttl by region to match the ttl by region field in cache property or rename the field in cache property to region ttl to match the yaml key",
+                  "left_spans": [
+                    [
+                      46,
+                      59
+                    ],
+                    [
+                      63,
+                      76
+                    ],
+                    [
+                      90,
+                      103
+                    ]
+                  ],
+                  "relation_spans": [],
+                  "right_spans": [
+                    [
+                      46,
+                      59
+                    ],
+                    [
+                      63,
+                      76
+                    ],
+                    [
+                      90,
+                      103
+                    ]
+                  ],
+                  "required_value_spans": [],
+                  "context_alias_matches": [],
+                  "context_hit": true,
+                  "candidate_paths": [],
+                  "witness": null
+                }
+              ]
+            },
+            {
+              "variant_index": 2,
+              "left_aliases": [
+                "mismatched key",
+                "binding key mismatch",
+                "region-ttl"
+              ],
+              "relation_aliases": [
+                "leaves",
+                "causes",
+                "results in"
+              ],
+              "right_aliases": [
+                "empty map",
+                "map default",
+                "pt0s",
+                "zero duration"
+              ],
+              "required_value_aliases": [],
+              "context_aliases": [],
+              "max_token_distance": 24,
+              "value_max_token_distance": 8,
+              "context_max_token_distance": 64,
+              "clauses_with_any_alias": [
+                {
+                  "clause_index": 1,
+                  "clause": "the yaml file uses region ttl while the java field is named ttl by region which expect ttl by region",
+                  "context_window": "the regional cache lifetime configuration is not bound because of a property key mismatch the yaml file uses region ttl while the java field is named ttl by region which expect ttl by region property key mismatch between application yml and cache property field name",
+                  "left_spans": [
+                    [
+                      19,
+                      29
+                    ]
+                  ],
+                  "relation_spans": [],
+                  "right_spans": [],
+                  "required_value_spans": [],
+                  "context_alias_matches": [],
+                  "context_hit": true,
+                  "candidate_paths": [],
+                  "witness": null
+                },
+                {
+                  "clause_index": 3,
+                  "clause": "the configuration file application yml defines the cache lifetime map under the key region ttl which spring boot would attempt to bind to a field named region ttl",
+                  "context_window": "property key mismatch between application yml and cache property field name the configuration file application yml defines the cache lifetime map under the key region ttl which spring boot would attempt to bind to a field named region ttl however the cache property class defines the field as ttl by region which expect the property key ttl by region or ttl by region",
+                  "left_spans": [
+                    [
+                      84,
+                      94
+                    ],
+                    [
+                      152,
+                      162
+                    ]
+                  ],
+                  "relation_spans": [],
+                  "right_spans": [],
+                  "required_value_spans": [],
+                  "context_alias_matches": [],
+                  "context_hit": true,
+                  "candidate_paths": [],
+                  "witness": null
+                },
+                {
+                  "clause_index": 6,
+                  "clause": "rename the property key in application yml to ttl by region or ttl by region to match the ttl by region field in cache property or rename the field in cache property to region ttl to match the yaml key",
+                  "context_window": "due to this naming mismatch the property is not bound and the field retains its default empty linked hash map rename the property key in application yml to ttl by region or ttl by region to match the ttl by region field in cache property or rename the field in cache property to region ttl to match the yaml key",
+                  "left_spans": [
+                    [
+                      169,
+                      179
+                    ]
+                  ],
+                  "relation_spans": [],
+                  "right_spans": [],
+                  "required_value_spans": [],
+                  "context_alias_matches": [],
+                  "context_hit": true,
+                  "candidate_paths": [],
+                  "witness": null
+                }
+              ]
+            }
+          ],
+          "observed_relation_phrases": [],
+          "classification": null
+        }
+      }
+    },
+    "dev-s6-local-precedence-conflict": {
+      "three_run_comparison": {
+        "calibration": {
+          "run_id": "20260820T040110Z-20b0fcf2",
+          "bounded_summary": "The local runtime fails because application-local.yml overrides the base warehouse.retry-limit with 0. This violates the @Min(1) constraint on WarehouseProperties.retryLimit, causing a BindException during property binding.",
+          "bounded_candidate_fields": [
+            {
+              "source": "candidate[0].title",
+              "text": "Local profile configuration overrides base setting with an invalid value"
+            },
+            {
+              "source": "candidate[0].description",
+              "text": "The application-local.yml file sets warehouse.retry-limit to 0, overriding the valid value of 3 from application.yml. Since WarehouseProperties enforces a @Min(1) constraint on retryLimit, the value 0 fails validation and triggers a BindException during startup."
+            },
+            {
+              "source": "candidate[0].recommended_fix",
+              "text": "Update the warehouse.retry-limit property in application-local.yml to a value that satisfies the @Min(1) constraint, or adjust the validation constraint if 0 is an acceptable value for the local environment."
+            }
+          ],
+          "required_concept_hits": {
+            "active_profile": true,
+            "higher_precedence_source": true,
+            "base_source": true,
+            "invalid_retry_value": true
+          },
+          "required_relation_hits": {
+            "local_source_overrides_base": true,
+            "local_value_violates_validation": true
+          },
+          "semantic_pass": true,
+          "semantic_score": 1.0
+        },
+        "fresh1": {
+          "run_id": "20260820T060935Z-fb5af9c3",
+          "bounded_summary": "The local runtime fails because the active 'local' profile's configuration file (application-local.yml) overrides the base warehouse retry limit with an invalid value of 0. This violates the @Min(1) constraint in WarehouseProperties, causing a BindException during property binding.",
+          "bounded_candidate_fields": [
+            {
+              "source": "candidate[0].title",
+              "text": "Profile-specific configuration overrides base configuration with an invalid value"
+            },
+            {
+              "source": "candidate[0].description",
+              "text": "The application-local.yml file sets warehouse.retry-limit to 0, which overrides the valid value 3 from application.yml because profile-specific properties have higher precedence. The value 0 violates the @Min(1) validation constraint on retryLimit in WarehouseProperties, resulting in a BindException."
+            },
+            {
+              "source": "candidate[0].recommended_fix",
+              "text": "Update the warehouse.retry-limit value in application-local.yml to a valid integer greater than or equal to 1, or remove the property from the local profile to inherit the base configuration."
+            }
+          ],
+          "required_concept_hits": {
+            "active_profile": true,
+            "higher_precedence_source": true,
+            "base_source": true,
+            "invalid_retry_value": true
+          },
+          "required_relation_hits": {
+            "local_source_overrides_base": true,
+            "local_value_violates_validation": true
+          },
+          "semantic_pass": true,
+          "semantic_score": 1.0
+        },
+        "fresh2": {
+          "run_id": "20260820T075619Z-3bb64f39",
+          "bounded_summary": "The local runtime fails because the 'local' profile overrides the base warehouse retry limit with an invalid value. The base configuration sets it to 3, but application-local.yml sets it to 0, violating the @Min(1) constraint in WarehouseProperties and causing a BindException.",
+          "bounded_candidate_fields": [
+            {
+              "source": "candidate[0].title",
+              "text": "Local profile overrides base warehouse retry limit with an invalid value"
+            },
+            {
+              "source": "candidate[0].description",
+              "text": "The application activates the 'local' profile, which loads application-local.yml. This file sets warehouse.retry-limit to 0, overriding the valid base value of 3 from application.yml. Since WarehouseProperties.retryLimit is constrained by @Min(1), the value 0 triggers a BindException during property binding."
+            },
+            {
+              "source": "candidate[0].recommended_fix",
+              "text": "Update the warehouse.retry-limit value in application-local.yml to a valid integer greater than or equal to 1, or remove the property from the local profile to inherit the valid base configuration."
+            }
+          ],
+          "required_concept_hits": {
+            "active_profile": true,
+            "higher_precedence_source": true,
+            "base_source": true,
+            "invalid_retry_value": true
+          },
+          "required_relation_hits": {
+            "local_source_overrides_base": false,
+            "local_value_violates_validation": false
+          },
+          "semantic_pass": false,
+          "semantic_score": 0.8462
+        }
+      },
+      "fresh2_normalized_fields": [
+        {
+          "source": "root_cause_summary",
+          "text": "the local runtime fail because the local profile override the base warehouse retry limit with an invalid value the base configuration sets it to 3 but application local yml sets it to 0 violating the min 1 constraint in warehouse property and causing a bind exception"
+        },
+        {
+          "source": "candidate[0].title",
+          "text": "local profile override base warehouse retry limit with an invalid value"
+        },
+        {
+          "source": "candidate[0].description",
+          "text": "the application activate the local profile which loads application local yml this file sets warehouse retry limit to 0 override the valid base value of 3 from application yml since warehouse property retry limit is constrained by min 1 the value 0 triggers a bind exception during property bind"
+        },
+        {
+          "source": "candidate[0].recommended_fix",
+          "text": "update the warehouse retry limit value in application local yml to a valid integer greater than or equal to 1 or remove the property from the local profile to inherit the valid base configuration"
+        }
+      ],
+      "fresh2_clauses": [
+        "the local runtime fail because the local profile override the base warehouse retry limit with an invalid value",
+        "the base configuration sets it to 3 but application local yml sets it to 0 violating the min 1 constraint in warehouse property and causing a bind exception",
+        "local profile override base warehouse retry limit with an invalid value",
+        "the application activate the local profile which loads application local yml",
+        "this file sets warehouse retry limit to 0 override the valid base value of 3 from application yml",
+        "since warehouse property retry limit is constrained by min 1 the value 0 triggers a bind exception during property bind",
+        "update the warehouse retry limit value in application local yml to a valid integer greater than or equal to 1 or remove the property from the local profile to inherit the valid base configuration"
+      ],
+      "concept_trace": [
+        {
+          "name": "active_profile",
+          "aliases": [
+            "active local profile",
+            "local profile",
+            "spring.profiles.active"
+          ],
+          "alias_hits_by_field": {
+            "root_cause_summary": [
+              {
+                "alias": "local profile",
+                "normalized": "local profile",
+                "spans": [
+                  [
+                    35,
+                    48
+                  ]
+                ]
+              }
+            ],
+            "candidate[0].title": [
+              {
+                "alias": "local profile",
+                "normalized": "local profile",
+                "spans": [
+                  [
+                    0,
+                    13
+                  ]
+                ]
+              }
+            ],
+            "candidate[0].description": [
+              {
+                "alias": "local profile",
+                "normalized": "local profile",
+                "spans": [
+                  [
+                    29,
+                    42
+                  ]
+                ]
+              }
+            ],
+            "candidate[0].recommended_fix": [
+              {
+                "alias": "local profile",
+                "normalized": "local profile",
+                "spans": [
+                  [
+                    142,
+                    155
+                  ]
+                ]
+              }
+            ]
+          },
+          "bounded_patterns": [],
+          "evaluator_hit": true
+        },
+        {
+          "name": "higher_precedence_source",
+          "aliases": [
+            "application-local.yml",
+            "local profile configuration",
+            "profile-specific local configuration"
+          ],
+          "alias_hits_by_field": {
+            "root_cause_summary": [
+              {
+                "alias": "application-local.yml",
+                "normalized": "application local yml",
+                "spans": [
+                  [
+                    151,
+                    172
+                  ]
+                ]
+              }
+            ],
+            "candidate[0].title": [],
+            "candidate[0].description": [
+              {
+                "alias": "application-local.yml",
+                "normalized": "application local yml",
+                "spans": [
+                  [
+                    55,
+                    76
+                  ]
+                ]
+              }
+            ],
+            "candidate[0].recommended_fix": [
+              {
+                "alias": "application-local.yml",
+                "normalized": "application local yml",
+                "spans": [
+                  [
+                    42,
+                    63
+                  ]
+                ]
+              }
+            ]
+          },
+          "bounded_patterns": [],
+          "evaluator_hit": true
+        },
+        {
+          "name": "base_source",
+          "aliases": [
+            "application.yml",
+            "base configuration",
+            "base retry setting",
+            "base warehouse retry limit"
+          ],
+          "alias_hits_by_field": {
+            "root_cause_summary": [
+              {
+                "alias": "base configuration",
+                "normalized": "base configuration",
+                "spans": [
+                  [
+                    115,
+                    133
+                  ]
+                ]
+              },
+              {
+                "alias": "base warehouse retry limit",
+                "normalized": "base warehouse retry limit",
+                "spans": [
+                  [
+                    62,
+                    88
+                  ]
+                ]
+              }
+            ],
+            "candidate[0].title": [
+              {
+                "alias": "base warehouse retry limit",
+                "normalized": "base warehouse retry limit",
+                "spans": [
+                  [
+                    23,
+                    49
+                  ]
+                ]
+              }
+            ],
+            "candidate[0].description": [
+              {
+                "alias": "application.yml",
+                "normalized": "application yml",
+                "spans": [
+                  [
+                    159,
+                    174
+                  ]
+                ]
+              }
+            ],
+            "candidate[0].recommended_fix": [
+              {
+                "alias": "base configuration",
+                "normalized": "base configuration",
+                "spans": [
+                  [
+                    177,
+                    195
+                  ]
+                ]
+              }
+            ]
+          },
+          "bounded_patterns": [],
+          "evaluator_hit": true
+        },
+        {
+          "name": "invalid_retry_value",
+          "aliases": [
+            "retry limit 0",
+            "zero retry limit"
+          ],
+          "alias_hits_by_field": {
+            "root_cause_summary": [],
+            "candidate[0].title": [],
+            "candidate[0].description": [],
+            "candidate[0].recommended_fix": []
+          },
+          "bounded_patterns": [
+            {
+              "anchor_aliases": [
+                "retry limit",
+                "warehouse retry limit"
+              ],
+              "value_aliases": [
+                "0",
+                "zero"
+              ],
+              "max_token_distance": 8
+            }
+          ],
+          "evaluator_hit": true
+        }
+      ],
+      "relation_trace": {
+        "local_source_overrides_base": {
+          "clauses": [
+            "the local runtime fail because the local profile override the base warehouse retry limit with an invalid value",
+            "the base configuration sets it to 3 but application local yml sets it to 0 violating the min 1 constraint in warehouse property and causing a bind exception",
+            "local profile override base warehouse retry limit with an invalid value",
+            "the application activate the local profile which loads application local yml",
+            "this file sets warehouse retry limit to 0 override the valid base value of 3 from application yml",
+            "since warehouse property retry limit is constrained by min 1 the value 0 triggers a bind exception during property bind",
+            "update the warehouse retry limit value in application local yml to a valid integer greater than or equal to 1 or remove the property from the local profile to inherit the valid base configuration"
+          ],
+          "variants": [
+            {
+              "variant_index": 0,
+              "left_aliases": [
+                "application-local.yml",
+                "local profile configuration",
+                "profile-specific local configuration"
+              ],
+              "relation_aliases": [
+                "overrides",
+                "has higher precedence than",
+                "takes priority over",
+                "wins over"
+              ],
+              "right_aliases": [
+                "application.yml",
+                "base configuration",
+                "base retry setting",
+                "base warehouse retry limit"
+              ],
+              "required_value_aliases": [],
+              "context_aliases": [],
+              "max_token_distance": 24,
+              "value_max_token_distance": 8,
+              "context_max_token_distance": 64,
+              "clauses_with_any_alias": [
+                {
+                  "clause_index": 0,
+                  "clause": "the local runtime fail because the local profile override the base warehouse retry limit with an invalid value",
+                  "context_window": "the local runtime fail because the local profile override the base warehouse retry limit with an invalid value the base configuration sets it to 3 but application local yml sets it to 0 violating the min 1 constraint in warehouse property and causing a bind exception",
+                  "left_spans": [],
+                  "relation_spans": [
+                    [
+                      49,
+                      57
+                    ]
+                  ],
+                  "right_spans": [
+                    [
+                      62,
+                      88
+                    ]
+                  ],
+                  "required_value_spans": [],
+                  "context_alias_matches": [],
+                  "context_hit": true,
+                  "candidate_paths": [],
+                  "witness": null
+                },
+                {
+                  "clause_index": 1,
+                  "clause": "the base configuration sets it to 3 but application local yml sets it to 0 violating the min 1 constraint in warehouse property and causing a bind exception",
+                  "context_window": "the local runtime fail because the local profile override the base warehouse retry limit with an invalid value the base configuration sets it to 3 but application local yml sets it to 0 violating the min 1 constraint in warehouse property and causing a bind exception local profile override base warehouse retry limit with an invalid value",
+                  "left_spans": [
+                    [
+                      40,
+                      61
+                    ]
+                  ],
+                  "relation_spans": [],
+                  "right_spans": [
+                    [
+                      4,
+                      22
+                    ]
+                  ],
+                  "required_value_spans": [],
+                  "context_alias_matches": [],
+                  "context_hit": true,
+                  "candidate_paths": [],
+                  "witness": null
+                },
+                {
+                  "clause_index": 2,
+                  "clause": "local profile override base warehouse retry limit with an invalid value",
+                  "context_window": "the base configuration sets it to 3 but application local yml sets it to 0 violating the min 1 constraint in warehouse property and causing a bind exception local profile override base warehouse retry limit with an invalid value the application activate the local profile which loads application local yml",
+                  "left_spans": [],
+                  "relation_spans": [
+                    [
+                      14,
+                      22
+                    ]
+                  ],
+                  "right_spans": [
+                    [
+                      23,
+                      49
+                    ]
+                  ],
+                  "required_value_spans": [],
+                  "context_alias_matches": [],
+                  "context_hit": true,
+                  "candidate_paths": [],
+                  "witness": null
+                },
+                {
+                  "clause_index": 3,
+                  "clause": "the application activate the local profile which loads application local yml",
+                  "context_window": "local profile override base warehouse retry limit with an invalid value the application activate the local profile which loads application local yml this file sets warehouse retry limit to 0 override the valid base value of 3 from application yml",
+                  "left_spans": [
+                    [
+                      55,
+                      76
+                    ]
+                  ],
+                  "relation_spans": [],
+                  "right_spans": [],
+                  "required_value_spans": [],
+                  "context_alias_matches": [],
+                  "context_hit": true,
+                  "candidate_paths": [],
+                  "witness": null
+                },
+                {
+                  "clause_index": 4,
+                  "clause": "this file sets warehouse retry limit to 0 override the valid base value of 3 from application yml",
+                  "context_window": "the application activate the local profile which loads application local yml this file sets warehouse retry limit to 0 override the valid base value of 3 from application yml since warehouse property retry limit is constrained by min 1 the value 0 triggers a bind exception during property bind",
+                  "left_spans": [],
+                  "relation_spans": [
+                    [
+                      42,
+                      50
+                    ]
+                  ],
+                  "right_spans": [
+                    [
+                      82,
+                      97
+                    ]
+                  ],
+                  "required_value_spans": [],
+                  "context_alias_matches": [],
+                  "context_hit": true,
+                  "candidate_paths": [],
+                  "witness": null
+                },
+                {
+                  "clause_index": 6,
+                  "clause": "update the warehouse retry limit value in application local yml to a valid integer greater than or equal to 1 or remove the property from the local profile to inherit the valid base configuration",
+                  "context_window": "since warehouse property retry limit is constrained by min 1 the value 0 triggers a bind exception during property bind update the warehouse retry limit value in application local yml to a valid integer greater than or equal to 1 or remove the property from the local profile to inherit the valid base configuration",
+                  "left_spans": [
+                    [
+                      42,
+                      63
+                    ]
+                  ],
+                  "relation_spans": [],
+                  "right_spans": [
+                    [
+                      177,
+                      195
+                    ]
+                  ],
+                  "required_value_spans": [],
+                  "context_alias_matches": [],
+                  "context_hit": true,
+                  "candidate_paths": [],
+                  "witness": null
+                }
+              ]
+            },
+            {
+              "variant_index": 1,
+              "left_aliases": [
+                "application.yml",
+                "base configuration",
+                "base retry setting"
+              ],
+              "relation_aliases": [
+                "is overridden by",
+                "has lower precedence than",
+                "loses to"
+              ],
+              "right_aliases": [
+                "application-local.yml",
+                "local profile configuration",
+                "profile-specific local configuration"
+              ],
+              "required_value_aliases": [],
+              "context_aliases": [],
+              "max_token_distance": 24,
+              "value_max_token_distance": 8,
+              "context_max_token_distance": 64,
+              "clauses_with_any_alias": [
+                {
+                  "clause_index": 1,
+                  "clause": "the base configuration sets it to 3 but application local yml sets it to 0 violating the min 1 constraint in warehouse property and causing a bind exception",
+                  "context_window": "the local runtime fail because the local profile override the base warehouse retry limit with an invalid value the base configuration sets it to 3 but application local yml sets it to 0 violating the min 1 constraint in warehouse property and causing a bind exception local profile override base warehouse retry limit with an invalid value",
+                  "left_spans": [
+                    [
+                      4,
+                      22
+                    ]
+                  ],
+                  "relation_spans": [],
+                  "right_spans": [
+                    [
+                      40,
+                      61
+                    ]
+                  ],
+                  "required_value_spans": [],
+                  "context_alias_matches": [],
+                  "context_hit": true,
+                  "candidate_paths": [],
+                  "witness": null
+                },
+                {
+                  "clause_index": 3,
+                  "clause": "the application activate the local profile which loads application local yml",
+                  "context_window": "local profile override base warehouse retry limit with an invalid value the application activate the local profile which loads application local yml this file sets warehouse retry limit to 0 override the valid base value of 3 from application yml",
+                  "left_spans": [],
+                  "relation_spans": [],
+                  "right_spans": [
+                    [
+                      55,
+                      76
+                    ]
+                  ],
+                  "required_value_spans": [],
+                  "context_alias_matches": [],
+                  "context_hit": true,
+                  "candidate_paths": [],
+                  "witness": null
+                },
+                {
+                  "clause_index": 4,
+                  "clause": "this file sets warehouse retry limit to 0 override the valid base value of 3 from application yml",
+                  "context_window": "the application activate the local profile which loads application local yml this file sets warehouse retry limit to 0 override the valid base value of 3 from application yml since warehouse property retry limit is constrained by min 1 the value 0 triggers a bind exception during property bind",
+                  "left_spans": [
+                    [
+                      82,
+                      97
+                    ]
+                  ],
+                  "relation_spans": [],
+                  "right_spans": [],
+                  "required_value_spans": [],
+                  "context_alias_matches": [],
+                  "context_hit": true,
+                  "candidate_paths": [],
+                  "witness": null
+                },
+                {
+                  "clause_index": 6,
+                  "clause": "update the warehouse retry limit value in application local yml to a valid integer greater than or equal to 1 or remove the property from the local profile to inherit the valid base configuration",
+                  "context_window": "since warehouse property retry limit is constrained by min 1 the value 0 triggers a bind exception during property bind update the warehouse retry limit value in application local yml to a valid integer greater than or equal to 1 or remove the property from the local profile to inherit the valid base configuration",
+                  "left_spans": [
+                    [
+                      177,
+                      195
+                    ]
+                  ],
+                  "relation_spans": [],
+                  "right_spans": [
+                    [
+                      42,
+                      63
+                    ]
+                  ],
+                  "required_value_spans": [],
+                  "context_alias_matches": [],
+                  "context_hit": true,
+                  "candidate_paths": [],
+                  "witness": null
+                }
+              ]
+            }
+          ],
+          "observed_relation_phrases": [
+            "local profile overrides the base warehouse retry limit",
+            "application-local.yml ... overriding ... application.yml"
+          ],
+          "classification": {
+            "classification": "NEW_PARAPHRASE_FALSE_NEGATIVE",
+            "primary_rca": "RELATION_ALIAS_OR_CLAUSE_GAP",
+            "reason": "The bounded diagnosis explicitly states local profile precedence. The frozen witness requires an allowed anchor/relation/right sequence in one clause; local profile wording and the inflected overriding form do not produce one."
+          }
+        },
+        "local_value_violates_validation": {
+          "clauses": [
+            "the local runtime fail because the local profile override the base warehouse retry limit with an invalid value",
+            "the base configuration sets it to 3 but application local yml sets it to 0 violating the min 1 constraint in warehouse property and causing a bind exception",
+            "local profile override base warehouse retry limit with an invalid value",
+            "the application activate the local profile which loads application local yml",
+            "this file sets warehouse retry limit to 0 override the valid base value of 3 from application yml",
+            "since warehouse property retry limit is constrained by min 1 the value 0 triggers a bind exception during property bind",
+            "update the warehouse retry limit value in application local yml to a valid integer greater than or equal to 1 or remove the property from the local profile to inherit the valid base configuration"
+          ],
+          "variants": [
+            {
+              "variant_index": 0,
+              "left_aliases": [
+                "retry limit",
+                "warehouse retry limit"
+              ],
+              "relation_aliases": [
+                "violates",
+                "fails",
+                "does not satisfy",
+                "is below"
+              ],
+              "right_aliases": [
+                "minimum value",
+                "min(1)",
+                "validation constraint",
+                "validation",
+                "positive retry limit"
+              ],
+              "required_value_aliases": [
+                "0",
+                "zero"
+              ],
+              "context_aliases": [],
+              "max_token_distance": 24,
+              "value_max_token_distance": 8,
+              "context_max_token_distance": 64,
+              "clauses_with_any_alias": [
+                {
+                  "clause_index": 0,
+                  "clause": "the local runtime fail because the local profile override the base warehouse retry limit with an invalid value",
+                  "context_window": "the local runtime fail because the local profile override the base warehouse retry limit with an invalid value the base configuration sets it to 3 but application local yml sets it to 0 violating the min 1 constraint in warehouse property and causing a bind exception",
+                  "left_spans": [
+                    [
+                      67,
+                      88
+                    ],
+                    [
+                      77,
+                      88
+                    ]
+                  ],
+                  "relation_spans": [
+                    [
+                      18,
+                      22
+                    ]
+                  ],
+                  "right_spans": [],
+                  "required_value_spans": [],
+                  "context_alias_matches": [],
+                  "context_hit": true,
+                  "candidate_paths": [],
+                  "witness": null
+                },
+                {
+                  "clause_index": 1,
+                  "clause": "the base configuration sets it to 3 but application local yml sets it to 0 violating the min 1 constraint in warehouse property and causing a bind exception",
+                  "context_window": "the local runtime fail because the local profile override the base warehouse retry limit with an invalid value the base configuration sets it to 3 but application local yml sets it to 0 violating the min 1 constraint in warehouse property and causing a bind exception local profile override base warehouse retry limit with an invalid value",
+                  "left_spans": [],
+                  "relation_spans": [],
+                  "right_spans": [
+                    [
+                      89,
+                      94
+                    ]
+                  ],
+                  "required_value_spans": [
+                    [
+                      73,
+                      74
+                    ]
+                  ],
+                  "context_alias_matches": [],
+                  "context_hit": true,
+                  "candidate_paths": [],
+                  "witness": null
+                },
+                {
+                  "clause_index": 2,
+                  "clause": "local profile override base warehouse retry limit with an invalid value",
+                  "context_window": "the base configuration sets it to 3 but application local yml sets it to 0 violating the min 1 constraint in warehouse property and causing a bind exception local profile override base warehouse retry limit with an invalid value the application activate the local profile which loads application local yml",
+                  "left_spans": [
+                    [
+                      28,
+                      49
+                    ],
+                    [
+                      38,
+                      49
+                    ]
+                  ],
+                  "relation_spans": [],
+                  "right_spans": [],
+                  "required_value_spans": [],
+                  "context_alias_matches": [],
+                  "context_hit": true,
+                  "candidate_paths": [],
+                  "witness": null
+                },
+                {
+                  "clause_index": 4,
+                  "clause": "this file sets warehouse retry limit to 0 override the valid base value of 3 from application yml",
+                  "context_window": "the application activate the local profile which loads application local yml this file sets warehouse retry limit to 0 override the valid base value of 3 from application yml since warehouse property retry limit is constrained by min 1 the value 0 triggers a bind exception during property bind",
+                  "left_spans": [
+                    [
+                      15,
+                      36
+                    ],
+                    [
+                      25,
+                      36
+                    ]
+                  ],
+                  "relation_spans": [],
+                  "right_spans": [],
+                  "required_value_spans": [
+                    [
+                      40,
+                      41
+                    ]
+                  ],
+                  "context_alias_matches": [],
+                  "context_hit": true,
+                  "candidate_paths": [],
+                  "witness": null
+                },
+                {
+                  "clause_index": 5,
+                  "clause": "since warehouse property retry limit is constrained by min 1 the value 0 triggers a bind exception during property bind",
+                  "context_window": "this file sets warehouse retry limit to 0 override the valid base value of 3 from application yml since warehouse property retry limit is constrained by min 1 the value 0 triggers a bind exception during property bind update the warehouse retry limit value in application local yml to a valid integer greater than or equal to 1 or remove the property from the local profile to inherit the valid base configuration",
+                  "left_spans": [
+                    [
+                      25,
+                      36
+                    ]
+                  ],
+                  "relation_spans": [],
+                  "right_spans": [
+                    [
+                      55,
+                      60
+                    ]
+                  ],
+                  "required_value_spans": [
+                    [
+                      71,
+                      72
+                    ]
+                  ],
+                  "context_alias_matches": [],
+                  "context_hit": true,
+                  "candidate_paths": [],
+                  "witness": null
+                },
+                {
+                  "clause_index": 6,
+                  "clause": "update the warehouse retry limit value in application local yml to a valid integer greater than or equal to 1 or remove the property from the local profile to inherit the valid base configuration",
+                  "context_window": "since warehouse property retry limit is constrained by min 1 the value 0 triggers a bind exception during property bind update the warehouse retry limit value in application local yml to a valid integer greater than or equal to 1 or remove the property from the local profile to inherit the valid base configuration",
+                  "left_spans": [
+                    [
+                      11,
+                      32
+                    ],
+                    [
+                      21,
+                      32
+                    ]
+                  ],
+                  "relation_spans": [],
+                  "right_spans": [],
+                  "required_value_spans": [],
+                  "context_alias_matches": [],
+                  "context_hit": true,
+                  "candidate_paths": [],
+                  "witness": null
+                }
+              ]
+            },
+            {
+              "variant_index": 1,
+              "left_aliases": [
+                "retry limit 0",
+                "zero retry limit",
+                "value 0"
+              ],
+              "relation_aliases": [
+                "violates",
+                "fails",
+                "does not satisfy",
+                "is below"
+              ],
+              "right_aliases": [
+                "minimum value",
+                "min(1)",
+                "validation constraint",
+                "validation",
+                "positive retry limit"
+              ],
+              "required_value_aliases": [],
+              "context_aliases": [],
+              "max_token_distance": 24,
+              "value_max_token_distance": 8,
+              "context_max_token_distance": 64,
+              "clauses_with_any_alias": [
+                {
+                  "clause_index": 0,
+                  "clause": "the local runtime fail because the local profile override the base warehouse retry limit with an invalid value",
+                  "context_window": "the local runtime fail because the local profile override the base warehouse retry limit with an invalid value the base configuration sets it to 3 but application local yml sets it to 0 violating the min 1 constraint in warehouse property and causing a bind exception",
+                  "left_spans": [],
+                  "relation_spans": [
+                    [
+                      18,
+                      22
+                    ]
+                  ],
+                  "right_spans": [],
+                  "required_value_spans": [],
+                  "context_alias_matches": [],
+                  "context_hit": true,
+                  "candidate_paths": [],
+                  "witness": null
+                },
+                {
+                  "clause_index": 1,
+                  "clause": "the base configuration sets it to 3 but application local yml sets it to 0 violating the min 1 constraint in warehouse property and causing a bind exception",
+                  "context_window": "the local runtime fail because the local profile override the base warehouse retry limit with an invalid value the base configuration sets it to 3 but application local yml sets it to 0 violating the min 1 constraint in warehouse property and causing a bind exception local profile override base warehouse retry limit with an invalid value",
+                  "left_spans": [],
+                  "relation_spans": [],
+                  "right_spans": [
+                    [
+                      89,
+                      94
+                    ]
+                  ],
+                  "required_value_spans": [],
+                  "context_alias_matches": [],
+                  "context_hit": true,
+                  "candidate_paths": [],
+                  "witness": null
+                },
+                {
+                  "clause_index": 5,
+                  "clause": "since warehouse property retry limit is constrained by min 1 the value 0 triggers a bind exception during property bind",
+                  "context_window": "this file sets warehouse retry limit to 0 override the valid base value of 3 from application yml since warehouse property retry limit is constrained by min 1 the value 0 triggers a bind exception during property bind update the warehouse retry limit value in application local yml to a valid integer greater than or equal to 1 or remove the property from the local profile to inherit the valid base configuration",
+                  "left_spans": [
+                    [
+                      65,
+                      72
+                    ]
+                  ],
+                  "relation_spans": [],
+                  "right_spans": [
+                    [
+                      55,
+                      60
+                    ]
+                  ],
+                  "required_value_spans": [],
+                  "context_alias_matches": [],
+                  "context_hit": true,
+                  "candidate_paths": [],
+                  "witness": null
+                }
+              ]
+            },
+            {
+              "variant_index": 2,
+              "left_aliases": [
+                "minimum validation",
+                "min(1)",
+                "validation constraint"
+              ],
+              "relation_aliases": [
+                "rejects",
+                "does not accept"
+              ],
+              "right_aliases": [
+                "retry limit",
+                "retry limit 0",
+                "zero retry limit"
+              ],
+              "required_value_aliases": [
+                "0",
+                "zero"
+              ],
+              "context_aliases": [],
+              "max_token_distance": 24,
+              "value_max_token_distance": 8,
+              "context_max_token_distance": 64,
+              "clauses_with_any_alias": [
+                {
+                  "clause_index": 0,
+                  "clause": "the local runtime fail because the local profile override the base warehouse retry limit with an invalid value",
+                  "context_window": "the local runtime fail because the local profile override the base warehouse retry limit with an invalid value the base configuration sets it to 3 but application local yml sets it to 0 violating the min 1 constraint in warehouse property and causing a bind exception",
+                  "left_spans": [],
+                  "relation_spans": [],
+                  "right_spans": [
+                    [
+                      77,
+                      88
+                    ]
+                  ],
+                  "required_value_spans": [],
+                  "context_alias_matches": [],
+                  "context_hit": true,
+                  "candidate_paths": [],
+                  "witness": null
+                },
+                {
+                  "clause_index": 1,
+                  "clause": "the base configuration sets it to 3 but application local yml sets it to 0 violating the min 1 constraint in warehouse property and causing a bind exception",
+                  "context_window": "the local runtime fail because the local profile override the base warehouse retry limit with an invalid value the base configuration sets it to 3 but application local yml sets it to 0 violating the min 1 constraint in warehouse property and causing a bind exception local profile override base warehouse retry limit with an invalid value",
+                  "left_spans": [
+                    [
+                      89,
+                      94
+                    ]
+                  ],
+                  "relation_spans": [],
+                  "right_spans": [],
+                  "required_value_spans": [
+                    [
+                      73,
+                      74
+                    ]
+                  ],
+                  "context_alias_matches": [],
+                  "context_hit": true,
+                  "candidate_paths": [],
+                  "witness": null
+                },
+                {
+                  "clause_index": 2,
+                  "clause": "local profile override base warehouse retry limit with an invalid value",
+                  "context_window": "the base configuration sets it to 3 but application local yml sets it to 0 violating the min 1 constraint in warehouse property and causing a bind exception local profile override base warehouse retry limit with an invalid value the application activate the local profile which loads application local yml",
+                  "left_spans": [],
+                  "relation_spans": [],
+                  "right_spans": [
+                    [
+                      38,
+                      49
+                    ]
+                  ],
+                  "required_value_spans": [],
+                  "context_alias_matches": [],
+                  "context_hit": true,
+                  "candidate_paths": [],
+                  "witness": null
+                },
+                {
+                  "clause_index": 4,
+                  "clause": "this file sets warehouse retry limit to 0 override the valid base value of 3 from application yml",
+                  "context_window": "the application activate the local profile which loads application local yml this file sets warehouse retry limit to 0 override the valid base value of 3 from application yml since warehouse property retry limit is constrained by min 1 the value 0 triggers a bind exception during property bind",
+                  "left_spans": [],
+                  "relation_spans": [],
+                  "right_spans": [
+                    [
+                      25,
+                      36
+                    ]
+                  ],
+                  "required_value_spans": [
+                    [
+                      40,
+                      41
+                    ]
+                  ],
+                  "context_alias_matches": [],
+                  "context_hit": true,
+                  "candidate_paths": [],
+                  "witness": null
+                },
+                {
+                  "clause_index": 5,
+                  "clause": "since warehouse property retry limit is constrained by min 1 the value 0 triggers a bind exception during property bind",
+                  "context_window": "this file sets warehouse retry limit to 0 override the valid base value of 3 from application yml since warehouse property retry limit is constrained by min 1 the value 0 triggers a bind exception during property bind update the warehouse retry limit value in application local yml to a valid integer greater than or equal to 1 or remove the property from the local profile to inherit the valid base configuration",
+                  "left_spans": [
+                    [
+                      55,
+                      60
+                    ]
+                  ],
+                  "relation_spans": [],
+                  "right_spans": [
+                    [
+                      25,
+                      36
+                    ]
+                  ],
+                  "required_value_spans": [
+                    [
+                      71,
+                      72
+                    ]
+                  ],
+                  "context_alias_matches": [],
+                  "context_hit": true,
+                  "candidate_paths": [],
+                  "witness": null
+                },
+                {
+                  "clause_index": 6,
+                  "clause": "update the warehouse retry limit value in application local yml to a valid integer greater than or equal to 1 or remove the property from the local profile to inherit the valid base configuration",
+                  "context_window": "since warehouse property retry limit is constrained by min 1 the value 0 triggers a bind exception during property bind update the warehouse retry limit value in application local yml to a valid integer greater than or equal to 1 or remove the property from the local profile to inherit the valid base configuration",
+                  "left_spans": [],
+                  "relation_spans": [],
+                  "right_spans": [
+                    [
+                      21,
+                      32
+                    ]
+                  ],
+                  "required_value_spans": [],
+                  "context_alias_matches": [],
+                  "context_hit": true,
+                  "candidate_paths": [],
+                  "witness": null
+                }
+              ]
+            }
+          ],
+          "observed_relation_phrases": [
+            "sets it to 0, violating the @Min(1) constraint",
+            "value 0 triggers a BindException during property binding"
+          ],
+          "classification": {
+            "classification": "NEW_PARAPHRASE_FALSE_NEGATIVE",
+            "primary_rca": "RELATION_ALIAS_COVERAGE_GAP",
+            "reason": "The bounded diagnosis explicitly states 0 violating @Min(1); the frozen relation aliases include violates but not the inflected violating form."
+          }
+        }
+      }
+    }
+  },
+  "artifact_verification": {
+    "run_id": "20260820T075619Z-3bb64f39",
+    "file_count": 15,
+    "hash_mismatches": []
+  },
+  "frozen_core_hashes": {
+    "v20_evaluator": {
+      "path": "src/springfix_agent/benchmark/diagnosis_v2.py",
+      "sha256": "ba7306d02182c81a50b1ab3ec9ce8b59de572987edad8ccd2fcf34ded8d5a060",
+      "expected_sha256": "ba7306d02182c81a50b1ab3ec9ce8b59de572987edad8ccd2fcf34ded8d5a060"
+    },
+    "v21_evaluator": {
+      "path": "src/springfix_agent/benchmark/diagnosis_v21.py",
+      "sha256": "33e9fa4262ed14e4ef5e58bc4259b619839740e55234828b232a6e2bc3621403",
+      "expected_sha256": "33e9fa4262ed14e4ef5e58bc4259b619839740e55234828b232a6e2bc3621403"
+    },
+    "v22_evaluator": {
+      "path": "src/springfix_agent/benchmark/diagnosis_v22.py",
+      "sha256": "cd9c5f0113d2ed91a143d2d257a961a8642d74744e063c70eece1f419331a9b1",
+      "expected_sha256": "cd9c5f0113d2ed91a143d2d257a961a8642d74744e063c70eece1f419331a9b1"
+    },
+    "v22_metadata": {
+      "path": "benchmark/dev_semantic_diagnosis_v2_2.jsonl",
+      "sha256": "113d608a00f9ebf439c73201e5c48f702a87734fec5d5f2b8f16a9f3a3df9dbd",
+      "expected_sha256": "113d608a00f9ebf439c73201e5c48f702a87734fec5d5f2b8f16a9f3a3df9dbd"
+    },
+    "v22_manifest": {
+      "path": "benchmark/dev_semantic_diagnosis_v2_2_manifest.json",
+      "sha256": "1e9cb793f565322cbd0981f5c47ec614e3c87e0494756803e09b2d3d6a692dbe",
+      "expected_sha256": "1e9cb793f565322cbd0981f5c47ec614e3c87e0494756803e09b2d3d6a692dbe"
+    },
+    "v22_regression_corpus": {
+      "path": "benchmark/dev_semantic_diagnosis_v2_2_regressions.jsonl",
+      "sha256": "45fd7789504dcaaa411bc45e2b2affc0a3f6b2d9ae8e1bd176efa7945c755bc9",
+      "expected_sha256": "45fd7789504dcaaa411bc45e2b2affc0a3f6b2d9ae8e1bd176efa7945c755bc9"
+    }
+  },
+  "safety": {
+    "bounded_evidence_only": true,
+    "raw_provider_output_read": false,
+    "prompt_read": false,
+    "hidden_reasoning_read": false,
+    "holdout_material_read": false
+  }
+}
