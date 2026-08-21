@@ -166,5 +166,21 @@
     }
   },
   "schema_version": "fresh-holdout-v2-freeze-manifest-v1",
-  "status": "FROZEN"
+  "status": "FROZEN",
+  "m7f0_status": "BLOCKED_BY_PREEXISTING_M7E_HASH_MISMATCH",
+  "invalid_run_policy": {
+    "schema_version": "m7f1-invalid-run-policy-v1",
+    "allowed_reasons": [
+      "provider_or_network_outage",
+      "runner_infrastructure_crash",
+      "artifact_corruption",
+      "benchmark_filesystem_failure"
+    ],
+    "quarantine_required": true,
+    "silent_replacement_prohibited": true,
+    "semantic_repair_failure_is_invalid": false,
+    "wrong_diagnosis_is_invalid": false,
+    "bad_patch_is_invalid": false,
+    "test_failure_is_invalid": false
+  }
 }

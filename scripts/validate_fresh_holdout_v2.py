@@ -546,6 +546,7 @@ def freeze_manifest(
         "schema_version": "fresh-holdout-v2-freeze-manifest-v1",
         "benchmark_version": "fresh_holdout_v2",
         "status": "FROZEN",
+        "m7f0_status": "PENDING_QUALITY_GATES",
         "freeze_timestamp_utc": __import__("datetime")
         .datetime.now(__import__("datetime").UTC)
         .isoformat(),
@@ -581,6 +582,21 @@ def freeze_manifest(
             "role": "observational-only",
             "schema": "diagnosis-evidence-v1.0",
         },
+        "invalid_run_policy": {
+            "schema_version": "m7f1-invalid-run-policy-v1",
+            "allowed_reasons": [
+                "provider_or_network_outage",
+                "runner_infrastructure_crash",
+                "artifact_corruption",
+                "benchmark_filesystem_failure",
+            ],
+            "quarantine_required": True,
+            "silent_replacement_prohibited": True,
+            "semantic_repair_failure_is_invalid": False,
+            "wrong_diagnosis_is_invalid": False,
+            "bad_patch_is_invalid": False,
+            "test_failure_is_invalid": False,
+        },
     }
     write_json(FREEZE_PATH, payload)
     return payload
@@ -611,6 +627,7 @@ def build_report(summary: dict[str, Any]) -> str:
             f"- M7E freeze intact: `{summary['m7e_freeze_intact']}`",
             "- M7E recheck note: pre-existing frozen manifest mismatch in `src/springfix_agent/repair/evaluator.py`; no frozen asset was changed.",
             f"- Agent executions: `{summary['agent_executions']}`; Fresh Holdout executed: `{summary['fresh_holdout_executed']}`",
+            f"- Invalid-run policy frozen: `{summary['invalid_run_policy_frozen']}`",
             f"- Anti-tuning lock: `{summary['anti_tuning_lock_active']}`",
             f"- M7F1 execution readiness: `{summary['m7f1_execution_ready']}`",
             "",
@@ -718,6 +735,7 @@ def construct() -> int:
         "freeze_commit": None,
         "runtime": "0.15.1",
         "m7f0_status": "PENDING_QUALITY_GATES",
+        "fresh_holdout_v2_frozen": True,
         "case_count": len(cases),
         "case_ids": CASE_IDS,
         "semantic_family_count": novelty["semantic_family_count"],
@@ -744,6 +762,7 @@ def construct() -> int:
         "mock_executions": 0,
         "live_executions": 0,
         "llm_benchmark_calls": 0,
+        "invalid_run_policy_frozen": True,
         "anti_tuning_lock_active": bool(freeze["execution_lock"]["anti_tuning_lock_active"]),
         "frozen_manifest_path": FREEZE_PATH.relative_to(PROJECT_ROOT).as_posix(),
         "frozen_manifest_sha256": sha256_file(FREEZE_PATH),
@@ -783,6 +802,8 @@ def finalize() -> int:
             "PASS" if summary.get("m7e_freeze_intact") else "FAIL_PREEXISTING_MANIFEST_MISMATCH"
         ),
     }
+    summary["fresh_holdout_v2_frozen"] = True
+    summary["invalid_run_policy_frozen"] = True
     summary["m7f1_execution_ready"] = True
     summary["fresh_holdout_executed"] = False
     summary["repair_score_available"] = False

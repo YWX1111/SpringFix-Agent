@@ -18,6 +18,7 @@ This report contains aggregate construction and isolation results only. Referenc
 - M7E freeze intact: `False`
 - M7E recheck note: pre-existing frozen manifest mismatch in `src/springfix_agent/repair/evaluator.py`; no frozen asset was changed.
 - Agent executions: `0`; Fresh Holdout executed: `False`
+- Invalid-run policy frozen: `True`
 - Anti-tuning lock: `True`
 - M7F1 execution readiness: `True`
 
